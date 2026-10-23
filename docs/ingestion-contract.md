@@ -1,8 +1,9 @@
 # Document ingestion: Go ↔ Python
 
 Go owns originals, version metadata, ACL, jobs, retries, chunks and publication.
-Python extracts text and returns version-scoped chunks. This repository implements
-only the Go side. There is no parser, Python server, embedding, LLM or search API.
+Python extracts text and returns version-scoped chunks. The private parser lives
+in [ai-service](../ai-service/README.md). Ingestion uses no embeddings or LLM.
+The PostgreSQL Search API is described in [search.md](search.md).
 
 ## Starting workers
 
@@ -159,14 +160,14 @@ chunk insertion. Insertion/validation failures preserve all previous chunks.
 Automatic publication never moves the active pointer to a lower version number.
 A late older result can become ready/completed without replacing a newer active
 version. The first uploaded original remains downloadable before indexing,
-preserving existing behavior; readiness is still required for future search.
+preserving existing behavior; readiness is required for [search](search.md).
 
 `ChunkRepository.ReplaceVersionChunks` is a trusted maintenance operation;
 workers exclusively use fenced `IngestionRepository.CompleteJob`. A unique
 `(document_version_id, chunk_index)` B-tree also serves queries by version;
-the GIN index uses `to_tsvector('russian'::regconfig, content)`. Search API and
-retrieval authorization are outside this change. Future retrieval must check
-document ACL and use only the active ready version.
+the GIN index uses `to_tsvector('russian'::regconfig, content)`. The Search API
+reuses this index and enforces document ACL and active ready versions directly
+in SQL; see [search.md](search.md).
 
 ## Admin API
 

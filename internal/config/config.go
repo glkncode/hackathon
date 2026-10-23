@@ -38,6 +38,10 @@ type Config struct {
 	IngestionPollInterval   time.Duration
 	IngestionRequestTimeout time.Duration
 	IngestionMaxAttempts    int
+	RAGEnabled              bool
+	RAGTimeout              time.Duration
+	RAGMaxSources           int
+	RAGMaxHistoryMessages   int
 }
 
 func Load() (Config, error) { return load(os.Getenv) }
@@ -71,6 +75,9 @@ func load(getenv func(string) string) (Config, error) {
 		IngestionPollInterval:   5 * time.Second,
 		IngestionRequestTimeout: 120 * time.Second,
 		IngestionMaxAttempts:    5,
+		RAGTimeout:              60 * time.Second,
+		RAGMaxSources:           8,
+		RAGMaxHistoryMessages:   10,
 	}
 	if raw := getenv("DOCUMENT_MAX_UPLOAD_BYTES"); raw != "" {
 		n, err := strconv.ParseInt(raw, 10, 64)
@@ -98,6 +105,8 @@ func load(getenv func(string) string) (Config, error) {
 		{"HTTP_PORT", &cfg.HTTPPort},
 		{"INGESTION_WORKERS", &cfg.IngestionWorkers},
 		{"INGESTION_MAX_ATTEMPTS", &cfg.IngestionMaxAttempts},
+		{"RAG_MAX_SOURCES", &cfg.RAGMaxSources},
+		{"RAG_MAX_HISTORY_MESSAGES", &cfg.RAGMaxHistoryMessages},
 	} {
 		if raw := getenv(setting.key); raw != "" {
 			n, err := strconv.Atoi(raw)
@@ -116,6 +125,7 @@ func load(getenv func(string) string) (Config, error) {
 		{"SESSION_TTL", &cfg.SessionTTL},
 		{"INGESTION_POLL_INTERVAL", &cfg.IngestionPollInterval},
 		{"INGESTION_REQUEST_TIMEOUT", &cfg.IngestionRequestTimeout},
+		{"RAG_TIMEOUT", &cfg.RAGTimeout},
 	} {
 		if raw := getenv(setting.key); raw != "" {
 			d, err := time.ParseDuration(raw)
@@ -134,6 +144,7 @@ func load(getenv func(string) string) (Config, error) {
 		{"BOOTSTRAP_ADMIN", &cfg.BootstrapAdmin},
 		{"COOKIE_SECURE", &cfg.CookieSecure},
 		{"INGESTION_ENABLED", &cfg.IngestionEnabled},
+		{"RAG_ENABLED", &cfg.RAGEnabled},
 	} {
 		if raw := getenv(setting.key); raw != "" {
 			b, err := strconv.ParseBool(raw)
@@ -160,6 +171,12 @@ func load(getenv func(string) string) (Config, error) {
 // ValidateServer is intentionally separate: migration CLI commands do not need
 // an administrator password, origins, or TLS certificates.
 func (c Config) ValidateServer() error {
+	if c.RAGTimeout < time.Second || c.RAGTimeout > time.Hour || c.RAGMaxSources < 1 || c.RAGMaxSources > 30 || c.RAGMaxHistoryMessages < 0 || c.RAGMaxHistoryMessages > 50 {
+		return errors.New("config: RAG requires timeout 1s..1h, sources 1..30 and history 0..50")
+	}
+	if c.RAGEnabled && (strings.TrimSpace(c.AIServiceURL) == "" || strings.TrimSpace(c.AIServiceToken) == "") {
+		return errors.New("config: RAG_ENABLED requires AI_SERVICE_URL and AI_SERVICE_TOKEN")
+	}
 	if c.IngestionWorkers < 1 || c.IngestionWorkers > 8 || c.IngestionMaxAttempts < 1 || c.IngestionMaxAttempts > 100 || c.IngestionPollInterval < time.Millisecond || c.IngestionPollInterval > time.Hour || c.IngestionRequestTimeout < time.Second || c.IngestionRequestTimeout > time.Hour {
 		return errors.New("config: ingestion requires workers 1..8, attempts 1..100, poll interval 1ms..1h and timeout 1s..1h")
 	}

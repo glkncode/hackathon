@@ -1,4 +1,4 @@
-// Package aiclient implements the private Go-to-Python ingestion contract.
+// Package aiclient implements the private Go-to-Python ingestion and RAG contracts.
 package aiclient
 
 import (
@@ -20,23 +20,34 @@ import (
 )
 
 type Config struct {
-	URL, Token string
-	Timeout    time.Duration
+	URL, Token      string
+	Timeout         time.Duration
+	GenerateTimeout time.Duration // Zero uses Timeout; shares the same transport.
 }
 type Client struct {
-	endpoint, token string
-	http            *http.Client
+	endpoint, token                string
+	generateEndpoint               string
+	ingestTimeout, generateTimeout time.Duration
+	http                           *http.Client
 }
 
 func New(cfg Config) (*Client, error) {
+	if cfg.GenerateTimeout == 0 {
+		cfg.GenerateTimeout = cfg.Timeout
+	}
+	if cfg.GenerateTimeout < time.Second || cfg.GenerateTimeout > time.Hour {
+		return nil, errors.New("AI client: invalid generation timeout")
+	}
 	u, err := url.Parse(cfg.URL)
 	if err != nil || u.Hostname() == "" || (u.Scheme != "http" && u.Scheme != "https") || u.User != nil || u.RawQuery != "" || u.Fragment != "" || (u.Path != "" && u.Path != "/") || u.Opaque != "" || cfg.Token == "" || strings.ContainsAny(cfg.Token, "\r\n") || cfg.Timeout < time.Second || cfg.Timeout > time.Hour {
 		return nil, errors.New("AI client: invalid server configuration")
 	}
 	u.Path = "/internal/v1/ingest"
+	ingestEndpoint := u.String()
+	u.Path = "/internal/v1/rag/generate"
 	transport := http.DefaultTransport.(*http.Transport).Clone()
 	transport.Proxy = nil // Private files and credentials must not follow ambient proxies.
-	return &Client{endpoint: u.String(), token: cfg.Token, http: &http.Client{Timeout: cfg.Timeout, Transport: transport, CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }}}, nil
+	return &Client{endpoint: ingestEndpoint, generateEndpoint: u.String(), token: cfg.Token, ingestTimeout: cfg.Timeout, generateTimeout: cfg.GenerateTimeout, http: &http.Client{Timeout: max(cfg.Timeout, cfg.GenerateTimeout), Transport: transport, CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }}}, nil
 }
 
 func (c *Client) Close() { c.http.CloseIdleConnections() }
@@ -49,7 +60,7 @@ func (c *Client) Ingest(ctx context.Context, input Request) (Response, error) {
 	if input.DocumentID == uuid.Nil || input.DocumentVersionID == uuid.Nil || input.MIMEType == "" {
 		return Response{}, &Error{Code: "invalid_ai_response"}
 	}
-	ctx, cancel := context.WithTimeout(ctx, c.http.Timeout)
+	ctx, cancel := context.WithTimeout(ctx, c.ingestTimeout)
 	defer cancel()
 	reader, writer := io.Pipe()
 	multipartWriter := multipart.NewWriter(writer)

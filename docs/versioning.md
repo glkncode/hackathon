@@ -140,7 +140,8 @@ leave Go. Go validates the version-scoped response and owns retries/publication.
 
 Server-side retrieval must apply document ACL before fragments reach Python/LLM.
 An active uploaded/processing/failed version is not searchable: search also needs
-ready. Results must not mix versions. Never send prohibited fragments to a model
+ready. The [Search API](search.md) enforces this in SQL. Results must not mix
+versions. Never send prohibited fragments to a model
 intending to remove them from its answer later. Shared ACL/citation rules are in
 [documents.md](documents.md).
 
@@ -158,8 +159,9 @@ backups. Do not delete files merely because status is not ready. Normal uploads
 and publication never delete historical originals. Automated reconciliation,
 garbage collection and a legacy-checksum backfill command are not implemented.
 
-There is no Python implementation, extraction, RAG, embedding or search API. The
-Go worker persists chunks returned by the future Python service. Multiple instances need persistent
+There is no Python implementation, extraction, RAG or embedding. The
+Go worker persists chunks returned by the future Python service; the Search API
+retrieves authorized active ready chunks. Multiple instances need persistent
 shared storage. No public activation/status or deletion API is added.
 
 ## Verification
