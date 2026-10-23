@@ -11,9 +11,17 @@ from zipfile import ZipFile
 
 import pymupdf
 from docx import Document
-from fastapi import FastAPI, File, Form, Header, HTTPException, UploadFile
+from fastapi import FastAPI, File, Form, Header, HTTPException, UploadFile, Request
+from fastapi.exceptions import RequestValidationError
+from fastapi.exception_handlers import request_validation_exception_handler
 from starlette.concurrency import run_in_threadpool
 from starlette.responses import JSONResponse
+
+from app.llm.client import LLMClient, LLMConfig, InferenceError
+from app.rag.generator import generate
+from app.rag.schemas import GenerateRequest, GenerateResponse
+from app.templates.routes import router as templates_router
+from app.templates.engine import MAX_REQUEST_BYTES as MAX_TEMPLATE_REQUEST_BYTES
 
 MAX_FILE_BYTES = 20 * 1024 * 1024
 MAX_REQUEST_BYTES = MAX_FILE_BYTES + 1024 * 1024
@@ -35,7 +43,10 @@ class PrivateIngestMiddleware:
         self.app = app
 
     async def __call__(self, scope, receive, send):
-        if scope["type"] != "http" or scope["path"] != "/internal/v1/ingest":
+        if scope["type"] != "http" or scope["path"] not in {
+            "/internal/v1/ingest", "/internal/v1/rag/generate",
+            "/internal/v1/templates/inspect", "/internal/v1/templates/render",
+        }:
             return await self.app(scope, receive, send)
         expected = scope["app"].state.service_token
         supplied = [value for key, value in scope["headers"] if key.lower() == b"x-service-token"]
@@ -46,13 +57,16 @@ class PrivateIngestMiddleware:
                 {"detail": "Invalid service token"}, status_code=401
             )(scope, receive, send)
         received = 0
+        limit = 1024 * 1024 if scope["path"] == "/internal/v1/rag/generate" else MAX_REQUEST_BYTES
+        if scope["path"].startswith("/internal/v1/templates/"):
+            limit = MAX_TEMPLATE_REQUEST_BYTES
 
         async def bounded_receive():
             nonlocal received
             message = await receive()
             if message["type"] == "http.request":
                 received += len(message.get("body", b""))
-                if received > MAX_REQUEST_BYTES:
+                if received > limit:
                     raise HTTPException(413, "Request exceeds upload limit")
             return message
 
@@ -67,11 +81,37 @@ async def lifespan(app: FastAPI):
     app.state.service_token = token
     # One parser per process by default, matching the target small VPS.
     app.state.parse_slots = asyncio.Semaphore(1)
-    yield
+    app.state.template_slots = asyncio.Semaphore(2)
+    app.state.llm = LLMClient(LLMConfig.from_env())
+    try:
+        yield
+    finally:
+        await app.state.llm.close()
 
 
 app = FastAPI(title="Document parser", lifespan=lifespan)
 app.add_middleware(PrivateIngestMiddleware)
+app.include_router(templates_router)
+
+
+@app.exception_handler(RequestValidationError)
+async def safe_validation_error(request: Request, exc: RequestValidationError):
+    if request.url.path == "/internal/v1/rag/generate":
+        return JSONResponse({"error": {"code": "invalid_rag_request"}}, status_code=422)
+    if request.url.path.startswith("/internal/v1/templates/"):
+        return JSONResponse({"error": {"code": "invalid_template_request"}}, status_code=422)
+    return await request_validation_exception_handler(request, exc)
+
+
+@app.post("/internal/v1/rag/generate", response_model=GenerateResponse)
+async def rag_generate(
+    body: GenerateRequest,
+    x_service_token: Annotated[str | None, Header(alias="X-Service-Token")] = None,
+):
+    try:
+        return await generate(body, app.state.llm)
+    except InferenceError as exc:
+        return JSONResponse({"error": {"code": exc.code}}, status_code=exc.status_code)
 
 
 def clipped(value: str, limit: int) -> str:
