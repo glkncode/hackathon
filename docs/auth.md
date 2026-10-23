@@ -81,7 +81,7 @@ curl -i -b cookies.txt -c cookies.txt -X POST http://localhost:8080/api/v1/auth/
 Cookie files contain credentials: use them only locally and do not commit them.
 Browser fetch calls should use `credentials: "include"`. Read the readable CSRF
 cookie and send its value as X-CSRF-Token on writes. CORS preflights allow only
-exact trusted origins, credentials, GET/POST, Content-Type and X-CSRF-Token;
+exact trusted origins, credentials, GET/POST/DELETE, Content-Type and X-CSRF-Token;
 there is no wildcard CORS.
 
 ## Passwords, sessions and limits
@@ -131,7 +131,8 @@ COOKIE_SECURE=false. Secure development cookies also use the __Host- names.
 Serve frontend and API on the same hostname so JavaScript can read the CSRF
 cookie; different localhost ports work for development. A frontend on a different
 hostname cannot read the API host's __Host- CSRF cookie. Password changes/session
-renewal, account management, MFA, and a session-cleanup scheduler are not included.
+renewal, account/role editing, MFA, and a session-cleanup scheduler are not included.
+Admin-only member creation and document ACL are described in [documents.md](documents.md).
 
 ## Tests
 

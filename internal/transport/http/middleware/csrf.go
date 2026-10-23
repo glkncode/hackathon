@@ -112,7 +112,7 @@ func (p *OriginPolicy) CORS(next http.Handler) http.Handler {
 			w.Header().Add("Vary", "Access-Control-Request-Method")
 			w.Header().Add("Vary", "Access-Control-Request-Headers")
 			method := r.Header.Get("Access-Control-Request-Method")
-			if !p.permits(r) || (method != "GET" && method != "POST") {
+			if !p.permits(r) || (method != "GET" && method != "POST" && method != "DELETE") {
 				JSONError(w, http.StatusForbidden, "forbidden")
 				return
 			}
@@ -123,7 +123,7 @@ func (p *OriginPolicy) CORS(next http.Handler) http.Handler {
 					return
 				}
 			}
-			w.Header().Set("Access-Control-Allow-Methods", "GET, POST")
+			w.Header().Set("Access-Control-Allow-Methods", "GET, POST, DELETE")
 			w.Header().Set("Access-Control-Allow-Headers", "Content-Type, X-CSRF-Token")
 			w.WriteHeader(http.StatusNoContent)
 			return

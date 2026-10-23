@@ -52,6 +52,7 @@ pnpm-debug.log*
 *.db
 /tmp/
 /temp/
+/data/documents/
 
 # Editor and operating system files
 .idea/

@@ -84,6 +84,22 @@ func integrationDB(t *testing.T) (*sql.DB, context.Context) {
 	return db, ctx
 }
 
+func rollbackTo(t *testing.T, ctx context.Context, db *sql.DB, target int64) {
+	t.Helper()
+	for {
+		version, err := migrator.Version(ctx, db)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if version <= target {
+			return
+		}
+		if err := migrator.Down(ctx, db, zap.NewNop()); err != nil {
+			t.Fatal(err)
+		}
+	}
+}
+
 func createTestUser(t *testing.T, ctx context.Context, db *sql.DB, username string) domain.User {
 	t.Helper()
 	user, err := NewUserRepository(db).Create(ctx, domain.User{Username: username, PasswordHash: "test-password-hash", IsActive: true})
@@ -391,8 +407,18 @@ func TestIntegrationUsersSessionsMigrationLifecycle(t *testing.T) {
 	if err != nil || afterSession.ID != session.ID || !bytes.Equal(afterSession.TokenHash, session.TokenHash) {
 		t.Fatalf("session data changed across restart: %v", err)
 	}
-	if err := migrator.Down(ctx, db, zap.NewNop()); err != nil {
-		t.Fatal(err)
+	// Roll back later modules first, then exercise migration 2's own Down.
+	for {
+		version, err := migrator.Version(ctx, db)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if version <= 1 {
+			break
+		}
+		if err := migrator.Down(ctx, db, zap.NewNop()); err != nil {
+			t.Fatal(err)
+		}
 	}
 	for _, table := range []string{"users", "sessions"} {
 		var name sql.NullString
