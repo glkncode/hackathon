@@ -173,7 +173,7 @@ curl -i -b member.cookies "$BASE/api/v1/documents/$DOCUMENT_ID"
 
 Cookie files contain credentials; keep them private and delete after use.
 
-## Authorization and future retrieval
+## Authorization and retrieval
 
 Admin sees/downloads all documents and controls grants. Members have no implicit
 access, including to a document creator's files. Their lists and totals are filtered
@@ -182,7 +182,10 @@ against the parent document, before opening its file. Sessions are checked for u
 activity on each request. Revocation is not cached: subsequent requests lose access
 immediately. An already authorized download in progress is not interrupted.
 
-All future fragments, citations, search results and LLM answers must respect
+The [Search API](search.md) applies the same ACL in SQL and searches only active
+ready versions. It returns persisted fragments and version-bound citations.
+
+All fragments, citations, search results and future LLM answers must respect
 `document_access`. Go must not send Python content from documents unavailable to
 the current user. Retrieval must filter permitted `document_id` values on the
 server before any content reaches a model. Global retrieval followed by removing
@@ -211,5 +214,5 @@ of user/session history. Never point these tests at a production database.
 This release supports version history and local original storage.
 Multi-instance deployments require shared storage. There are no
 document deletion, storage reconciliation, antivirus, indexing,
-text extraction, RAG, search or account/role editing APIs. Login rate limits remain
+text extraction, RAG or account/role editing APIs. Login rate limits remain
 per process; HTTPS deployment details and cookie host constraints are in [auth.md](auth.md).

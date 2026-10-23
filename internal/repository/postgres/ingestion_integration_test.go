@@ -366,9 +366,7 @@ func TestIntegrationIngestionMigrationDownPreservesOriginals(t *testing.T) {
 	if err := jobs.CompleteJob(ctx, job.ID, job.LeaseToken.UUID, chunksFor(versions[0].ID, "Правила")); err != nil {
 		t.Fatal(err)
 	}
-	if err := migrator.Down(ctx, db, zap.NewNop()); err != nil {
-		t.Fatal(err)
-	}
+	rollbackTo(t, ctx, db, 4)
 	for _, table := range []string{"ingestion_jobs", "document_chunks"} {
 		var name sql.NullString
 		if err := db.QueryRowContext(ctx, `SELECT to_regclass($1)::text`, table).Scan(&name); err != nil || name.Valid {

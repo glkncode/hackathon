@@ -24,6 +24,8 @@ type RouterConfig struct {
 }
 
 type Modules struct {
+	Chat           *service.ChatService
+	Search         *service.SearchService
 	Ingestion      *service.IngestionService
 	Users          *service.UserService
 	Documents      *service.DocumentService
@@ -65,6 +67,18 @@ func NewRouter(auth Auth, log *zap.Logger, cfg RouterConfig, modules ...Modules)
 		documents := handlers.NewDocuments(m.Documents, m.Access, m.MaxUploadBytes, log)
 		admin := middleware.RequireRole(log, domain.RoleAdmin)
 		csrf := origins.CSRF(log)
+		if m.Chat != nil {
+			chat := handlers.NewChat(m.Chat, log)
+			mux.Handle("POST /api/v1/chat/sessions", requireAuth(csrf(http.HandlerFunc(chat.Create))))
+			mux.Handle("GET /api/v1/chat/sessions", requireAuth(http.HandlerFunc(chat.List)))
+			mux.Handle("GET /api/v1/chat/sessions/{id}", requireAuth(http.HandlerFunc(chat.Get)))
+			mux.Handle("POST /api/v1/chat/sessions/{id}/messages", requireAuth(csrf(http.HandlerFunc(chat.Send))))
+			mux.Handle("DELETE /api/v1/chat/sessions/{id}", requireAuth(csrf(http.HandlerFunc(chat.Archive))))
+		}
+		if m.Search != nil {
+			search := handlers.NewSearch(m.Search, log)
+			mux.Handle("POST /api/v1/search", requireAuth(csrf(http.HandlerFunc(search.Search))))
+		}
 		if m.Ingestion != nil {
 			ingestion := handlers.NewIngestion(m.Ingestion, log)
 			mux.Handle("GET /api/v1/ingestion-jobs/{id}", requireAuth(admin(http.HandlerFunc(ingestion.Get))))

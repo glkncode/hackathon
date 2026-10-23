@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"sync"
 	"syscall"
+	"time"
 
 	"ai-assistant/internal/aiclient"
 	"ai-assistant/internal/config"
@@ -170,31 +171,43 @@ func run(ctx context.Context, args []string) error {
 	access := service.NewDocumentAccessService(accessRepo, documentRepo, users, log)
 	documents := service.NewDocumentService(documentRepo, access, storage, log)
 	userService := service.NewUserService(users)
+	search := service.NewSearchService(postgres.NewSearchRepository(db))
+	chat := service.NewChatService(postgres.NewChatRepository(db), search, log)
+	var aiClient *aiclient.Client
+	if cfg.IngestionAvailable() || cfg.RAGEnabled {
+		aiClient, err = aiclient.New(aiclient.Config{URL: cfg.AIServiceURL, Token: cfg.AIServiceToken, Timeout: cfg.IngestionRequestTimeout, GenerateTimeout: cfg.RAGTimeout})
+		if err != nil {
+			return err
+		}
+		defer aiClient.Close()
+	}
+	if cfg.RAGEnabled {
+		chat, err = service.NewChatServiceWithRAG(postgres.NewChatRepository(db), search, aiClient, log, service.RAGConfig{Timeout: cfg.RAGTimeout, MaxSources: cfg.RAGMaxSources, MaxHistoryMessages: cfg.RAGMaxHistoryMessages})
+		if err != nil {
+			return err
+		}
+	}
 	router, err := httptransport.NewRouter(auth, log, httptransport.RouterConfig{
 		Production: cfg.Logger.Environment == "production", CookieSecure: cfg.CookieSecure, AllowedOrigins: cfg.AllowedOrigins,
-	}, httptransport.Modules{Users: userService, Documents: documents, Access: access, Ingestion: ingestion, MaxUploadBytes: cfg.DocumentMaxUploadBytes})
+	}, httptransport.Modules{Users: userService, Documents: documents, Access: access, Ingestion: ingestion, Search: search, Chat: chat, MaxUploadBytes: cfg.DocumentMaxUploadBytes})
 	if err != nil {
 		return err
 	}
 	server := httptransport.NewServer(":"+strconv.Itoa(cfg.HTTPPort), router, log)
+	if cfg.RAGEnabled {
+		// The default 30s write deadline must not cut off a bounded 60s RAG
+		// request before its search fallback or persisted response can be sent.
+		server.WriteTimeout = max(server.WriteTimeout, cfg.RAGTimeout+10*time.Second)
+	}
 	workerCtx, workerCancel := context.WithCancel(ctx)
 	var workers sync.WaitGroup
-	var aiClient *aiclient.Client
 	// Registered after storage/db defers: stop workers before closing dependencies.
 	defer func() {
 		workerCancel()
 		workers.Wait()
-		if aiClient != nil {
-			aiClient.Close()
-		}
 	}()
 	if cfg.IngestionAvailable() {
-		client, err := aiclient.New(aiclient.Config{URL: cfg.AIServiceURL, Token: cfg.AIServiceToken, Timeout: cfg.IngestionRequestTimeout})
-		if err != nil {
-			return err
-		}
-		aiClient = client
-		worker, err := service.NewIngestionWorker(jobs, documentRepo, storage, client, log, service.WorkerConfig{PollInterval: cfg.IngestionPollInterval, RequestTimeout: cfg.IngestionRequestTimeout})
+		worker, err := service.NewIngestionWorker(jobs, documentRepo, storage, aiClient, log, service.WorkerConfig{PollInterval: cfg.IngestionPollInterval, RequestTimeout: cfg.IngestionRequestTimeout})
 		if err != nil {
 			return err
 		}

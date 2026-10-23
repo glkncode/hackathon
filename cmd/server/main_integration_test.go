@@ -71,6 +71,7 @@ func TestIntegrationServerBootstrapAndShutdown(t *testing.T) {
 	reservation.Close()
 	origin := "http://localhost:" + strconv.Itoa(port)
 	for key, value := range map[string]string{
+		"RAG_ENABLED": "false", "RAG_TIMEOUT": "60s", "RAG_MAX_SOURCES": "8", "RAG_MAX_HISTORY_MESSAGES": "10",
 		"AI_SERVICE_URL": "", "AI_SERVICE_TOKEN": "", "INGESTION_ENABLED": "true", "INGESTION_WORKERS": "1", "INGESTION_POLL_INTERVAL": "5s", "INGESTION_REQUEST_TIMEOUT": "120s", "INGESTION_MAX_ATTEMPTS": "5",
 		"DOCUMENT_STORAGE_DIR": t.TempDir(), "DOCUMENT_MAX_UPLOAD_BYTES": "20971520",
 		"DATABASE_URL": u.String(), "APP_ENV": "development", "HTTP_PORT": strconv.Itoa(port),
@@ -96,7 +97,9 @@ func TestIntegrationServerBootstrapAndShutdown(t *testing.T) {
 	})
 	jar, _ := cookiejar.New(nil)
 	client := &http.Client{Jar: jar, Timeout: 2 * time.Second}
-	deadline := time.Now().Add(10 * time.Second)
+	// Isolated schemas still share Goose's database-wide advisory lock. Its
+	// default retry interval is 5s when other integration packages migrate.
+	deadline := time.Now().Add(30 * time.Second)
 	for {
 		select {
 		case err := <-result:
@@ -154,6 +157,12 @@ func TestIntegrationServerBootstrapAndShutdown(t *testing.T) {
 	}
 	if response := request("GET", "/api/v1/auth/me", "", ""); response.StatusCode != 200 {
 		t.Fatal("me failed")
+	}
+	if response := request("POST", "/api/v1/search", `{"query":"согласование"}`, ""); response.StatusCode != 403 {
+		t.Fatal("search accepted missing CSRF")
+	}
+	if response := request("POST", "/api/v1/search", `{"query":"согласование"}`, csrf); response.StatusCode != 200 {
+		t.Fatal("entrypoint search unavailable without Python credentials")
 	}
 	// An actual entrypoint without AI credentials still accepts uploads and jobs.
 	var upload bytes.Buffer
@@ -244,7 +253,7 @@ func TestIntegrationServerBootstrapAndShutdown(t *testing.T) {
 			}
 		}
 	}()
-	restartDeadline := time.Now().Add(10 * time.Second)
+	restartDeadline := time.Now().Add(30 * time.Second)
 	for {
 		select {
 		case err := <-restartedResult:

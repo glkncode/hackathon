@@ -218,3 +218,39 @@ func TestDocumentConfiguration(t *testing.T) {
 		t.Fatal("storage overrides ignored")
 	}
 }
+
+func TestRAGConfiguration(t *testing.T) {
+	base := map[string]string{"DATABASE_URL": "postgres://localhost/assistant_test"}
+	cfg, err := load(func(k string) string { return base[k] })
+	if err != nil || cfg.RAGEnabled || cfg.RAGTimeout != 60*time.Second || cfg.RAGMaxSources != 8 || cfg.RAGMaxHistoryMessages != 10 {
+		t.Fatal("incorrect RAG defaults", err)
+	}
+	for _, tc := range []struct{ key, value string }{{"RAG_ENABLED", "bad"}, {"RAG_TIMEOUT", "0s"}, {"RAG_TIMEOUT", "1ms"}, {"RAG_TIMEOUT", "2h"}, {"RAG_MAX_SOURCES", "0"}, {"RAG_MAX_SOURCES", "31"}, {"RAG_MAX_HISTORY_MESSAGES", "-1"}, {"RAG_MAX_HISTORY_MESSAGES", "51"}, {"RAG_MAX_SOURCES", "many"}, {"RAG_ENABLED", "true"}} {
+		t.Run(tc.key+tc.value, func(t *testing.T) {
+			cfg, err := load(func(k string) string {
+				if k == tc.key {
+					return tc.value
+				}
+				return base[k]
+			})
+			if err == nil {
+				err = cfg.ValidateServer()
+			}
+			if err == nil {
+				t.Fatal("invalid RAG configuration accepted")
+			}
+		})
+	}
+	base["RAG_ENABLED"] = "true"
+	base["RAG_MAX_SOURCES"] = "3"
+	base["RAG_MAX_HISTORY_MESSAGES"] = "0"
+	base["AI_SERVICE_URL"] = "http://localhost:8000"
+	base["AI_SERVICE_TOKEN"] = "test-token"
+	cfg, err = load(func(k string) string { return base[k] })
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := cfg.ValidateServer(); err != nil || !cfg.RAGEnabled || cfg.RAGMaxSources != 3 || cfg.RAGMaxHistoryMessages != 0 {
+		t.Fatal("valid RAG config rejected", err)
+	}
+}
