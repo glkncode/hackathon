@@ -18,9 +18,12 @@ under Goose's PostgreSQL session advisory lock, then verifies schema compatibili
 Errors stop initialization with a nonzero exit code. Earlier successful
 migrations remain applied if a later migration fails. Each SQL migration runs
 transactionally unless it explicitly contains `-- +goose NO TRANSACTION`.
-After schema verification, administrator bootstrap and the authentication HTTP
-server start; see [Authentication API](auth.md). Pool and logger cleanup run
-after HTTP shutdown. Explicit migration CLI commands exit without starting HTTP.
+After schema verification, administrator bootstrap runs, then HTTP starts with
+authentication, users and documents routes; see [Authentication API](auth.md) and
+[Document access](documents.md). Pool and logger cleanup run
+after HTTP and worker shutdown. Explicit migration CLI commands exit without
+starting HTTP, workers, storage or ingestion backfill. Migration 5 adds jobs,
+version-bound chunks and Russian FTS; see [ingestion-contract.md](ingestion-contract.md).
 
 Settings (empty values use defaults, except DATABASE_URL which is required):
 

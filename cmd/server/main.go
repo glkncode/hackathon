@@ -7,8 +7,10 @@ import (
 	"os"
 	"os/signal"
 	"strconv"
+	"sync"
 	"syscall"
 
+	"ai-assistant/internal/aiclient"
 	"ai-assistant/internal/config"
 	"ai-assistant/internal/database"
 	"ai-assistant/internal/logger"
@@ -143,13 +145,67 @@ func run(ctx context.Context, args []string) error {
 	if err != nil {
 		return err
 	}
+	storage, err := service.NewLocalDocumentStorage(cfg.DocumentStorageDir, cfg.DocumentMaxUploadBytes)
+	if err != nil {
+		return err
+	}
+	defer storage.Close()
+	documentRepo, err := postgres.NewDocumentRepositoryWithIngestion(db, cfg.IngestionMaxAttempts)
+	if err != nil {
+		return err
+	}
+	jobs := postgres.NewIngestionRepository(db)
+	backfillCtx, backfillCancel := context.WithTimeout(ctx, cfg.MigrationTimeout)
+	count, err := jobs.BackfillUploaded(backfillCtx, cfg.IngestionMaxAttempts)
+	backfillCancel()
+	if err != nil {
+		return err
+	}
+	log.Info("existing uploaded versions enqueued", zap.Int64("count", count))
+	ingestion, err := service.NewIngestionService(jobs, cfg.IngestionMaxAttempts)
+	if err != nil {
+		return err
+	}
+	accessRepo := postgres.NewDocumentAccessRepository(db)
+	access := service.NewDocumentAccessService(accessRepo, documentRepo, users, log)
+	documents := service.NewDocumentService(documentRepo, access, storage, log)
+	userService := service.NewUserService(users)
 	router, err := httptransport.NewRouter(auth, log, httptransport.RouterConfig{
 		Production: cfg.Logger.Environment == "production", CookieSecure: cfg.CookieSecure, AllowedOrigins: cfg.AllowedOrigins,
-	})
+	}, httptransport.Modules{Users: userService, Documents: documents, Access: access, Ingestion: ingestion, MaxUploadBytes: cfg.DocumentMaxUploadBytes})
 	if err != nil {
 		return err
 	}
 	server := httptransport.NewServer(":"+strconv.Itoa(cfg.HTTPPort), router, log)
+	workerCtx, workerCancel := context.WithCancel(ctx)
+	var workers sync.WaitGroup
+	var aiClient *aiclient.Client
+	// Registered after storage/db defers: stop workers before closing dependencies.
+	defer func() {
+		workerCancel()
+		workers.Wait()
+		if aiClient != nil {
+			aiClient.Close()
+		}
+	}()
+	if cfg.IngestionAvailable() {
+		client, err := aiclient.New(aiclient.Config{URL: cfg.AIServiceURL, Token: cfg.AIServiceToken, Timeout: cfg.IngestionRequestTimeout})
+		if err != nil {
+			return err
+		}
+		aiClient = client
+		worker, err := service.NewIngestionWorker(jobs, documentRepo, storage, client, log, service.WorkerConfig{PollInterval: cfg.IngestionPollInterval, RequestTimeout: cfg.IngestionRequestTimeout})
+		if err != nil {
+			return err
+		}
+		for i := 0; i < cfg.IngestionWorkers; i++ {
+			workers.Add(1)
+			go func() { defer workers.Done(); worker.Run(workerCtx) }()
+		}
+		log.Info("ingestion workers started", zap.Int("workers", cfg.IngestionWorkers))
+	} else {
+		log.Info("ingestion workers disabled; jobs remain queued")
+	}
 	if err := httptransport.Serve(ctx, server, log, cfg.TLSCertFile, cfg.TLSKeyFile); err != nil {
 		log.Error("HTTP server failed", zap.Error(err))
 		return err

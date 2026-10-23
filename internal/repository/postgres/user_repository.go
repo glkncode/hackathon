@@ -71,6 +71,42 @@ func (r *UserRepository) GetByID(ctx context.Context, id uuid.UUID) (domain.User
 	return scanUser("get user by ID", r.db.QueryRowContext(ctx, `SELECT `+userColumns+` FROM users WHERE id = $1`, id))
 }
 
+// List never selects password hashes. The count and page share a snapshot.
+func (r *UserRepository) List(ctx context.Context, limit, offset int) ([]domain.User, int64, error) {
+	tx, err := r.db.BeginTx(ctx, &sql.TxOptions{ReadOnly: true, Isolation: sql.LevelRepeatableRead})
+	if err != nil {
+		return nil, 0, mapError("begin list users", err)
+	}
+	defer tx.Rollback()
+	var total int64
+	if err := tx.QueryRowContext(ctx, `SELECT count(*) FROM users`).Scan(&total); err != nil {
+		return nil, 0, mapError("count users", err)
+	}
+	rows, err := tx.QueryContext(ctx, `SELECT id, username, role, is_active, created_at, updated_at FROM users ORDER BY created_at, id LIMIT $1 OFFSET $2`, limit, offset)
+	if err != nil {
+		return nil, 0, mapError("list users", err)
+	}
+	defer rows.Close()
+	items := make([]domain.User, 0)
+	for rows.Next() {
+		var u domain.User
+		if err := rows.Scan(&u.ID, &u.Username, &u.Role, &u.IsActive, &u.CreatedAt, &u.UpdatedAt); err != nil {
+			return nil, 0, mapError("scan users", err)
+		}
+		items = append(items, u)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, 0, mapError("read users", err)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, 0, mapError("close users", err)
+	}
+	if err := tx.Commit(); err != nil {
+		return nil, 0, mapError("commit list users", err)
+	}
+	return items, total, nil
+}
+
 func (r *UserRepository) GetByUsername(ctx context.Context, username string) (domain.User, error) {
 	return scanUser("get user by username", r.db.QueryRowContext(ctx,
 		`SELECT `+userColumns+` FROM users WHERE LOWER(username) = LOWER($1)`, username))

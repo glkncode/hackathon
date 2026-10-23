@@ -1,12 +1,15 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"io"
+	"mime/multipart"
 	"net"
 	"net/http"
 	"net/http/cookiejar"
+	"net/http/httptest"
 	"net/url"
 	"os"
 	"strconv"
@@ -15,6 +18,7 @@ import (
 	"time"
 
 	"ai-assistant/internal/database"
+	"ai-assistant/internal/domain"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 )
@@ -67,6 +71,8 @@ func TestIntegrationServerBootstrapAndShutdown(t *testing.T) {
 	reservation.Close()
 	origin := "http://localhost:" + strconv.Itoa(port)
 	for key, value := range map[string]string{
+		"AI_SERVICE_URL": "", "AI_SERVICE_TOKEN": "", "INGESTION_ENABLED": "true", "INGESTION_WORKERS": "1", "INGESTION_POLL_INTERVAL": "5s", "INGESTION_REQUEST_TIMEOUT": "120s", "INGESTION_MAX_ATTEMPTS": "5",
+		"DOCUMENT_STORAGE_DIR": t.TempDir(), "DOCUMENT_MAX_UPLOAD_BYTES": "20971520",
 		"DATABASE_URL": u.String(), "APP_ENV": "development", "HTTP_PORT": strconv.Itoa(port),
 		"BOOTSTRAP_ADMIN": "true", "ADMIN_USERNAME": "admin", "ADMIN_PASSWORD": "entrypoint-password-123",
 		"AUTO_MIGRATE": "true", "COOKIE_SECURE": "false", "ALLOWED_ORIGINS": origin,
@@ -149,6 +155,51 @@ func TestIntegrationServerBootstrapAndShutdown(t *testing.T) {
 	if response := request("GET", "/api/v1/auth/me", "", ""); response.StatusCode != 200 {
 		t.Fatal("me failed")
 	}
+	// An actual entrypoint without AI credentials still accepts uploads and jobs.
+	var upload bytes.Buffer
+	form := multipart.NewWriter(&upload)
+	if err := form.WriteField("title", "Queued without Python"); err != nil {
+		t.Fatal(err)
+	}
+	part, err := form.CreateFormFile("file", "queued.txt")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := io.WriteString(part, "Internal document"); err != nil {
+		t.Fatal(err)
+	}
+	if err := form.Close(); err != nil {
+		t.Fatal(err)
+	}
+	uploadReq, err := http.NewRequestWithContext(ctx, "POST", origin+"/api/v1/documents", &upload)
+	if err != nil {
+		t.Fatal(err)
+	}
+	uploadReq.Header.Set("Origin", origin)
+	uploadReq.Header.Set("X-CSRF-Token", csrf)
+	uploadReq.Header.Set("Content-Type", form.FormDataContentType())
+	uploaded, err := client.Do(uploadReq)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var details struct {
+		LatestVersion domain.DocumentVersion `json:"latest_version"`
+	}
+	err = json.NewDecoder(uploaded.Body).Decode(&details)
+	uploaded.Body.Close()
+	if err != nil || uploaded.StatusCode != 201 || !details.LatestVersion.IngestionJobID.Valid {
+		t.Fatal("upload without AI failed", err)
+	}
+	jobResponse, err := client.Get(origin + "/api/v1/ingestion-jobs/" + details.LatestVersion.IngestionJobID.UUID.String())
+	if err != nil {
+		t.Fatal(err)
+	}
+	var job domain.IngestionJob
+	err = json.NewDecoder(jobResponse.Body).Decode(&job)
+	jobResponse.Body.Close()
+	if err != nil || jobResponse.StatusCode != 200 || job.Status != domain.JobPending || job.Attempts != 0 {
+		t.Fatal("worker ran without AI configuration", err)
+	}
 	if response := request("POST", "/api/v1/auth/logout", "", ""); response.StatusCode != 403 {
 		t.Fatal("missing CSRF accepted")
 	}
@@ -167,6 +218,84 @@ func TestIntegrationServerBootstrapAndShutdown(t *testing.T) {
 		}
 	case <-time.After(12 * time.Second):
 		t.Fatal("graceful shutdown timed out")
+	}
+	// Restart with configured but failing Python: API still starts and recovers
+	// the previously queued upload through the real main worker wiring.
+	python := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		io.Copy(io.Discard, r.Body)
+		w.WriteHeader(http.StatusServiceUnavailable)
+	}))
+	defer python.Close()
+	t.Setenv("AI_SERVICE_URL", python.URL)
+	t.Setenv("AI_SERVICE_TOKEN", "entrypoint-test-service-token")
+	t.Setenv("INGESTION_POLL_INTERVAL", "20ms")
+	t.Setenv("INGESTION_REQUEST_TIMEOUT", "2s")
+	restartedCtx, restartedCancel := context.WithCancel(context.Background())
+	restartedResult := make(chan error, 1)
+	go func() { restartedResult <- run(restartedCtx, nil) }()
+	restartStopped := false
+	defer func() {
+		restartedCancel()
+		if !restartStopped {
+			select {
+			case <-restartedResult:
+			case <-time.After(12 * time.Second):
+				t.Error("restarted entrypoint did not stop")
+			}
+		}
+	}()
+	restartDeadline := time.Now().Add(10 * time.Second)
+	for {
+		select {
+		case err := <-restartedResult:
+			restartStopped = true
+			t.Fatal("entrypoint failed with unavailable Python", err)
+		default:
+		}
+		response, err := client.Get(origin + "/api/v1/auth/me")
+		if err == nil {
+			io.Copy(io.Discard, response.Body)
+			response.Body.Close()
+			if response.StatusCode == 401 {
+				break
+			}
+		}
+		if time.Now().After(restartDeadline) {
+			t.Fatal("API did not restart with unavailable Python")
+		}
+		time.Sleep(20 * time.Millisecond)
+	}
+	if response := request("POST", "/api/v1/auth/login", string(payload), ""); response.StatusCode != 200 {
+		t.Fatal("restarted authentication failed")
+	}
+	for {
+		response, err := client.Get(origin + "/api/v1/ingestion-jobs/" + details.LatestVersion.IngestionJobID.UUID.String())
+		if err != nil {
+			t.Fatal(err)
+		}
+		var retried domain.IngestionJob
+		err = json.NewDecoder(response.Body).Decode(&retried)
+		response.Body.Close()
+		if err != nil {
+			t.Fatal(err)
+		}
+		if retried.Status == domain.JobPending && retried.Attempts > 0 {
+			break
+		}
+		if time.Now().After(restartDeadline) {
+			t.Fatal("main worker did not retry unavailable Python")
+		}
+		time.Sleep(20 * time.Millisecond)
+	}
+	restartedCancel()
+	select {
+	case err := <-restartedResult:
+		restartStopped = true
+		if err != nil {
+			t.Fatal(err)
+		}
+	case <-time.After(12 * time.Second):
+		t.Fatal("restarted graceful shutdown timed out")
 	}
 	// Migration CLI remains usable without HTTP TLS settings or bootstrap secret.
 	t.Setenv("APP_ENV", "production")
