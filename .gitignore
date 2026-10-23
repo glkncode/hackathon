@@ -1,0 +1,64 @@
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.key
+cookies.txt
+
+# Go build and test artifacts
+/bin/
+/build/
+/server
+/server.exe
+*.test
+*.test.exe
+*.out
+coverage/
+coverage.*
+/go.work
+/go.work.sum
+
+# Python environments and caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.coverage
+.coverage.*
+htmlcov/
+*.egg-info/
+
+# Frontend dependencies and generated files
+node_modules/
+dist/
+.vite/
+.next/
+*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Local runtime data
+*.log
+*.pid
+*.sqlite
+*.sqlite3
+*.db
+/tmp/
+/temp/
+
+# Editor and operating system files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+Desktop.ini
