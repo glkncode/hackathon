@@ -1,0 +1,17 @@
+# Ручки для бэка
+FastAPI
+uvicorn
+python-multipart
+
+# Работа с файлами
+PyMuPDF
+python-docx
+
+# Подключение к ИИ по API
+openai
+
+# Виртуальное окружение
+python-dotenv
+
+# Покрытие тестов
+pytest
