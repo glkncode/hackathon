@@ -1,28 +1,161 @@
 import asyncio
+import os
+import re
+import secrets
 from contextlib import asynccontextmanager
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Annotated, BinaryIO
+from uuid import UUID
+from zipfile import ZipFile
 
 import pymupdf
 from docx import Document
-from fastapi import FastAPI, File, Form, HTTPException, UploadFile
+from fastapi import FastAPI, File, Form, Header, HTTPException, UploadFile
 from starlette.concurrency import run_in_threadpool
+from starlette.responses import JSONResponse
 
 MAX_FILE_BYTES = 20 * 1024 * 1024
+MAX_REQUEST_BYTES = MAX_FILE_BYTES + 1024 * 1024
+MAX_TEXT_BYTES = 8 * 1024 * 1024
+MAX_CHUNKS = 2000
+CHUNK_CHARS = 4000
+MIME_TYPES = {
+    ".pdf": "application/pdf",
+    ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ".txt": "text/plain",
+}
+HEADING = re.compile(r"^\s*(\d+(?:\.\d+)*)(?:[.)])?\s+(.+?)\s*$")
+
+
+class PrivateIngestMiddleware:
+    """Authenticate before multipart parsing and bound streamed request bodies."""
+
+    def __init__(self, app):
+        self.app = app
+
+    async def __call__(self, scope, receive, send):
+        if scope["type"] != "http" or scope["path"] != "/internal/v1/ingest":
+            return await self.app(scope, receive, send)
+        expected = scope["app"].state.service_token
+        supplied = [value for key, value in scope["headers"] if key.lower() == b"x-service-token"]
+        if len(supplied) != 1 or not secrets.compare_digest(
+            supplied[0], expected.encode("utf-8")
+        ):
+            return await JSONResponse(
+                {"detail": "Invalid service token"}, status_code=401
+            )(scope, receive, send)
+        received = 0
+
+        async def bounded_receive():
+            nonlocal received
+            message = await receive()
+            if message["type"] == "http.request":
+                received += len(message.get("body", b""))
+                if received > MAX_REQUEST_BYTES:
+                    raise HTTPException(413, "Request exceeds upload limit")
+            return message
+
+        await self.app(scope, bounded_receive, send)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    app.state.parse_slots = asyncio.Semaphore(4)
+    token = os.environ.get("AI_SERVICE_TOKEN", "")
+    if not token.strip():
+        raise RuntimeError("Set a nonblank AI_SERVICE_TOKEN before starting the service")
+    app.state.service_token = token
+    # One parser per process by default, matching the target small VPS.
+    app.state.parse_slots = asyncio.Semaphore(1)
     yield
 
 
 app = FastAPI(title="Document parser", lifespan=lifespan)
+app.add_middleware(PrivateIngestMiddleware)
 
 
-def save_and_read(source: BinaryIO, suffix: str) -> dict:
-    # Every request has its own directory, removed on success or failure.
+def clipped(value: str, limit: int) -> str:
+    return value.encode("utf-8")[:limit].decode("utf-8", errors="ignore")
+
+
+def make_chunks(blocks) -> list[dict]:
+    chunks = []
+    total = 0
+    section_number = section_title = None
+    for page_number, text in blocks:
+        # Replace NUL and invalid Unicode before emitting JSON.
+        text = text.replace("\x00", "").encode("utf-8", errors="replace").decode("utf-8")
+        total += len(text.encode("utf-8"))
+        if total > MAX_TEXT_BYTES:
+            raise HTTPException(422, "Extracted text exceeds 8 MiB")
+        pending = []
+        length = 0
+
+        def flush():
+            nonlocal pending, length
+            content = "\n".join(pending).strip()
+            if content:
+                if len(chunks) >= MAX_CHUNKS:
+                    raise HTTPException(422, "Document exceeds 2000 chunks")
+                chunks.append({
+                    "chunk_index": len(chunks),
+                    "content": content,
+                    "page_number": page_number,
+                    "section_number": section_number,
+                    "section_title": section_title,
+                })
+            pending, length = [], 0
+
+        for line in text.splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            heading = HEADING.fullmatch(line)
+            if heading and len(line) <= 250:
+                flush()
+                section_number = clipped(heading[1], 128)
+                section_title = clipped(heading[2], 512)
+            for start in range(0, len(line), CHUNK_CHARS):
+                piece = line[start:start + CHUNK_CHARS]
+                if length + len(piece) + 1 > CHUNK_CHARS:
+                    flush()
+                pending.append(piece)
+                length += len(piece) + 1
+        flush()
+    if not chunks:
+        raise HTTPException(422, "No text extracted; scanned documents require OCR")
+    return chunks
+
+
+def extract_blocks(path: Path, suffix: str):
+    if suffix == ".pdf":
+        # Memory-backed opening avoids file locks on corrupt PDFs on Windows.
+        with pymupdf.open(stream=path.read_bytes(), filetype="pdf") as document:
+            if not document.is_pdf or document.needs_pass:
+                raise ValueError("Invalid or encrypted PDF")
+            if len(document) > 10000:
+                raise HTTPException(422, "PDF exceeds 10000 pages")
+            for index, page in enumerate(document, start=1):
+                yield index, page.get_text()
+    elif suffix == ".docx":
+        # Bound decompression before python-docx loads XML.
+        with ZipFile(path) as archive:
+            entries = archive.infolist()
+            if len(entries) > 10000 or sum(e.file_size for e in entries) > 64 * 1024 * 1024:
+                raise HTTPException(422, "DOCX decompressed size exceeds limit")
+        document = Document(path)
+        # Preserve paragraph/table order; DOCX has no reliable page numbers.
+        for block in document.iter_inner_content():
+            if hasattr(block, "rows"):
+                for row in block.rows:
+                    yield None, "\t".join(cell.text for cell in row.cells)
+            else:
+                yield None, block.text
+    else:
+        yield None, path.read_text(encoding="utf-8-sig")
+
+
+def save_and_parse(source: BinaryIO, suffix: str) -> dict:
     with TemporaryDirectory(prefix="document-ingest-") as directory:
         path = Path(directory) / f"document{suffix}"
         size = 0
@@ -32,34 +165,15 @@ def save_and_read(source: BinaryIO, suffix: str) -> dict:
                 if size > MAX_FILE_BYTES:
                     raise HTTPException(413, "File exceeds 20 MiB")
                 destination.write(chunk)
-        if size == 0:
-            raise HTTPException(400, "Empty file")
+        if not size:
+            raise HTTPException(422, "Empty file")
         try:
-            if suffix == ".pdf":
-                with pymupdf.open(stream=path.read_bytes(), filetype="pdf") as document:
-                    if not document.is_pdf or document.needs_pass:
-                        raise ValueError("Invalid or encrypted PDF")
-                    text = "\n\n".join(page.get_text() for page in document)
-            elif suffix == ".docx":
-                document = Document(path)
-                parts = [paragraph.text for paragraph in document.paragraphs]
-                parts.extend(
-                    "\t".join(cell.text for cell in row.cells)
-                    for table in document.tables
-                    for row in table.rows
-                )
-                text = "\n".join(parts)
-            else:
-                text = path.read_text(encoding="utf-8-sig")
+            chunks = make_chunks(extract_blocks(path, suffix))
+        except HTTPException:
+            raise
         except Exception as exc:
-            raise HTTPException(
-                422, "Cannot read document: use a valid PDF, DOCX or UTF-8 TXT"
-            ) from exc
-        return {
-            "size_bytes": size,
-            "text": text,
-            "warnings": [] if text.strip() else ["No text extracted; OCR may be required"],
-        }
+            raise HTTPException(422, "Cannot read document; expected PDF, DOCX or UTF-8 TXT") from exc
+        return {"chunks": chunks, "warnings": []}
 
 
 @app.get("/health")
@@ -70,14 +184,31 @@ async def health():
 @app.post("/internal/v1/ingest")
 async def ingest(
     file: Annotated[UploadFile, File()],
-    document_id: Annotated[str, Form(min_length=1)],
+    document_id: Annotated[UUID, Form()],
+    document_version_id: Annotated[UUID, Form()],
+    mime_type: Annotated[str, Form()],
+    x_service_token: Annotated[str | None, Header(alias="X-Service-Token")] = None,
 ):
     try:
+        if document_id.int == 0 or document_version_id.int == 0:
+            raise HTTPException(422, "Document UUIDs must be nonzero")
         suffix = Path(file.filename or "").suffix.lower()
-        if suffix not in {".pdf", ".docx", ".txt"}:
+        if suffix not in MIME_TYPES:
             raise HTTPException(415, "Supported formats: PDF, DOCX, TXT")
+        if mime_type.lower().split(";", 1)[0].strip() != MIME_TYPES[suffix]:
+            raise HTTPException(415, "MIME type does not match file extension")
+        # Thread work finishes before UploadFile is closed, including cancellation.
         async with app.state.parse_slots:
-            result = await run_in_threadpool(save_and_read, file.file, suffix)
-        return {"document_id": document_id, "status": "completed", **result}
+            worker = asyncio.create_task(run_in_threadpool(save_and_parse, file.file, suffix))
+            try:
+                result = await asyncio.shield(worker)
+            except asyncio.CancelledError:
+                # A thread cannot be killed safely; let it release its temporary files.
+                try:
+                    await worker
+                except Exception:
+                    pass
+                raise
+        return {"document_version_id": str(document_version_id), **result}
     finally:
         await file.close()
