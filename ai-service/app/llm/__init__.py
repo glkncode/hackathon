@@ -1,0 +1,1 @@
+"""Configurable private inference adapter."""

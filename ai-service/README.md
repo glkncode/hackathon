@@ -3,7 +3,8 @@
 Implements the private API defined in [the Go contract](../docs/ingestion-contract.md).
 Go stores originals, retries requests and saves returned chunks. Python uses isolated
 temporary directories and removes them after parsing, including on errors.
-No embeddings, Ollama, RAG or external AI calls are used.
+Ingestion does not use embeddings or inference. The separate RAG generation
+endpoint uses an explicitly configured inference API; see below.
 
 ## Local startup (PowerShell)
 
@@ -50,6 +51,30 @@ MIME mismatch, 422 invalid identifiers/unreadable/empty document or output limit
 Scanned PDFs without text return 422, since Go requires at least one chunk.
 Duplicate requests produce deterministic chunks and do not write to Go's database.
 Keep the service on loopback/private networking as required by the Go contract.
+
+## RAG generation
+
+POST /internal/v1/rag/generate accepts a query, bounded user/assistant history
+and sources already authorized by Go. It shares X-Service-Token with ingestion.
+It returns answered, needs_clarification or insufficient_information, with
+validated source IDs. Search, ACL and chat storage remain in Go.
+
+Configuration, JSON examples, errors/fallback and quality limits:
+[RAG generation contract](../docs/rag-generation-contract.md).
+LLM_BASE_URL points to an OpenAI-compatible /v1 origin/path (Ollama supported).
+LLM_MODEL must refer to an approved installed model. No model is installed or
+downloaded automatically. Without configured inference, nonempty-source requests
+return 503; empty-source requests return insufficient_information without a call.
+
+## DOCX templates
+
+POST /internal/v1/templates/inspect discovers required string fields and reports
+missing values. POST /internal/v1/templates/render fills the uploaded DOCX and
+returns a binary document. Both use the existing X-Service-Token.
+Go owns drafts, storage and access control. No LLM is used.
+
+[Template API contract and demo](../docs/templates-contract.md).
+Synthetic demo inputs: examples/memo-template.docx and examples/memo-values.json.
 
 ## Tests
 
