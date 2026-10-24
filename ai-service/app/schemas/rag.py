@@ -109,7 +109,11 @@ class GenerateRequest(StrictModel):
 
 class GenerateResponse(StrictModel):
     status: Literal["answered", "needs_clarification", "insufficient_information"] = Field(
-        description="answered — ответ готов; needs_clarification — нужно уточнение; insufficient_information — недостаточно информации",
+        description=(
+            "answered — подтверждённый ответ, включая частичные сведения или явно пустой реквизит; "
+            "needs_clarification — неоднозначен предмет вопроса; "
+            "insufficient_information — источники не подтверждают запрошенные сведения"
+        ),
     )
     answer: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=12000)] | None = Field(
         description="Ответ нейронки; null при уточнении или отсутствии информации",

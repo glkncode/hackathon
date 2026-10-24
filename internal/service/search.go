@@ -20,7 +20,10 @@ type SearchStore interface {
 	SearchVariants(context.Context, uuid.UUID, domain.Role, []domain.SearchQuery) ([][]domain.SearchResult, error)
 }
 
-type SearchService struct{ repository SearchStore }
+type SearchService struct {
+	repository SearchStore
+	semantic   *semanticSearch
+}
 
 func NewSearchService(repository SearchStore) *SearchService {
 	return &SearchService{repository: repository}
@@ -39,6 +42,13 @@ func (s *SearchService) Search(ctx context.Context, actor domain.User, query dom
 	if err := ctx.Err(); err != nil {
 		return nil, err
 	}
+	if s.semantic != nil {
+		return s.searchSemantic(ctx, actor, query)
+	}
+	return s.searchFTS(ctx, actor, query)
+}
+
+func (s *SearchService) searchFTS(ctx context.Context, actor domain.User, query domain.SearchQuery) ([]domain.SearchResult, error) {
 	plan := queryunderstanding.Understand(query.Query)
 	if len(plan.Variants) == 1 {
 		results, err := s.repository.Search(ctx, actor.ID, actor.Role, query)

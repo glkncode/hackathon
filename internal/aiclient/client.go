@@ -20,18 +20,26 @@ import (
 )
 
 type Config struct {
-	URL, Token      string
-	Timeout         time.Duration
-	GenerateTimeout time.Duration // Zero uses Timeout; shares the same transport.
+	URL, Token       string
+	Timeout          time.Duration
+	GenerateTimeout  time.Duration // Zero uses Timeout; shares the same transport.
+	EmbeddingTimeout time.Duration
 }
 type Client struct {
 	endpoint, token                string
 	generateEndpoint               string
 	ingestTimeout, generateTimeout time.Duration
+	embeddingTimeout               time.Duration
 	http                           *http.Client
 }
 
 func New(cfg Config) (*Client, error) {
+	if cfg.EmbeddingTimeout == 0 {
+		cfg.EmbeddingTimeout = 30 * time.Second
+	}
+	if cfg.EmbeddingTimeout < time.Second || cfg.EmbeddingTimeout > time.Hour {
+		return nil, errors.New("AI client: invalid embedding timeout")
+	}
 	if cfg.GenerateTimeout == 0 {
 		cfg.GenerateTimeout = cfg.Timeout
 	}
@@ -47,7 +55,7 @@ func New(cfg Config) (*Client, error) {
 	u.Path = "/internal/v1/rag/generate"
 	transport := http.DefaultTransport.(*http.Transport).Clone()
 	transport.Proxy = nil // Private files and credentials must not follow ambient proxies.
-	return &Client{endpoint: ingestEndpoint, generateEndpoint: u.String(), token: cfg.Token, ingestTimeout: cfg.Timeout, generateTimeout: cfg.GenerateTimeout, http: &http.Client{Timeout: max(cfg.Timeout, cfg.GenerateTimeout), Transport: transport, CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }}}, nil
+	return &Client{endpoint: ingestEndpoint, generateEndpoint: u.String(), token: cfg.Token, ingestTimeout: cfg.Timeout, generateTimeout: cfg.GenerateTimeout, embeddingTimeout: cfg.EmbeddingTimeout, http: &http.Client{Timeout: max(cfg.Timeout, cfg.GenerateTimeout, cfg.EmbeddingTimeout), Transport: transport, CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }}}, nil
 }
 
 func (c *Client) Close() { c.http.CloseIdleConnections() }

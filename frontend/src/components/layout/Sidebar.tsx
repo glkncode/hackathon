@@ -36,6 +36,9 @@ export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void 
           Новый чат
         </Link>
         <nav className="primary-nav">
+          <NavLink to="/templates" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} onClick={onClose}>
+            <FileText size={18} />Шаблоны
+          </NavLink>
           <NavLink
             to="/chat"
             className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}

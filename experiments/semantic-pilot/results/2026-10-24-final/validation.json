@@ -1,0 +1,23 @@
+{
+  "go_full_suite_with_pgvector": "passed",
+  "go_vet": "passed",
+  "python_full_suite_passed": 142,
+  "additional_tests": [
+    "config validation passed",
+    "atomic/max-window/negative-cosine SQL test passed",
+    "Go evidence whitespace/blank quote tests passed",
+    "Python evidence malformed/blank quote test passed"
+  ],
+  "legacy_working_group_qwen": "passed separately against real Python and LAN Qwen, 44.647 seconds",
+  "windows_symlink_test": "skipped: symlink creation unavailable on host",
+  "stock_postgres17_preflight": "actionable unavailable-extension error verified",
+  "latest_docker_smoke": "ACL revoke, history redaction, Python outage FTS/Chat fallback and persistent vectors passed after final rebuild",
+  "final_smoke_images": {
+    "hackathon-semantic-api-semantic": "sha256:37fbfaa0e329c42d42a959bdc710f5190b8037da1a45a8611a779bd09fe1332c",
+    "hackathon-semantic-ai": "sha256:7d059673e916542d43f4baa308324e297152cf928116c175203bdb1e628b0f93",
+    "hackathon-semantic-pg": "sha256:ac08538c6f8b9904c33c8224c5e5706dbe760aca29db1d096972b4052c22a75d"
+  },
+  "quality_observation_images": "environment.json; later defensive validation and negative-score projection do not change recorded positive-cosine ordering",
+  "original_application_database": "not migrated, original containers retained",
+  "committed_pushed_deployed": false
+}

@@ -9,6 +9,7 @@ const errorMessages: Record<number, string> = {
   405: 'Это действие пока не поддерживается сервером.',
   409: 'Данные изменились или диалог архивирован. Обновите страницу и повторите запрос.',
   413: 'Файл превышает допустимый сервером размер.',
+  422: 'Проверьте обязательные поля и блокирующие замечания.',
   429: 'Слишком много запросов. Подождите немного и попробуйте снова.',
   500: 'Не удалось обработать запрос. Попробуйте ещё раз позже.',
   501: 'Эта возможность ещё не реализована на сервере.',
@@ -18,7 +19,7 @@ const errorMessages: Record<number, string> = {
 };
 
 export class ApiError extends Error {
-  constructor(public readonly status: number) {
+  constructor(public readonly status: number, public readonly details?: unknown) {
     super(errorMessages[status] ?? 'Произошла ошибка при обращении к серверу.');
     this.name = 'ApiError';
   }
@@ -81,7 +82,8 @@ export async function apiFetch(path: string, options: RequestOptions = {}): Prom
       window.dispatchEvent(new Event(SESSION_EXPIRED_EVENT));
     }
     // Server error text is deliberately not rendered: it may contain internal details.
-    throw new ApiError(response.status);
+    const details: unknown = await response.json().catch(() => undefined);
+    throw new ApiError(response.status, details);
   }
   return response;
 }

@@ -1,0 +1,11 @@
+{
+  "development_positive_top1_range": [
+    0.8049089908599854,
+    0.8877524137496948
+  ],
+  "development_negative_top1_range": [
+    0.8075864315032959,
+    0.8403760194778442
+  ],
+  "no_threshold_fitted": true
+}

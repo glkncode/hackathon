@@ -102,6 +102,8 @@ def test_answer_with_sources(client, inference):
     assert payload["model"] == "mock-model"
     assert payload["stream"] is False
     assert payload["response_format"] == {"type": "json_object"}
+    assert payload["temperature"] == 0
+    assert payload["max_tokens"] == 4096
 
 
 def test_no_sources_skips_model(client, inference):

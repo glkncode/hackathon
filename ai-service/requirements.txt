@@ -17,3 +17,9 @@ python-dotenv
 # Покрытие тестов
 pytest
 httpx
+
+# Pinned CPU embedding runtime; model files are provisioned separately.
+numpy==2.5.4
+onnxruntime==1.31.0
+tokenizers==0.23.3
+huggingface-hub==1.33.0

@@ -1,0 +1,693 @@
+{
+  "profile_version": 2,
+  "profile_id": "working-group",
+  "revision": "2.0.2",
+  "rules_version": "2026-10-24.3",
+  "engine_version": "docx-profile/2.0.0",
+  "template_kind": "working_group_order",
+  "source_sha256": "5f594e008ae4b47a297637794d0cc2f0b982072bb085f414582c576d793dbab4",
+  "field_source": {
+    "name": "Модуль_распоряжения_о_создании_рабочей_группы.docx",
+    "version": "sha256:5f594e008ae4b47a297637794d0cc2f0b982072bb085f414582c576d793dbab4",
+    "section": "Примечания по заполнению; раздел «Общие правила»"
+  },
+  "fields": [
+    {
+      "key": "organization",
+      "label": "Наименование организации",
+      "type": "text",
+      "required": true,
+      "question": "Наименование организации?",
+      "description": "",
+      "max_length": 2000,
+      "source": {
+        "name": "Инструкция_по_ДОУ_учебный_пример.pdf",
+        "version": "sha256:3b7461fb98911f39d3e8a951bee2cdddfb3ab4b98d6c135f146d130e01d96d90",
+        "section": "8.4"
+      }
+    },
+    {
+      "key": "signer",
+      "label": "Подписант: инициалы и фамилия",
+      "type": "person",
+      "required": true,
+      "question": "Подписант: инициалы и фамилия?",
+      "description": "Выберите уполномоченного подписанта; фактические полномочия и подписание проверяются вне генератора.",
+      "max_length": 2000,
+      "source": {
+        "name": "Модуль_распоряжения_о_создании_рабочей_группы.docx",
+        "version": "sha256:5f594e008ae4b47a297637794d0cc2f0b982072bb085f414582c576d793dbab4",
+        "section": "Примечание 8"
+      }
+    },
+    {
+      "key": "module_current_confirmed",
+      "label": "Актуальность модуля проверена в реестре?",
+      "type": "choice",
+      "required": false,
+      "question": "Актуальность модуля проверена в реестре??",
+      "description": "",
+      "max_length": 2000,
+      "options": [
+        "yes",
+        "no"
+      ],
+      "source": {
+        "name": "Методические_рекомендации_по_работе_с_модульными_документами.docx",
+        "version": "sha256:95a0a1d9881e3bd74df7b1ab7fa942d5d2f5ec0696eea6ae53dc5accaf93ba8e",
+        "section": "1.2"
+      }
+    },
+    {
+      "key": "signer_authority_confirmed",
+      "label": "Полномочия подписанта проверены?",
+      "type": "choice",
+      "required": false,
+      "question": "Полномочия подписанта проверены??",
+      "description": "",
+      "max_length": 2000,
+      "options": [
+        "yes",
+        "no"
+      ],
+      "source": {
+        "name": "Инструкция_по_ДОУ_учебный_пример.pdf",
+        "version": "sha256:3b7461fb98911f39d3e8a951bee2cdddfb3ab4b98d6c135f146d130e01d96d90",
+        "section": "8.19; 10.15"
+      }
+    },
+    {
+      "key": "affected_departments",
+      "label": "Дополнительные подразделения по затронутой компетенции",
+      "type": "text_list",
+      "required": false,
+      "question": "Дополнительные подразделения по затронутой компетенции?",
+      "description": "",
+      "max_length": 2000,
+      "minimum_items": 1,
+      "maximum_items": 30,
+      "source": {
+        "name": "Матрица_обязательного_визирования_внутренних_и_внешних_документов.docx",
+        "version": "sha256:9d1c59e89bc833ed813b738e3709f23ecb0a247f26e13394ca6dae6542756e83",
+        "section": "Положения 1–3; внутренние документы, строки 2, 6"
+      }
+    },
+    {
+      "key": "group_subject",
+      "label": "Тема рабочей группы",
+      "type": "text",
+      "required": true,
+      "question": "Тема рабочей группы?",
+      "description": "В форме после «по»; одна тема для заголовка и пункта 1.",
+      "max_length": 2000,
+      "source": {
+        "name": "Модуль_распоряжения_о_создании_рабочей_группы.docx",
+        "version": "sha256:5f594e008ae4b47a297637794d0cc2f0b982072bb085f414582c576d793dbab4",
+        "section": "Примечание 2"
+      }
+    },
+    {
+      "key": "purpose",
+      "label": "Практическая цель",
+      "type": "text",
+      "required": true,
+      "question": "Практическая цель?",
+      "description": "В родительном падеже после «В целях».",
+      "max_length": 2000,
+      "source": {
+        "name": "Модуль_распоряжения_о_создании_рабочей_группы.docx",
+        "version": "sha256:5f594e008ae4b47a297637794d0cc2f0b982072bb085f414582c576d793dbab4",
+        "section": "Примечание 1"
+      }
+    },
+    {
+      "key": "actions",
+      "label": "Конкретные действия",
+      "type": "text",
+      "required": true,
+      "question": "Конкретные действия?",
+      "description": "",
+      "max_length": 2000,
+      "source": {
+        "name": "Модуль_распоряжения_о_создании_рабочей_группы.docx",
+        "version": "sha256:5f594e008ae4b47a297637794d0cc2f0b982072bb085f414582c576d793dbab4",
+        "section": "Примечание 4"
+      }
+    },
+    {
+      "key": "result",
+      "label": "Итоговый документ",
+      "type": "text",
+      "required": true,
+      "question": "Итоговый документ?",
+      "description": "",
+      "max_length": 2000,
+      "source": {
+        "name": "Модуль_распоряжения_о_создании_рабочей_группы.docx",
+        "version": "sha256:5f594e008ae4b47a297637794d0cc2f0b982072bb085f414582c576d793dbab4",
+        "section": "Примечание 5"
+      }
+    },
+    {
+      "key": "addressee",
+      "label": "Адресат результата",
+      "type": "text",
+      "required": true,
+      "question": "Адресат результата?",
+      "description": "В дательном падеже; кому представить результат.",
+      "max_length": 2000,
+      "source": {
+        "name": "Модуль_распоряжения_о_создании_рабочей_группы.docx",
+        "version": "sha256:5f594e008ae4b47a297637794d0cc2f0b982072bb085f414582c576d793dbab4",
+        "section": "Примечание 5"
+      }
+    },
+    {
+      "key": "termination",
+      "label": "Событие завершения деятельности",
+      "type": "text",
+      "required": true,
+      "question": "Событие завершения деятельности?",
+      "description": "",
+      "max_length": 2000,
+      "source": {
+        "name": "Модуль_распоряжения_о_создании_рабочей_группы.docx",
+        "version": "sha256:5f594e008ae4b47a297637794d0cc2f0b982072bb085f414582c576d793dbab4",
+        "section": "Примечание 6"
+      }
+    },
+    {
+      "key": "deadline",
+      "label": "Конечный срок",
+      "type": "date",
+      "required": true,
+      "question": "Конечный срок?",
+      "description": "",
+      "max_length": 2000,
+      "source": {
+        "name": "Модуль_распоряжения_о_создании_рабочей_группы.docx",
+        "version": "sha256:5f594e008ae4b47a297637794d0cc2f0b982072bb085f414582c576d793dbab4",
+        "section": "Примечание 4"
+      }
+    },
+    {
+      "key": "leader",
+      "label": "Руководитель",
+      "type": "person",
+      "required": true,
+      "question": "Руководитель?",
+      "description": "Должность, полное наименование подразделения, инициалы и фамилия; в грамматической форме исходной фразы.",
+      "max_length": 2000,
+      "source": {
+        "name": "Модуль_распоряжения_о_создании_рабочей_группы.docx",
+        "version": "sha256:5f594e008ae4b47a297637794d0cc2f0b982072bb085f414582c576d793dbab4",
+        "section": "Примечание 3"
+      }
+    },
+    {
+      "key": "secretary",
+      "label": "Секретарь",
+      "type": "person",
+      "required": true,
+      "question": "Секретарь?",
+      "description": "Должность, полное наименование подразделения, инициалы и фамилия; в грамматической форме исходной фразы.",
+      "max_length": 2000,
+      "source": {
+        "name": "Модуль_распоряжения_о_создании_рабочей_группы.docx",
+        "version": "sha256:5f594e008ae4b47a297637794d0cc2f0b982072bb085f414582c576d793dbab4",
+        "section": "Примечание 3"
+      }
+    },
+    {
+      "key": "controller",
+      "label": "Контролирующее лицо",
+      "type": "person",
+      "required": true,
+      "question": "Контролирующее лицо?",
+      "description": "В винительном падеже после «возложить на»; должность, подразделение, фамилия и инициалы.",
+      "max_length": 2000,
+      "source": {
+        "name": "Модуль_распоряжения_о_создании_рабочей_группы.docx",
+        "version": "sha256:5f594e008ae4b47a297637794d0cc2f0b982072bb085f414582c576d793dbab4",
+        "section": "Примечание 7"
+      }
+    },
+    {
+      "key": "members",
+      "label": "Члены",
+      "type": "repeater",
+      "required": true,
+      "question": "Члены?",
+      "description": "По одной записи на участника. Для внешних участников проверьте необходимость согласования.",
+      "max_length": 2000,
+      "item_fields": [
+        {
+          "key": "position",
+          "label": "Должность",
+          "required": true,
+          "max_length": 1000
+        },
+        {
+          "key": "unit",
+          "label": "Подразделение",
+          "required": true,
+          "max_length": 1000
+        },
+        {
+          "key": "name",
+          "label": "Инициалы и фамилия",
+          "required": true,
+          "max_length": 1000
+        },
+        {
+          "key": "agreement",
+          "label": "По согласованию для внешнего участника, если применимо",
+          "required": false,
+          "max_length": 1000
+        }
+      ],
+      "maximum_items": 30,
+      "minimum_items": 1,
+      "source": {
+        "name": "Модуль_распоряжения_о_создании_рабочей_группы.docx",
+        "version": "sha256:5f594e008ae4b47a297637794d0cc2f0b982072bb085f414582c576d793dbab4",
+        "section": "Примечание 3"
+      }
+    },
+    {
+      "key": "signer_position",
+      "label": "Должность подписанта",
+      "type": "text",
+      "required": true,
+      "question": "Должность подписанта?",
+      "description": "",
+      "max_length": 2000,
+      "source": {
+        "name": "Модуль_распоряжения_о_создании_рабочей_группы.docx",
+        "version": "sha256:5f594e008ae4b47a297637794d0cc2f0b982072bb085f414582c576d793dbab4",
+        "section": "Примечание 8"
+      }
+    },
+    {
+      "key": "coherence_confirmed",
+      "label": "Проверена ограниченность задачи и связь цели, срока и результата?",
+      "type": "choice",
+      "required": false,
+      "question": "Проверена ограниченность задачи и связь цели, срока и результата??",
+      "description": "",
+      "max_length": 2000,
+      "options": [
+        "yes",
+        "no"
+      ],
+      "source": {
+        "name": "Модуль_распоряжения_о_создании_рабочей_группы.docx",
+        "version": "sha256:5f594e008ae4b47a297637794d0cc2f0b982072bb085f414582c576d793dbab4",
+        "section": "Общие правила"
+      }
+    },
+    {
+      "key": "it_related",
+      "label": "Объединение создаётся для ИТ-проекта или вопросов ИС?",
+      "type": "choice",
+      "required": true,
+      "question": "Объединение создаётся для ИТ-проекта или вопросов ИС??",
+      "description": "",
+      "max_length": 2000,
+      "options": [
+        "yes",
+        "no"
+      ],
+      "source": {
+        "name": "Матрица_обязательного_визирования_внутренних_и_внешних_документов.docx",
+        "version": "sha256:9d1c59e89bc833ed813b738e3709f23ecb0a247f26e13394ca6dae6542756e83",
+        "section": "Положения 1–3; внутренние документы, строки 2, 6"
+      }
+    }
+  ],
+  "bindings": [
+    {
+      "paragraph": 8,
+      "match": "НАИМЕНОВАНИЕ ОРГАНИЗАЦИИ",
+      "value": [
+        {
+          "field": "organization"
+        }
+      ]
+    },
+    {
+      "paragraph": 19,
+      "match": "____________________________________________",
+      "value": [
+        {
+          "field": "leader"
+        }
+      ]
+    },
+    {
+      "paragraph": 21,
+      "match": "____________________________________________",
+      "value": [
+        {
+          "field": "secretary"
+        }
+      ]
+    },
+    {
+      "paragraph": 28,
+      "match": "6. Контроль за исполнением настоящего распоряжения возложить на ______________. [7]",
+      "value": [
+        {
+          "literal": "6. Контроль за исполнением настоящего распоряжения возложить на "
+        },
+        {
+          "field": "controller"
+        },
+        {
+          "literal": "."
+        }
+      ]
+    },
+    {
+      "paragraph": 12,
+      "match": "О создании рабочей группы по __________________________________________",
+      "value": [
+        {
+          "literal": "О создании рабочей группы по "
+        },
+        {
+          "field": "group_subject"
+        },
+        {
+          "literal": ""
+        }
+      ]
+    },
+    {
+      "paragraph": 13,
+      "match": "В целях _________________________________________________________________ [1],",
+      "value": [
+        {
+          "literal": "В целях "
+        },
+        {
+          "field": "purpose"
+        },
+        {
+          "literal": ","
+        }
+      ]
+    },
+    {
+      "paragraph": 15,
+      "match": "1. Создать рабочую группу по _____________________________________________ [2] (далее - Рабочая группа) в составе:",
+      "value": [
+        {
+          "literal": "1. Создать рабочую группу по "
+        },
+        {
+          "field": "group_subject"
+        },
+        {
+          "literal": " (далее - Рабочая группа) в составе:"
+        }
+      ]
+    },
+    {
+      "paragraph": 27,
+      "match": "5. Рабочая группа прекращает деятельность после ____________________________. [6]",
+      "value": [
+        {
+          "literal": "5. Рабочая группа прекращает деятельность после "
+        },
+        {
+          "field": "termination"
+        },
+        {
+          "literal": "."
+        }
+      ]
+    },
+    {
+      "paragraph": 24,
+      "match": "2. Рабочей группе до «___» ____________ 20___ г. ____________________________ [4] и представить __________________________________________________________. [5]",
+      "value": [
+        {
+          "literal": "2. Рабочей группе до "
+        },
+        {
+          "field": "deadline"
+        },
+        {
+          "literal": " "
+        },
+        {
+          "field": "actions"
+        },
+        {
+          "literal": " и представить "
+        },
+        {
+          "field": "result"
+        },
+        {
+          "literal": " "
+        },
+        {
+          "field": "addressee"
+        },
+        {
+          "literal": "."
+        }
+      ]
+    },
+    {
+      "paragraph": 29,
+      "match": "Заместитель Председателя Организации",
+      "value": [
+        {
+          "field": "signer_position"
+        }
+      ]
+    },
+    {
+      "paragraph": 31,
+      "match": "И. О. Фамилия [8]",
+      "value": [
+        {
+          "field": "signer"
+        }
+      ]
+    }
+  ],
+  "conditional_blocks": [],
+  "repeaters": [
+    {
+      "field": "members",
+      "table": 2,
+      "start_row": 3,
+      "end_row": 3,
+      "anchor": "Члены____________________________________________ [3]",
+      "cells": [
+        [
+          {
+            "literal": "Члены"
+          }
+        ],
+        [
+          {
+            "field": "position"
+          },
+          {
+            "literal": ", "
+          },
+          {
+            "field": "unit"
+          },
+          {
+            "literal": ", "
+          },
+          {
+            "field": "name"
+          },
+          {
+            "when": {
+              "op": "present",
+              "field": "agreement"
+            },
+            "then": [
+              {
+                "literal": " ("
+              },
+              {
+                "field": "agreement"
+              },
+              {
+                "literal": ")"
+              }
+            ],
+            "otherwise": []
+          }
+        ]
+      ],
+      "keep_rows_together": true,
+      "repeat_header": true
+    }
+  ],
+  "numbered_paragraphs": [],
+  "rules": [
+    {
+      "id": "module.currency",
+      "category": "warning",
+      "description": "Проверьте актуальный статус, редакцию и начало применения модуля в реестре. Ответ пользователя не заменяет проверку реестра.",
+      "source": {
+        "name": "Методические_рекомендации_по_работе_с_модульными_документами.docx",
+        "version": "sha256:95a0a1d9881e3bd74df7b1ab7fa942d5d2f5ec0696eea6ae53dc5accaf93ba8e",
+        "section": "1.2"
+      },
+      "check": {
+        "op": "equals",
+        "field": "module_current_confirmed",
+        "value": "yes"
+      }
+    },
+    {
+      "id": "signer.authority",
+      "category": "manual_review",
+      "description": "Проверьте полномочия подписанта, должность и оформление подписи. Генератор не выполняет подписание.",
+      "source": {
+        "name": "Инструкция_по_ДОУ_учебный_пример.pdf",
+        "version": "sha256:3b7461fb98911f39d3e8a951bee2cdddfb3ab4b98d6c135f146d130e01d96d90",
+        "section": "8.19–8.20; 10.15"
+      },
+      "check": {
+        "op": "equals",
+        "field": "signer_authority_confirmed",
+        "value": "yes"
+      }
+    },
+    {
+      "id": "document.review",
+      "category": "manual_review",
+      "description": "Сопоставьте постоянные формулировки, грамматику, приложения и оформление с модулем; при отличии определите полный маршрут. Предусмотрите лингвистическую экспертизу.",
+      "source": {
+        "name": "Методические_рекомендации_по_работе_с_модульными_документами.docx",
+        "version": "sha256:95a0a1d9881e3bd74df7b1ab7fa942d5d2f5ec0696eea6ae53dc5accaf93ba8e",
+        "section": "1.3; 3.3; 4.1–4.3"
+      }
+    },
+    {
+      "id": "module.application",
+      "category": "manual_review",
+      "description": "Проверьте условия применения модуля, общий маршрут визирования и лингвистическую экспертизу. Автоматическое соответствие профилю не устанавливает юридическую применимость и не выполняет согласование.",
+      "source": {
+        "name": "Инструкция_по_ДОУ_учебный_пример.pdf",
+        "version": "sha256:3b7461fb98911f39d3e8a951bee2cdddfb3ab4b98d6c135f146d130e01d96d90",
+        "section": "9.16–9.16.3; 10.6; 10.11; 10.13"
+      }
+    },
+    {
+      "id": "sources.educational",
+      "category": "info",
+      "description": "Инструкция — учебный пример, не действующий документ. Актуальность и применимость официальных правил автоматически не установлены.",
+      "source": {
+        "name": "Инструкция_по_ДОУ_учебный_пример.pdf",
+        "version": "sha256:3b7461fb98911f39d3e8a951bee2cdddfb3ab4b98d6c135f146d130e01d96d90",
+        "section": "Маркировка страниц; 12.10–12.11"
+      }
+    },
+    {
+      "id": "project.registration",
+      "category": "info",
+      "description": "Это проект. Регистрация, номер, подпись, ЭП и визы выполняются в установленном порядке после проверки.",
+      "source": {
+        "name": "Методические_рекомендации_по_работе_с_модульными_документами.docx",
+        "version": "sha256:95a0a1d9881e3bd74df7b1ab7fa942d5d2f5ec0696eea6ae53dc5accaf93ba8e",
+        "section": "2.1; 5.1–5.3"
+      }
+    },
+    {
+      "id": "structure.cleanup",
+      "category": "info",
+      "description": "При генерации удаляются служебные элементы модуля по закреплённым структурным якорям; дата, регистрационный номер и визуализация ЭП сохраняются.",
+      "source": {
+        "name": "Методические_рекомендации_по_работе_с_модульными_документами.docx",
+        "version": "sha256:95a0a1d9881e3bd74df7b1ab7fa942d5d2f5ec0696eea6ae53dc5accaf93ba8e",
+        "section": "3.1–3.3"
+      }
+    },
+    {
+      "id": "group.coherence",
+      "category": "manual_review",
+      "description": "Подтвердите ограниченную задачу, связь цели, срока и результата; рабочая группа не должна подменять постоянно действующий орган. Проверьте согласование внешних участников.",
+      "source": {
+        "name": "Модуль_распоряжения_о_создании_рабочей_группы.docx",
+        "version": "sha256:5f594e008ae4b47a297637794d0cc2f0b982072bb085f414582c576d793dbab4",
+        "section": "Прим.1–8; общие правила"
+      },
+      "check": {
+        "op": "equals",
+        "field": "coherence_confirmed",
+        "value": "yes"
+      }
+    }
+  ],
+  "approval_route": [
+    {
+      "id": "internal.6",
+      "description": "Рабочие группы, проектные комитеты, комиссии и временные объединения",
+      "required_departments": [
+        "Департамент ДОУ",
+        "Кадровое подразделение"
+      ],
+      "conditional_departments": [
+        {
+          "name": "Департамент информационных технологий",
+          "condition": "Создание объединения для ИТ-проекта или решения вопросов ИС",
+          "when": {
+            "op": "equals",
+            "field": "it_related",
+            "value": "yes"
+          }
+        }
+      ],
+      "source": {
+        "name": "Матрица_обязательного_визирования_внутренних_и_внешних_документов.docx",
+        "version": "sha256:9d1c59e89bc833ed813b738e3709f23ecb0a247f26e13394ca6dae6542756e83",
+        "section": "Положения 1–3; внутренние документы, строка 6"
+      }
+    }
+  ],
+  "document_cleanup": {
+    "approval_table": 0,
+    "approval_text": "УТВЕРЖДАЮЗаместитель Председателя Организации______________  ____________________«___» ____________ 20___ г.",
+    "marker": {
+      "paragraph": 5,
+      "text": "МОДУЛЬНЫЙ ДОКУМЕНТ"
+    },
+    "notes_start": {
+      "paragraph": 34,
+      "text": "Примечания по заполнению модульного распоряжения"
+    },
+    "notes_end": {
+      "paragraph": 47,
+      "text": "• не оставляйте линии и номера примечаний в подписываемом распоряжении."
+    },
+    "protected": [
+      {
+        "paragraph": 10,
+        "text": "ДАТА / РЕГИСТРАЦИОННЫЙ НОМЕР (НЕ УДАЛЯТЬ)"
+      },
+      {
+        "paragraph": 32,
+        "text": "ВИЗУАЛИЗАЦИЯ ЭП (НЕ УДАЛЯТЬ)"
+      }
+    ],
+    "remove_paragraphs": [
+      {
+        "paragraph": 33,
+        "text": ""
+      }
+    ]
+  }
+}

@@ -1,8 +1,10 @@
-import { BookOpen, Menu, MessageSquare } from 'lucide-react';
+import { BookOpen, FileText, Menu, MessageSquare } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 
 export function Header({ onOpenMenu, menuOpen }: { onOpenMenu: () => void; menuOpen: boolean }) {
-  const documents = useLocation().pathname === '/documents';
+  const pathname = useLocation().pathname;
+  const documents = pathname === '/documents';
+  const templates = pathname.startsWith('/templates');
   return (
     <header className="header">
       <div className="header-title">
@@ -15,8 +17,8 @@ export function Header({ onOpenMenu, menuOpen }: { onOpenMenu: () => void; menuO
         >
           <Menu size={21} />
         </button>
-        {documents ? <BookOpen size={18} /> : <MessageSquare size={18} />}
-        <span>{documents ? 'База знаний' : 'Помощник по документам'}</span>
+        {templates ? <FileText size={18} /> : documents ? <BookOpen size={18} /> : <MessageSquare size={18} />}
+        <span>{templates ? 'Подготовка документов' : documents ? 'База знаний' : 'Помощник по документам'}</span>
       </div>
       <span className="mode-badge">
         <BookOpen size={13} />

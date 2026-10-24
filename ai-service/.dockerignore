@@ -6,3 +6,15 @@ __pycache__
 tests
 examples
 **/__pycache__
+.git
+venv
+**/.venv
+**/.pytest_cache
+**/*.pyc
+**/*.log
+*.key
+data
+tmp
+temp
+dist
+build

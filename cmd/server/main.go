@@ -14,6 +14,7 @@ import (
 	"ai-assistant/internal/aiclient"
 	"ai-assistant/internal/config"
 	"ai-assistant/internal/database"
+	"ai-assistant/internal/domain"
 	"ai-assistant/internal/logger"
 	"ai-assistant/internal/migrator"
 	"ai-assistant/internal/repository/postgres"
@@ -174,12 +175,15 @@ func run(ctx context.Context, args []string) error {
 	search := service.NewSearchService(postgres.NewSearchRepository(db))
 	chat := service.NewChatService(postgres.NewChatRepository(db), search, log)
 	var aiClient *aiclient.Client
-	if cfg.IngestionAvailable() || cfg.RAGEnabled {
-		aiClient, err = aiclient.New(aiclient.Config{URL: cfg.AIServiceURL, Token: cfg.AIServiceToken, Timeout: cfg.IngestionRequestTimeout, GenerateTimeout: cfg.RAGTimeout})
+	if cfg.IngestionAvailable() || cfg.RAGEnabled || cfg.SemanticSearchEnabled || cfg.SemanticIndexingEnabled || cfg.AIServiceURL != "" && cfg.AIServiceToken != "" {
+		aiClient, err = aiclient.New(aiclient.Config{URL: cfg.AIServiceURL, Token: cfg.AIServiceToken, Timeout: cfg.IngestionRequestTimeout, GenerateTimeout: cfg.RAGTimeout, EmbeddingTimeout: cfg.EmbeddingRequestTimeout})
 		if err != nil {
 			return err
 		}
 		defer aiClient.Close()
+	}
+	if cfg.SemanticSearchEnabled {
+		search.EnableSemantic(postgres.NewSemanticSearchRepository(db), aiClient, aiClient, log, cfg.SemanticSupplementFTS, cfg.SemanticSearchTimeout)
 	}
 	if cfg.RAGEnabled {
 		chat, err = service.NewChatServiceWithRAG(postgres.NewChatRepository(db), search, aiClient, log, service.RAGConfig{Timeout: cfg.RAGTimeout, MaxSources: cfg.RAGMaxSources, MaxHistoryMessages: cfg.RAGMaxHistoryMessages})
@@ -187,17 +191,26 @@ func run(ctx context.Context, args []string) error {
 			return err
 		}
 	}
+	var templateEngine service.TemplateEngine
+	if aiClient != nil {
+		templateEngine = aiClient
+	}
+	templates := service.NewTemplateService(postgres.NewTemplateRepository(db), documentRepo, access, storage, templateEngine, log)
 	router, err := httptransport.NewRouter(auth, log, httptransport.RouterConfig{
 		Production: cfg.Logger.Environment == "production", CookieSecure: cfg.CookieSecure, AllowedOrigins: cfg.AllowedOrigins,
-	}, httptransport.Modules{Users: userService, Documents: documents, Access: access, Ingestion: ingestion, Search: search, Chat: chat, MaxUploadBytes: cfg.DocumentMaxUploadBytes})
+	}, httptransport.Modules{Templates: templates, Users: userService, Documents: documents, Access: access, Ingestion: ingestion, Search: search, Chat: chat, MaxUploadBytes: cfg.DocumentMaxUploadBytes})
 	if err != nil {
 		return err
 	}
 	server := httptransport.NewServer(":"+strconv.Itoa(cfg.HTTPPort), router, log)
+	server.WriteTimeout = max(server.WriteTimeout, 70*time.Second)
 	if cfg.RAGEnabled {
 		// The default 30s write deadline must not cut off a bounded 60s RAG
 		// request before its search fallback or persisted response can be sent.
 		server.WriteTimeout = max(server.WriteTimeout, cfg.RAGTimeout+10*time.Second)
+	}
+	if cfg.SemanticSearchEnabled {
+		server.WriteTimeout = max(server.WriteTimeout, cfg.SemanticSearchTimeout+cfg.RAGTimeout+10*time.Second)
 	}
 	workerCtx, workerCancel := context.WithCancel(ctx)
 	var workers sync.WaitGroup
@@ -206,6 +219,11 @@ func run(ctx context.Context, args []string) error {
 		workerCancel()
 		workers.Wait()
 	}()
+	if cfg.SemanticIndexingEnabled {
+		worker := service.NewSemanticWorker(postgres.NewEmbeddingRepository(db, domain.E5Identity()), aiClient, log, cfg.EmbeddingRequestTimeout)
+		workers.Add(1)
+		go func() { defer workers.Done(); worker.Run(workerCtx) }()
+	}
 	if cfg.IngestionAvailable() {
 		worker, err := service.NewIngestionWorker(jobs, documentRepo, storage, aiClient, log, service.WorkerConfig{PollInterval: cfg.IngestionPollInterval, RequestTimeout: cfg.IngestionRequestTimeout})
 		if err != nil {

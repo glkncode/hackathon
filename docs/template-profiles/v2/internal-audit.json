@@ -1,0 +1,837 @@
+{
+  "profile_version": 2,
+  "profile_id": "internal-audit",
+  "revision": "2.0.2",
+  "rules_version": "2026-10-24.3",
+  "engine_version": "docx-profile/2.0.0",
+  "template_kind": "internal_audit_order",
+  "source_sha256": "2521f52a3d763b12999001d5da97631f6b4a939ef957b48cc5dacd89b98ad540",
+  "field_source": {
+    "name": "Модуль_распоряжения_о_проведении_внутреннего_аудита_процессов.docx",
+    "version": "sha256:2521f52a3d763b12999001d5da97631f6b4a939ef957b48cc5dacd89b98ad540",
+    "section": "Примечания по заполнению; раздел «Общие правила»"
+  },
+  "fields": [
+    {
+      "key": "organization",
+      "label": "Наименование организации",
+      "type": "text",
+      "required": true,
+      "question": "Наименование организации?",
+      "description": "",
+      "max_length": 2000,
+      "source": {
+        "name": "Инструкция_по_ДОУ_учебный_пример.pdf",
+        "version": "sha256:3b7461fb98911f39d3e8a951bee2cdddfb3ab4b98d6c135f146d130e01d96d90",
+        "section": "8.4"
+      }
+    },
+    {
+      "key": "signer",
+      "label": "Подписант: инициалы и фамилия",
+      "type": "person",
+      "required": true,
+      "question": "Подписант: инициалы и фамилия?",
+      "description": "Выберите уполномоченного подписанта; фактические полномочия и подписание проверяются вне генератора.",
+      "max_length": 2000,
+      "source": {
+        "name": "Модуль_распоряжения_о_проведении_внутреннего_аудита_процессов.docx",
+        "version": "sha256:2521f52a3d763b12999001d5da97631f6b4a939ef957b48cc5dacd89b98ad540",
+        "section": "Примечание 8"
+      }
+    },
+    {
+      "key": "module_current_confirmed",
+      "label": "Актуальность модуля проверена в реестре?",
+      "type": "choice",
+      "required": false,
+      "question": "Актуальность модуля проверена в реестре??",
+      "description": "",
+      "max_length": 2000,
+      "options": [
+        "yes",
+        "no"
+      ],
+      "source": {
+        "name": "Методические_рекомендации_по_работе_с_модульными_документами.docx",
+        "version": "sha256:95a0a1d9881e3bd74df7b1ab7fa942d5d2f5ec0696eea6ae53dc5accaf93ba8e",
+        "section": "1.2"
+      }
+    },
+    {
+      "key": "signer_authority_confirmed",
+      "label": "Полномочия подписанта проверены?",
+      "type": "choice",
+      "required": false,
+      "question": "Полномочия подписанта проверены??",
+      "description": "",
+      "max_length": 2000,
+      "options": [
+        "yes",
+        "no"
+      ],
+      "source": {
+        "name": "Инструкция_по_ДОУ_учебный_пример.pdf",
+        "version": "sha256:3b7461fb98911f39d3e8a951bee2cdddfb3ab4b98d6c135f146d130e01d96d90",
+        "section": "8.19; 10.15"
+      }
+    },
+    {
+      "key": "affected_departments",
+      "label": "Дополнительные подразделения по затронутой компетенции",
+      "type": "text_list",
+      "required": false,
+      "question": "Дополнительные подразделения по затронутой компетенции?",
+      "description": "",
+      "max_length": 2000,
+      "minimum_items": 1,
+      "maximum_items": 30,
+      "source": {
+        "name": "Матрица_обязательного_визирования_внутренних_и_внешних_документов.docx",
+        "version": "sha256:9d1c59e89bc833ed813b738e3709f23ecb0a247f26e13394ca6dae6542756e83",
+        "section": "Положения 1–3; внутренние документы, строки 2, 6"
+      }
+    },
+    {
+      "key": "basis",
+      "label": "Основание аудита с реквизитами",
+      "type": "text",
+      "required": true,
+      "question": "Основание аудита с реквизитами?",
+      "description": "В творительном падеже после «В соответствии с».",
+      "max_length": 2000,
+      "source": {
+        "name": "Модуль_распоряжения_о_проведении_внутреннего_аудита_процессов.docx",
+        "version": "sha256:2521f52a3d763b12999001d5da97631f6b4a939ef957b48cc5dacd89b98ad540",
+        "section": "Примечание 1"
+      }
+    },
+    {
+      "key": "processes",
+      "label": "Официальные наименования процессов",
+      "type": "text_list",
+      "required": true,
+      "question": "Официальные наименования процессов?",
+      "description": "",
+      "max_length": 2000,
+      "minimum_items": 1,
+      "maximum_items": 30,
+      "source": {
+        "name": "Модуль_распоряжения_о_проведении_внутреннего_аудита_процессов.docx",
+        "version": "sha256:2521f52a3d763b12999001d5da97631f6b4a939ef957b48cc5dacd89b98ad540",
+        "section": "Примечание 2"
+      }
+    },
+    {
+      "key": "start_date",
+      "label": "Дата начала",
+      "type": "date",
+      "required": true,
+      "question": "Дата начала?",
+      "description": "",
+      "max_length": 2000,
+      "source": {
+        "name": "Модуль_распоряжения_о_проведении_внутреннего_аудита_процессов.docx",
+        "version": "sha256:2521f52a3d763b12999001d5da97631f6b4a939ef957b48cc5dacd89b98ad540",
+        "section": "Примечание 2"
+      }
+    },
+    {
+      "key": "end_date",
+      "label": "Дата окончания",
+      "type": "date",
+      "required": true,
+      "question": "Дата окончания?",
+      "description": "",
+      "max_length": 2000,
+      "source": {
+        "name": "Модуль_распоряжения_о_проведении_внутреннего_аудита_процессов.docx",
+        "version": "sha256:2521f52a3d763b12999001d5da97631f6b4a939ef957b48cc5dacd89b98ad540",
+        "section": "Примечание 2"
+      }
+    },
+    {
+      "key": "report_deadline",
+      "label": "Срок отчёта",
+      "type": "date",
+      "required": true,
+      "question": "Срок отчёта?",
+      "description": "",
+      "max_length": 2000,
+      "source": {
+        "name": "Модуль_распоряжения_о_проведении_внутреннего_аудита_процессов.docx",
+        "version": "sha256:2521f52a3d763b12999001d5da97631f6b4a939ef957b48cc5dacd89b98ad540",
+        "section": "Примечание 5"
+      }
+    },
+    {
+      "key": "plan_deadline",
+      "label": "Срок плана мероприятий",
+      "type": "date",
+      "required": true,
+      "question": "Срок плана мероприятий?",
+      "description": "",
+      "max_length": 2000,
+      "source": {
+        "name": "Модуль_распоряжения_о_проведении_внутреннего_аудита_процессов.docx",
+        "version": "sha256:2521f52a3d763b12999001d5da97631f6b4a939ef957b48cc5dacd89b98ad540",
+        "section": "Примечание 6"
+      }
+    },
+    {
+      "key": "unit",
+      "label": "Проверяемое подразделение, обеспечивающее доступ",
+      "type": "text",
+      "required": true,
+      "question": "Проверяемое подразделение, обеспечивающее доступ?",
+      "description": "В дательном падеже перед «обеспечить».",
+      "max_length": 2000,
+      "source": {
+        "name": "Модуль_распоряжения_о_проведении_внутреннего_аудита_процессов.docx",
+        "version": "sha256:2521f52a3d763b12999001d5da97631f6b4a939ef957b48cc5dacd89b98ad540",
+        "section": "Примечание 4"
+      }
+    },
+    {
+      "key": "report_addressee",
+      "label": "Адресат отчёта",
+      "type": "text",
+      "required": true,
+      "question": "Адресат отчёта?",
+      "description": "В дательном падеже; кому представить отчёт.",
+      "max_length": 2000,
+      "source": {
+        "name": "Модуль_распоряжения_о_проведении_внутреннего_аудита_процессов.docx",
+        "version": "sha256:2521f52a3d763b12999001d5da97631f6b4a939ef957b48cc5dacd89b98ad540",
+        "section": "Примечание 5"
+      }
+    },
+    {
+      "key": "plan_owner",
+      "label": "Ответственный за план мероприятий",
+      "type": "text",
+      "required": true,
+      "question": "Ответственный за план мероприятий?",
+      "description": "В дательном падеже перед «подготовить».",
+      "max_length": 2000,
+      "source": {
+        "name": "Модуль_распоряжения_о_проведении_внутреннего_аудита_процессов.docx",
+        "version": "sha256:2521f52a3d763b12999001d5da97631f6b4a939ef957b48cc5dacd89b98ad540",
+        "section": "Примечание 6"
+      }
+    },
+    {
+      "key": "leader",
+      "label": "Руководитель аудиторской группы",
+      "type": "person",
+      "required": true,
+      "question": "Руководитель аудиторской группы?",
+      "description": "Должность, полное наименование подразделения, инициалы и фамилия; в грамматической форме исходной фразы.",
+      "max_length": 2000,
+      "source": {
+        "name": "Модуль_распоряжения_о_проведении_внутреннего_аудита_процессов.docx",
+        "version": "sha256:2521f52a3d763b12999001d5da97631f6b4a939ef957b48cc5dacd89b98ad540",
+        "section": "Примечание 3"
+      }
+    },
+    {
+      "key": "controller",
+      "label": "Контролирующее лицо",
+      "type": "person",
+      "required": true,
+      "question": "Контролирующее лицо?",
+      "description": "В винительном падеже после «возложить на»; должность, подразделение, фамилия и инициалы.",
+      "max_length": 2000,
+      "source": {
+        "name": "Модуль_распоряжения_о_проведении_внутреннего_аудита_процессов.docx",
+        "version": "sha256:2521f52a3d763b12999001d5da97631f6b4a939ef957b48cc5dacd89b98ad540",
+        "section": "Примечание 7"
+      }
+    },
+    {
+      "key": "access_scope",
+      "label": "Уточнение доступа в пределах программы аудита",
+      "type": "text",
+      "required": false,
+      "question": "Уточнение доступа в пределах программы аудита?",
+      "description": "",
+      "max_length": 2000,
+      "source": {
+        "name": "Модуль_распоряжения_о_проведении_внутреннего_аудита_процессов.docx",
+        "version": "sha256:2521f52a3d763b12999001d5da97631f6b4a939ef957b48cc5dacd89b98ad540",
+        "section": "Примечание 4"
+      }
+    },
+    {
+      "key": "auditors",
+      "label": "Аудиторы",
+      "type": "repeater",
+      "required": true,
+      "question": "Аудиторы?",
+      "description": "По одной записи на участника. Для внешних участников проверьте необходимость согласования.",
+      "max_length": 2000,
+      "item_fields": [
+        {
+          "key": "position",
+          "label": "Должность",
+          "required": true,
+          "max_length": 1000
+        },
+        {
+          "key": "unit",
+          "label": "Подразделение",
+          "required": true,
+          "max_length": 1000
+        },
+        {
+          "key": "name",
+          "label": "Инициалы и фамилия",
+          "required": true,
+          "max_length": 1000
+        },
+        {
+          "key": "agreement",
+          "label": "По согласованию для внешнего участника, если применимо",
+          "required": false,
+          "max_length": 1000
+        }
+      ],
+      "maximum_items": 30,
+      "minimum_items": 1,
+      "source": {
+        "name": "Модуль_распоряжения_о_проведении_внутреннего_аудита_процессов.docx",
+        "version": "sha256:2521f52a3d763b12999001d5da97631f6b4a939ef957b48cc5dacd89b98ad540",
+        "section": "Примечание 3"
+      }
+    },
+    {
+      "key": "signer_position",
+      "label": "Должность подписанта",
+      "type": "text",
+      "required": true,
+      "question": "Должность подписанта?",
+      "description": "",
+      "max_length": 2000,
+      "source": {
+        "name": "Модуль_распоряжения_о_проведении_внутреннего_аудита_процессов.docx",
+        "version": "sha256:2521f52a3d763b12999001d5da97631f6b4a939ef957b48cc5dacd89b98ad540",
+        "section": "Примечание 8"
+      }
+    },
+    {
+      "key": "independence_confirmed",
+      "label": "Проверены компетентность и независимость аудиторов?",
+      "type": "choice",
+      "required": false,
+      "question": "Проверены компетентность и независимость аудиторов??",
+      "description": "",
+      "max_length": 2000,
+      "options": [
+        "yes",
+        "no"
+      ],
+      "source": {
+        "name": "Модуль_распоряжения_о_проведении_внутреннего_аудита_процессов.docx",
+        "version": "sha256:2521f52a3d763b12999001d5da97631f6b4a939ef957b48cc5dacd89b98ad540",
+        "section": "Примечание 3"
+      }
+    }
+  ],
+  "bindings": [
+    {
+      "paragraph": 8,
+      "match": "НАИМЕНОВАНИЕ ОРГАНИЗАЦИИ",
+      "value": [
+        {
+          "field": "organization"
+        }
+      ]
+    },
+    {
+      "paragraph": 12,
+      "match": "О проведении внутреннего аудита процесса / процессов ______________________",
+      "value": [
+        {
+          "literal": "О проведении внутреннего аудита "
+        },
+        {
+          "when": {
+            "op": "count_gt",
+            "field": "processes",
+            "value": 1
+          },
+          "then": [
+            {
+              "literal": "процессов "
+            }
+          ],
+          "otherwise": [
+            {
+              "literal": "процесса "
+            }
+          ]
+        },
+        {
+          "field": "processes"
+        }
+      ]
+    },
+    {
+      "paragraph": 13,
+      "match": "В соответствии с ____________________________________________ [1], в целях оценки результативности процессов и управления связанными с ними рисками,",
+      "value": [
+        {
+          "literal": "В соответствии с "
+        },
+        {
+          "field": "basis"
+        },
+        {
+          "literal": ", в целях оценки результативности процессов и управления связанными с ними рисками,"
+        }
+      ]
+    },
+    {
+      "paragraph": 15,
+      "match": "1. Провести с «___» ____________ по «___» ____________ 20___ г. внутренний аудит процесса / процессов __________________________________________________. [2]",
+      "value": [
+        {
+          "literal": "1. Провести с "
+        },
+        {
+          "field": "start_date"
+        },
+        {
+          "literal": " по "
+        },
+        {
+          "field": "end_date"
+        },
+        {
+          "literal": " внутренний аудит "
+        },
+        {
+          "when": {
+            "op": "count_gt",
+            "field": "processes",
+            "value": 1
+          },
+          "then": [
+            {
+              "literal": "процессов "
+            }
+          ],
+          "otherwise": [
+            {
+              "literal": "процесса "
+            }
+          ]
+        },
+        {
+          "field": "processes"
+        },
+        {
+          "literal": "."
+        }
+      ]
+    },
+    {
+      "paragraph": 24,
+      "match": "_____________________________________",
+      "value": [
+        {
+          "field": "leader"
+        }
+      ]
+    },
+    {
+      "paragraph": 27,
+      "match": "4. __________________________________________ обеспечить аудиторской группе доступ к документам, информационным системам и работникам в пределах программы аудита. [4]",
+      "value": [
+        {
+          "literal": "4. "
+        },
+        {
+          "field": "unit"
+        },
+        {
+          "literal": " обеспечить аудиторской группе доступ к документам, информационным системам и работникам в пределах программы аудита."
+        },
+        {
+          "when": {
+            "op": "present",
+            "field": "access_scope"
+          },
+          "then": [
+            {
+              "literal": " "
+            },
+            {
+              "field": "access_scope"
+            }
+          ],
+          "otherwise": []
+        }
+      ]
+    },
+    {
+      "paragraph": 28,
+      "match": "5. Руководителю аудиторской группы до «___» ____________ 20___ г. представить __________________________ отчет о результатах аудита. [5]",
+      "value": [
+        {
+          "literal": "5. Руководителю аудиторской группы до "
+        },
+        {
+          "field": "report_deadline"
+        },
+        {
+          "literal": " представить "
+        },
+        {
+          "field": "report_addressee"
+        },
+        {
+          "literal": " отчет о результатах аудита."
+        }
+      ]
+    },
+    {
+      "paragraph": 29,
+      "match": "6. __________________________________________ до «___» ____________ 20___ г. подготовить план мероприятий по результатам аудита. [6]",
+      "value": [
+        {
+          "literal": "6. "
+        },
+        {
+          "field": "plan_owner"
+        },
+        {
+          "literal": " до "
+        },
+        {
+          "field": "plan_deadline"
+        },
+        {
+          "literal": " подготовить план мероприятий по результатам аудита."
+        }
+      ]
+    },
+    {
+      "paragraph": 30,
+      "match": "7. Контроль за исполнением настоящего распоряжения возложить на ______________. [7]",
+      "value": [
+        {
+          "literal": "7. Контроль за исполнением настоящего распоряжения возложить на "
+        },
+        {
+          "field": "controller"
+        },
+        {
+          "literal": "."
+        }
+      ]
+    },
+    {
+      "paragraph": 31,
+      "match": "Заместитель Председателя Организации",
+      "value": [
+        {
+          "field": "signer_position"
+        }
+      ]
+    },
+    {
+      "paragraph": 33,
+      "match": "И. О. Фамилия [8]",
+      "value": [
+        {
+          "field": "signer"
+        }
+      ]
+    }
+  ],
+  "conditional_blocks": [],
+  "repeaters": [
+    {
+      "field": "auditors",
+      "table": 2,
+      "start_row": 2,
+      "end_row": 2,
+      "anchor": "Аудиторы_____________________________________ [3]",
+      "cells": [
+        [
+          {
+            "literal": "Аудиторы"
+          }
+        ],
+        [
+          {
+            "field": "position"
+          },
+          {
+            "literal": ", "
+          },
+          {
+            "field": "unit"
+          },
+          {
+            "literal": ", "
+          },
+          {
+            "field": "name"
+          },
+          {
+            "when": {
+              "op": "present",
+              "field": "agreement"
+            },
+            "then": [
+              {
+                "literal": " ("
+              },
+              {
+                "field": "agreement"
+              },
+              {
+                "literal": ")"
+              }
+            ],
+            "otherwise": []
+          }
+        ]
+      ],
+      "keep_rows_together": true,
+      "repeat_header": true
+    }
+  ],
+  "numbered_paragraphs": [],
+  "rules": [
+    {
+      "id": "module.currency",
+      "category": "warning",
+      "description": "Проверьте актуальный статус, редакцию и начало применения модуля в реестре. Ответ пользователя не заменяет проверку реестра.",
+      "source": {
+        "name": "Методические_рекомендации_по_работе_с_модульными_документами.docx",
+        "version": "sha256:95a0a1d9881e3bd74df7b1ab7fa942d5d2f5ec0696eea6ae53dc5accaf93ba8e",
+        "section": "1.2"
+      },
+      "check": {
+        "op": "equals",
+        "field": "module_current_confirmed",
+        "value": "yes"
+      }
+    },
+    {
+      "id": "signer.authority",
+      "category": "manual_review",
+      "description": "Проверьте полномочия подписанта, должность и оформление подписи. Генератор не выполняет подписание.",
+      "source": {
+        "name": "Инструкция_по_ДОУ_учебный_пример.pdf",
+        "version": "sha256:3b7461fb98911f39d3e8a951bee2cdddfb3ab4b98d6c135f146d130e01d96d90",
+        "section": "8.19–8.20; 10.15"
+      },
+      "check": {
+        "op": "equals",
+        "field": "signer_authority_confirmed",
+        "value": "yes"
+      }
+    },
+    {
+      "id": "document.review",
+      "category": "manual_review",
+      "description": "Сопоставьте постоянные формулировки, грамматику, приложения и оформление с модулем; при отличии определите полный маршрут. Предусмотрите лингвистическую экспертизу.",
+      "source": {
+        "name": "Методические_рекомендации_по_работе_с_модульными_документами.docx",
+        "version": "sha256:95a0a1d9881e3bd74df7b1ab7fa942d5d2f5ec0696eea6ae53dc5accaf93ba8e",
+        "section": "1.3; 3.3; 4.1–4.3"
+      }
+    },
+    {
+      "id": "module.application",
+      "category": "manual_review",
+      "description": "Проверьте условия применения модуля, общий маршрут визирования и лингвистическую экспертизу. Автоматическое соответствие профилю не устанавливает юридическую применимость и не выполняет согласование.",
+      "source": {
+        "name": "Инструкция_по_ДОУ_учебный_пример.pdf",
+        "version": "sha256:3b7461fb98911f39d3e8a951bee2cdddfb3ab4b98d6c135f146d130e01d96d90",
+        "section": "9.16–9.16.3; 10.6; 10.11; 10.13"
+      }
+    },
+    {
+      "id": "sources.educational",
+      "category": "info",
+      "description": "Инструкция — учебный пример, не действующий документ. Актуальность и применимость официальных правил автоматически не установлены.",
+      "source": {
+        "name": "Инструкция_по_ДОУ_учебный_пример.pdf",
+        "version": "sha256:3b7461fb98911f39d3e8a951bee2cdddfb3ab4b98d6c135f146d130e01d96d90",
+        "section": "Маркировка страниц; 12.10–12.11"
+      }
+    },
+    {
+      "id": "project.registration",
+      "category": "info",
+      "description": "Это проект. Регистрация, номер, подпись, ЭП и визы выполняются в установленном порядке после проверки.",
+      "source": {
+        "name": "Методические_рекомендации_по_работе_с_модульными_документами.docx",
+        "version": "sha256:95a0a1d9881e3bd74df7b1ab7fa942d5d2f5ec0696eea6ae53dc5accaf93ba8e",
+        "section": "2.1; 5.1–5.3"
+      }
+    },
+    {
+      "id": "structure.cleanup",
+      "category": "info",
+      "description": "При генерации удаляются служебные элементы модуля по закреплённым структурным якорям; дата, регистрационный номер и визуализация ЭП сохраняются.",
+      "source": {
+        "name": "Методические_рекомендации_по_работе_с_модульными_документами.docx",
+        "version": "sha256:95a0a1d9881e3bd74df7b1ab7fa942d5d2f5ec0696eea6ae53dc5accaf93ba8e",
+        "section": "3.1–3.3"
+      }
+    },
+    {
+      "id": "audit.period",
+      "category": "blocking",
+      "description": "Дата начала не позже окончания",
+      "source": {
+        "name": "Модуль_распоряжения_о_проведении_внутреннего_аудита_процессов.docx",
+        "version": "sha256:2521f52a3d763b12999001d5da97631f6b4a939ef957b48cc5dacd89b98ad540",
+        "section": "Прим.2"
+      },
+      "when": {
+        "op": "all",
+        "args": [
+          {
+            "op": "present",
+            "field": "end_date"
+          },
+          {
+            "op": "present",
+            "field": "start_date"
+          }
+        ]
+      },
+      "check": {
+        "op": "date_gte",
+        "field": "end_date",
+        "other_field": "start_date"
+      }
+    },
+    {
+      "id": "audit.report",
+      "category": "warning",
+      "description": "Проверьте, что срок итогового отчёта не раньше окончания аудита",
+      "source": {
+        "name": "Модуль_распоряжения_о_проведении_внутреннего_аудита_процессов.docx",
+        "version": "sha256:2521f52a3d763b12999001d5da97631f6b4a939ef957b48cc5dacd89b98ad540",
+        "section": "Прим.5"
+      },
+      "when": {
+        "op": "all",
+        "args": [
+          {
+            "op": "present",
+            "field": "report_deadline"
+          },
+          {
+            "op": "present",
+            "field": "end_date"
+          }
+        ]
+      },
+      "check": {
+        "op": "date_gte",
+        "field": "report_deadline",
+        "other_field": "end_date"
+      }
+    },
+    {
+      "id": "audit.plan",
+      "category": "warning",
+      "description": "Проверьте срок плана мероприятий относительно отчёта",
+      "source": {
+        "name": "Модуль_распоряжения_о_проведении_внутреннего_аудита_процессов.docx",
+        "version": "sha256:2521f52a3d763b12999001d5da97631f6b4a939ef957b48cc5dacd89b98ad540",
+        "section": "Прим.6"
+      },
+      "when": {
+        "op": "all",
+        "args": [
+          {
+            "op": "present",
+            "field": "plan_deadline"
+          },
+          {
+            "op": "present",
+            "field": "report_deadline"
+          }
+        ]
+      },
+      "check": {
+        "op": "date_gte",
+        "field": "plan_deadline",
+        "other_field": "report_deadline"
+      }
+    },
+    {
+      "id": "audit.independence",
+      "category": "manual_review",
+      "description": "Проверьте компетентность и независимость каждого аудитора от проверяемой деятельности по фактическим обязанностям; генератор эти обязанности не знает.",
+      "source": {
+        "name": "Модуль_распоряжения_о_проведении_внутреннего_аудита_процессов.docx",
+        "version": "sha256:2521f52a3d763b12999001d5da97631f6b4a939ef957b48cc5dacd89b98ad540",
+        "section": "Прим.3; общие правила"
+      },
+      "check": {
+        "op": "equals",
+        "field": "independence_confirmed",
+        "value": "yes"
+      }
+    }
+  ],
+  "approval_route": [
+    {
+      "id": "internal.7",
+      "description": "Прочие распоряжения",
+      "required_departments": [
+        "Юридическое подразделение",
+        "Департамент ДОУ"
+      ],
+      "conditional_departments": [],
+      "source": {
+        "name": "Матрица_обязательного_визирования_внутренних_и_внешних_документов.docx",
+        "version": "sha256:9d1c59e89bc833ed813b738e3709f23ecb0a247f26e13394ca6dae6542756e83",
+        "section": "Положения 1–3; внутренние документы, строка 7"
+      }
+    }
+  ],
+  "document_cleanup": {
+    "approval_table": 0,
+    "approval_text": "УТВЕРЖДАЮЗаместитель Председателя Организации______________  ____________________«___» ____________ 20___ г.",
+    "marker": {
+      "paragraph": 5,
+      "text": "МОДУЛЬНЫЙ ДОКУМЕНТ"
+    },
+    "notes_start": {
+      "paragraph": 36,
+      "text": "Примечания по заполнению модульного распоряжения"
+    },
+    "notes_end": {
+      "paragraph": 50,
+      "text": "• не оставляйте варианты, линии и номера примечаний в подписываемом распоряжении."
+    },
+    "protected": [
+      {
+        "paragraph": 10,
+        "text": "ДАТА / РЕГИСТРАЦИОННЫЙ НОМЕР (НЕ УДАЛЯТЬ)"
+      },
+      {
+        "paragraph": 34,
+        "text": "ВИЗУАЛИЗАЦИЯ ЭП (НЕ УДАЛЯТЬ)"
+      }
+    ],
+    "remove_paragraphs": [
+      {
+        "paragraph": 35,
+        "text": ""
+      }
+    ]
+  }
+}

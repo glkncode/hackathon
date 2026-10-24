@@ -24,6 +24,7 @@ type RouterConfig struct {
 }
 
 type Modules struct {
+	Templates      *service.TemplateService
 	Chat           *service.ChatService
 	Search         *service.SearchService
 	Ingestion      *service.IngestionService
@@ -55,6 +56,12 @@ func NewRouter(auth Auth, log *zap.Logger, cfg RouterConfig, modules ...Modules)
 	h := handlers.NewAuth(auth, cookies)
 	requireAuth := middleware.RequireAuth(auth, log, cookies.SessionName())
 	mux := http.NewServeMux()
+	// Process liveness; migrations and bootstrap finish before HTTP starts.
+	// Python and the remote LLM must not gate the API healthcheck.
+	mux.HandleFunc("GET /healthz", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte("{\"status\":\"ok\"}\n"))
+	})
 	if len(modules) > 1 {
 		return nil, errors.New("HTTP: supply at most one module set")
 	}
@@ -67,6 +74,37 @@ func NewRouter(auth Auth, log *zap.Logger, cfg RouterConfig, modules ...Modules)
 		documents := handlers.NewDocuments(m.Documents, m.Access, m.MaxUploadBytes, log)
 		admin := middleware.RequireRole(log, domain.RoleAdmin)
 		csrf := origins.CSRF(log)
+		if m.Templates != nil {
+			templates := handlers.NewTemplates(m.Templates, log)
+			for _, route := range []struct {
+				pattern, operation string
+				mutate, adminOnly  bool
+			}{
+				{"GET /api/v1/templates", "list", false, false},
+				{"POST /api/v1/templates", "register", true, true},
+				{"GET /api/v1/templates/{id}", "template", false, false},
+				{"PATCH /api/v1/templates/{id}", "enabled", true, true},
+				{"POST /api/v1/templates/{id}/drafts", "create", true, false},
+				{"GET /api/v1/template-drafts", "drafts", false, false},
+				{"GET /api/v1/template-drafts/{id}", "draft", false, false},
+				{"PATCH /api/v1/template-drafts/{id}", "update", true, false},
+				{"GET /api/v1/template-drafts/{id}/next-question", "next", false, false},
+				{"POST /api/v1/template-drafts/{id}/answers", "answer", true, false},
+				{"POST /api/v1/template-drafts/{id}/validate", "validate", true, false},
+				{"POST /api/v1/template-drafts/{id}/generate", "generate", true, false},
+				{"GET /api/v1/generated-documents/{id}", "generated", false, false},
+				{"GET /api/v1/generated-documents/{id}/download", "download", false, false},
+			} {
+				var handler http.Handler = templates.Handle(route.operation)
+				if route.mutate {
+					handler = csrf(handler)
+				}
+				if route.adminOnly {
+					handler = admin(handler)
+				}
+				mux.Handle(route.pattern, requireAuth(handler))
+			}
+		}
 		if m.Chat != nil {
 			chat := handlers.NewChat(m.Chat, log)
 			mux.Handle("POST /api/v1/chat/sessions", requireAuth(csrf(http.HandlerFunc(chat.Create))))

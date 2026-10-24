@@ -42,6 +42,13 @@ type Config struct {
 	RAGTimeout              time.Duration
 	RAGMaxSources           int
 	RAGMaxHistoryMessages   int
+	SemanticSearchEnabled   bool
+	SemanticIndexingEnabled bool
+	SemanticSupplementFTS   bool
+	EmbeddingModel          string
+	EmbeddingDimensions     int
+	EmbeddingRequestTimeout time.Duration
+	SemanticSearchTimeout   time.Duration
 }
 
 func Load() (Config, error) { return load(os.Getenv) }
@@ -78,6 +85,10 @@ func load(getenv func(string) string) (Config, error) {
 		RAGTimeout:              60 * time.Second,
 		RAGMaxSources:           8,
 		RAGMaxHistoryMessages:   10,
+		EmbeddingModel:          value(getenv, "EMBEDDING_MODEL", "intfloat/multilingual-e5-small"),
+		EmbeddingDimensions:     384,
+		EmbeddingRequestTimeout: 30 * time.Second,
+		SemanticSearchTimeout:   45 * time.Second,
 	}
 	if raw := getenv("DOCUMENT_MAX_UPLOAD_BYTES"); raw != "" {
 		n, err := strconv.ParseInt(raw, 10, 64)
@@ -107,6 +118,7 @@ func load(getenv func(string) string) (Config, error) {
 		{"INGESTION_MAX_ATTEMPTS", &cfg.IngestionMaxAttempts},
 		{"RAG_MAX_SOURCES", &cfg.RAGMaxSources},
 		{"RAG_MAX_HISTORY_MESSAGES", &cfg.RAGMaxHistoryMessages},
+		{"EMBEDDING_DIMENSIONS", &cfg.EmbeddingDimensions},
 	} {
 		if raw := getenv(setting.key); raw != "" {
 			n, err := strconv.Atoi(raw)
@@ -126,6 +138,8 @@ func load(getenv func(string) string) (Config, error) {
 		{"INGESTION_POLL_INTERVAL", &cfg.IngestionPollInterval},
 		{"INGESTION_REQUEST_TIMEOUT", &cfg.IngestionRequestTimeout},
 		{"RAG_TIMEOUT", &cfg.RAGTimeout},
+		{"EMBEDDING_REQUEST_TIMEOUT", &cfg.EmbeddingRequestTimeout},
+		{"SEMANTIC_SEARCH_TIMEOUT", &cfg.SemanticSearchTimeout},
 	} {
 		if raw := getenv(setting.key); raw != "" {
 			d, err := time.ParseDuration(raw)
@@ -145,6 +159,9 @@ func load(getenv func(string) string) (Config, error) {
 		{"COOKIE_SECURE", &cfg.CookieSecure},
 		{"INGESTION_ENABLED", &cfg.IngestionEnabled},
 		{"RAG_ENABLED", &cfg.RAGEnabled},
+		{"SEMANTIC_SEARCH_ENABLED", &cfg.SemanticSearchEnabled},
+		{"SEMANTIC_INDEXING_ENABLED", &cfg.SemanticIndexingEnabled},
+		{"SEMANTIC_SUPPLEMENT_FTS", &cfg.SemanticSupplementFTS},
 	} {
 		if raw := getenv(setting.key); raw != "" {
 			b, err := strconv.ParseBool(raw)
@@ -153,6 +170,10 @@ func load(getenv func(string) string) (Config, error) {
 			}
 			*setting.dst = b
 		}
+	}
+	// Preserve search-enabled worker behavior unless explicitly overridden.
+	if getenv("SEMANTIC_INDEXING_ENABLED") == "" {
+		cfg.SemanticIndexingEnabled = cfg.SemanticSearchEnabled
 	}
 	if cfg.Logger.Environment != "development" && cfg.Logger.Environment != "production" {
 		return Config{}, errors.New("config: APP_ENV must be development or production")
@@ -171,6 +192,15 @@ func load(getenv func(string) string) (Config, error) {
 // ValidateServer is intentionally separate: migration CLI commands do not need
 // an administrator password, origins, or TLS certificates.
 func (c Config) ValidateServer() error {
+	if c.EmbeddingModel != "intfloat/multilingual-e5-small" || c.EmbeddingDimensions != 384 || c.EmbeddingRequestTimeout < time.Second || c.EmbeddingRequestTimeout > time.Hour || c.SemanticSearchTimeout < time.Second || c.SemanticSearchTimeout > time.Hour {
+		return errors.New("config: unsupported embedding model/dimensions or timeout outside 1s..1h")
+	}
+	if c.SemanticSearchEnabled && (strings.TrimSpace(c.AIServiceURL) == "" || strings.TrimSpace(c.AIServiceToken) == "") {
+		return errors.New("config: SEMANTIC_SEARCH_ENABLED requires AI_SERVICE_URL and AI_SERVICE_TOKEN")
+	}
+	if c.SemanticIndexingEnabled && (strings.TrimSpace(c.AIServiceURL) == "" || strings.TrimSpace(c.AIServiceToken) == "") {
+		return errors.New("config: SEMANTIC_INDEXING_ENABLED requires AI_SERVICE_URL and AI_SERVICE_TOKEN")
+	}
 	if c.RAGTimeout < time.Second || c.RAGTimeout > time.Hour || c.RAGMaxSources < 1 || c.RAGMaxSources > 30 || c.RAGMaxHistoryMessages < 0 || c.RAGMaxHistoryMessages > 50 {
 		return errors.New("config: RAG requires timeout 1s..1h, sources 1..30 and history 0..50")
 	}
