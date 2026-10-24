@@ -34,6 +34,10 @@ type ragHTTPFixture struct {
 }
 
 func newRAGHTTPFixture(t *testing.T, python http.Handler) ragHTTPFixture {
+	return newRAGHTTPFixtureWithTimeout(t, python, 5*time.Second)
+}
+
+func newRAGHTTPFixtureWithTimeout(t *testing.T, python http.Handler, generationTimeout time.Duration) ragHTTPFixture {
 	t.Helper()
 	db, ctx := testDatabase(t)
 	log := zap.NewNop()
@@ -55,13 +59,13 @@ func newRAGHTTPFixture(t *testing.T, python http.Handler) ragHTTPFixture {
 	t.Cleanup(func() { storage.Close() })
 	upstream := httptest.NewServer(python)
 	t.Cleanup(upstream.Close)
-	ai, err := aiclient.New(aiclient.Config{URL: upstream.URL, Token: "rag-integration-token", Timeout: 5 * time.Second, GenerateTimeout: 5 * time.Second})
+	ai, err := aiclient.New(aiclient.Config{URL: upstream.URL, Token: "rag-integration-token", Timeout: 5 * time.Second, GenerateTimeout: generationTimeout})
 	if err != nil {
 		t.Fatal(err)
 	}
 	t.Cleanup(ai.Close)
 	search := service.NewSearchService(postgres.NewSearchRepository(db))
-	chat, err := service.NewChatServiceWithRAG(postgres.NewChatRepository(db), search, ai, log, service.RAGConfig{Timeout: 5 * time.Second, MaxSources: 8, MaxHistoryMessages: 10})
+	chat, err := service.NewChatServiceWithRAG(postgres.NewChatRepository(db), search, ai, log, service.RAGConfig{Timeout: generationTimeout, MaxSources: 8, MaxHistoryMessages: 10})
 	if err != nil {
 		t.Fatal(err)
 	}
