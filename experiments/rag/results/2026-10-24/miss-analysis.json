@@ -1,0 +1,16 @@
+[
+  {
+    "query_id": "h02",
+    "gold_id": "b9e42c08-bc2e-4613-bd71-c2e633222a1a",
+    "rank_in_full_corpus": 28,
+    "cosine": 0.7657114863395691,
+    "no_parameter_changes": true
+  },
+  {
+    "query_id": "h08",
+    "gold_id": "a2032270-81bc-4a4f-a1e7-c9dc325ec916",
+    "rank_in_full_corpus": 15,
+    "cosine": 0.7571583986282349,
+    "no_parameter_changes": true
+  }
+]

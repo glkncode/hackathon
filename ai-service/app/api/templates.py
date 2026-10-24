@@ -23,13 +23,13 @@ router = APIRouter(
 )
 
 
-async def handle(request: Request, template: UploadFile, values: str, render: bool):
+async def handle(request: Request, template: UploadFile, values: str, render: bool, schema: str | None = None):
     try:
         if not (template.filename or "").lower().endswith(".docx"):
             raise TemplateError("unsupported_template_format", 415)
         content = await template.read(MAX_TEMPLATE_BYTES + 1)
         async with request.app.state.template_slots:
-            result = await run_in_threadpool(process_template, content, values, render)
+            result = await run_in_threadpool(process_template, content, values, render, schema)
         if render:
             return Response(result, media_type=DOCX_MIME, headers={
                 "Content-Disposition": 'attachment; filename="document.docx"',
@@ -49,6 +49,7 @@ async def handle(request: Request, template: UploadFile, values: str, render: bo
 @router.post(
     "/inspect",
     response_model=Inspection,
+    response_model_exclude_none=True,
     summary="Проверить поля DOCX-шаблона",
     description=(
         "Загрузите DOCX до **5 МиБ** с полями вида `{{ recipient }}`. "
@@ -64,11 +65,12 @@ async def inspect_template(
     request: Request,
     template: Annotated[UploadFile, File(description="DOCX-шаблон с полями {{ name }}, до 5 МиБ")],
     values: Annotated[str, Form(max_length=65536, description="JSON-объект со строковыми значениями полей; {} — проверить без значений")] = "{}",
+    field_schema: Annotated[str | None, Form(alias="schema", max_length=196608)] = None,
     x_service_token: Annotated[str | None, Header(
         alias="X-Service-Token", description="Служебный токен: AI_SERVICE_TOKEN из локального .env"
     )] = None,
 ):
-    return await handle(request, template, values, False)
+    return await handle(request, template, values, False, field_schema)
 
 
 @router.post(
@@ -91,8 +93,9 @@ async def render_template(
     request: Request,
     template: Annotated[UploadFile, File(description="DOCX-шаблон с полями {{ name }}, до 5 МиБ")],
     values: Annotated[str, Form(max_length=65536, description="JSON-объект со строковыми значениями всех полей шаблона")],
+    field_schema: Annotated[str | None, Form(alias="schema", max_length=196608)] = None,
     x_service_token: Annotated[str | None, Header(
         alias="X-Service-Token", description="Служебный токен: AI_SERVICE_TOKEN из локального .env"
     )] = None,
 ):
-    return await handle(request, template, values, True)
+    return await handle(request, template, values, True, field_schema)

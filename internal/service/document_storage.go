@@ -135,7 +135,8 @@ func (s *LocalDocumentStorage) Save(ctx context.Context, reader io.Reader, filen
 		return stored, domain.ErrInvalidInput
 	}
 	key := uuid.NewString()
-	f, err := s.root.OpenFile(key, os.O_CREATE|os.O_EXCL|os.O_RDWR, 0600)
+	staging := "." + key + ".tmp"
+	f, err := s.root.OpenFile(staging, os.O_CREATE|os.O_EXCL|os.O_RDWR, 0600)
 	if err != nil {
 		return stored, errors.New("create stored document failed")
 	}
@@ -143,7 +144,7 @@ func (s *LocalDocumentStorage) Save(ctx context.Context, reader io.Reader, filen
 	defer func() {
 		f.Close()
 		if !complete {
-			_ = s.root.Remove(key)
+			_ = s.root.Remove(staging)
 		}
 	}()
 	hash := sha256.New()
@@ -172,6 +173,9 @@ func (s *LocalDocumentStorage) Save(ctx context.Context, reader io.Reader, filen
 	}
 	if err := f.Close(); err != nil {
 		return stored, errors.New("close stored document failed")
+	}
+	if err := s.root.Rename(staging, key); err != nil {
+		return stored, errors.New("publish stored document failed")
 	}
 	complete = true
 	return StoredFile{Key: key, Filename: filename, MIMEType: mimeType, Size: size, SHA256: hex.EncodeToString(hash.Sum(nil))}, nil

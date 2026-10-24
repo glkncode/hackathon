@@ -1,0 +1,234 @@
+[
+  {
+    "bindings": [
+      {
+        "match": "______________  ____________________",
+        "paragraph": 3,
+        "part": "word/document.xml"
+      }
+    ],
+    "label": "Утверждающее лицо",
+    "description": "",
+    "key": "approval_person",
+    "required": true,
+    "question": "Укажите текстовые реквизиты утверждающего лица",
+    "type": "person",
+    "max_length": 2000
+  },
+  {
+    "bindings": [
+      {
+        "match": "«___» ____________ 20___ г.",
+        "paragraph": 4,
+        "part": "word/document.xml"
+      }
+    ],
+    "label": "Дата утверждения",
+    "description": "",
+    "key": "approval_date",
+    "required": true,
+    "question": "Укажите: Дата утверждения",
+    "type": "date",
+    "max_length": 2000
+  },
+  {
+    "bindings": [
+      {
+        "match": "НАИМЕНОВАНИЕ ОРГАНИЗАЦИИ",
+        "paragraph": 8,
+        "part": "word/document.xml"
+      }
+    ],
+    "label": "Наименование организации",
+    "description": "",
+    "key": "organization",
+    "required": true,
+    "question": "Укажите: Наименование организации",
+    "type": "text",
+    "max_length": 2000
+  },
+  {
+    "bindings": [
+      {
+        "match": "__________________________________________",
+        "paragraph": 12,
+        "part": "word/document.xml"
+      },
+      {
+        "match": "_____________________________________________ [2]",
+        "paragraph": 15,
+        "part": "word/document.xml"
+      }
+    ],
+    "label": "Тема рабочей группы",
+    "description": "Текст переносится дословно в заголовок и пункт 1. Учитывайте предлог «по» перед полем.",
+    "key": "group_subject",
+    "required": true,
+    "question": "Укажите: Тема рабочей группы",
+    "type": "text",
+    "max_length": 2000
+  },
+  {
+    "bindings": [
+      {
+        "match": "_________________________________________________________________ [1]",
+        "paragraph": 13,
+        "part": "word/document.xml"
+      }
+    ],
+    "label": "Цель создания рабочей группы",
+    "description": "",
+    "key": "purpose",
+    "required": true,
+    "question": "Укажите: Цель создания рабочей группы",
+    "type": "multiline_text",
+    "max_length": 2000
+  },
+  {
+    "bindings": [
+      {
+        "match": "____________________________________________",
+        "paragraph": 19,
+        "part": "word/document.xml"
+      }
+    ],
+    "label": "Руководитель",
+    "description": "",
+    "key": "leader",
+    "required": true,
+    "question": "Укажите: Руководитель",
+    "type": "person",
+    "max_length": 2000
+  },
+  {
+    "bindings": [
+      {
+        "match": "____________________________________________",
+        "paragraph": 21,
+        "part": "word/document.xml"
+      }
+    ],
+    "label": "Секретарь",
+    "description": "",
+    "key": "secretary",
+    "required": true,
+    "question": "Укажите: Секретарь",
+    "type": "person",
+    "max_length": 2000
+  },
+  {
+    "bindings": [
+      {
+        "match": "____________________________________________ [3]",
+        "paragraph": 23,
+        "part": "word/document.xml"
+      }
+    ],
+    "label": "Члены рабочей группы",
+    "description": "",
+    "key": "members",
+    "required": true,
+    "question": "Укажите: Члены рабочей группы",
+    "type": "person_list",
+    "max_length": 2000
+  },
+  {
+    "bindings": [
+      {
+        "match": "«___» ____________ 20___ г.",
+        "paragraph": 24,
+        "part": "word/document.xml"
+      }
+    ],
+    "label": "Срок выполнения",
+    "description": "",
+    "key": "deadline",
+    "required": true,
+    "question": "Укажите: Срок выполнения",
+    "type": "date",
+    "max_length": 2000
+  },
+  {
+    "bindings": [
+      {
+        "match": "____________________________ [4]",
+        "paragraph": 24,
+        "part": "word/document.xml"
+      }
+    ],
+    "label": "Действия рабочей группы",
+    "description": "",
+    "key": "actions",
+    "required": true,
+    "question": "Укажите: Действия рабочей группы",
+    "type": "multiline_text",
+    "max_length": 2000
+  },
+  {
+    "bindings": [
+      {
+        "match": "__________________________________________________________. [5]",
+        "paragraph": 24,
+        "part": "word/document.xml",
+        "suffix": "."
+      }
+    ],
+    "label": "Итоговый результат",
+    "description": "",
+    "key": "result",
+    "required": true,
+    "question": "Укажите: Итоговый результат",
+    "type": "multiline_text",
+    "max_length": 2000
+  },
+  {
+    "bindings": [
+      {
+        "match": "____________________________. [6]",
+        "paragraph": 27,
+        "part": "word/document.xml",
+        "suffix": "."
+      }
+    ],
+    "label": "Условие прекращения деятельности после",
+    "description": "",
+    "key": "termination",
+    "required": true,
+    "question": "Укажите: Условие прекращения деятельности после",
+    "type": "multiline_text",
+    "max_length": 2000
+  },
+  {
+    "bindings": [
+      {
+        "match": "______________. [7]",
+        "paragraph": 28,
+        "part": "word/document.xml",
+        "suffix": "."
+      }
+    ],
+    "label": "Контролирующее лицо",
+    "description": "",
+    "key": "controller",
+    "required": true,
+    "question": "Укажите: Контролирующее лицо",
+    "type": "person",
+    "max_length": 2000
+  },
+  {
+    "bindings": [
+      {
+        "match": "И. О. Фамилия [8]",
+        "paragraph": 31,
+        "part": "word/document.xml"
+      }
+    ],
+    "label": "Уполномоченный подписант",
+    "description": "",
+    "key": "signer",
+    "required": true,
+    "question": "Укажите: Уполномоченный подписант",
+    "type": "person",
+    "max_length": 2000
+  }
+]

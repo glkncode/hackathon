@@ -26,6 +26,8 @@ MIME_TYPES = {
 
 # Проверяем токен до разбора тела, а размер ограничиваем даже без Content-Length.
 PRIVATE_REQUEST_LIMITS = {
+    "/internal/v1/embeddings": 300 * 1024,
+    "/internal/v1/evidence": 128 * 1024,
     "/internal/v1/ingest": MAX_REQUEST_BYTES,
     "/internal/v1/rag/generate": 1024 * 1024,
     "/internal/v1/templates/inspect": MAX_TEMPLATE_REQUEST_BYTES,

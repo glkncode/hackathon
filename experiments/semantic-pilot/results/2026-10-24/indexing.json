@@ -1,0 +1,122 @@
+{
+  "wait_after_upload_seconds": 11.080346000002464,
+  "counts": {
+    "ready": 14,
+    "all": 14
+  },
+  "indexes": [
+    {
+      "document_version_id": "17121f47-1f20-4e19-bf0d-0fcec121e684",
+      "status": "ready",
+      "attempts": 1,
+      "created_at": "2026-10-24T11:16:09.199055+00:00",
+      "completed_at": "2026-10-24T11:16:14.442946+00:00",
+      "queue_to_ready_seconds": 5.243891
+    },
+    {
+      "document_version_id": "f77e4cee-4ec8-4a93-b41d-2a1a0ddb4099",
+      "status": "ready",
+      "attempts": 1,
+      "created_at": "2026-10-24T11:16:09.199055+00:00",
+      "completed_at": "2026-10-24T11:16:14.838913+00:00",
+      "queue_to_ready_seconds": 5.639858
+    },
+    {
+      "document_version_id": "52d63555-b7a1-4592-ae30-6248e72ef1bf",
+      "status": "ready",
+      "attempts": 1,
+      "created_at": "2026-10-24T11:16:09.199055+00:00",
+      "completed_at": "2026-10-24T11:16:14.203564+00:00",
+      "queue_to_ready_seconds": 5.004509
+    },
+    {
+      "document_version_id": "4a2805de-738e-4af8-9d7f-1fdc76177f77",
+      "status": "ready",
+      "attempts": 2,
+      "created_at": "2026-10-24T11:16:09.199055+00:00",
+      "completed_at": "2026-10-24T11:16:14.944685+00:00",
+      "queue_to_ready_seconds": 5.74563
+    },
+    {
+      "document_version_id": "d021071b-e58b-4db5-81a7-92457f0f52f4",
+      "status": "ready",
+      "attempts": 1,
+      "created_at": "2026-10-24T11:16:09.199055+00:00",
+      "completed_at": "2026-10-24T11:16:14.499606+00:00",
+      "queue_to_ready_seconds": 5.300551
+    },
+    {
+      "document_version_id": "fd1d1b44-0483-445b-9c83-fe8c0df44e98",
+      "status": "ready",
+      "attempts": 1,
+      "created_at": "2026-10-24T11:16:09.199055+00:00",
+      "completed_at": "2026-10-24T11:16:14.265157+00:00",
+      "queue_to_ready_seconds": 5.066102
+    },
+    {
+      "document_version_id": "e7454395-1ccc-4d48-b897-c4af869735a7",
+      "status": "ready",
+      "attempts": 1,
+      "created_at": "2026-10-24T11:16:09.199055+00:00",
+      "completed_at": "2026-10-24T11:16:14.602447+00:00",
+      "queue_to_ready_seconds": 5.403392
+    },
+    {
+      "document_version_id": "d6eaf628-4781-48e5-89c5-1b4b69817850",
+      "status": "ready",
+      "attempts": 1,
+      "created_at": "2026-10-24T11:16:09.199055+00:00",
+      "completed_at": "2026-10-24T11:16:14.725775+00:00",
+      "queue_to_ready_seconds": 5.52672
+    },
+    {
+      "document_version_id": "d293eb27-2500-4f07-853e-cdcd172dc5f4",
+      "status": "ready",
+      "attempts": 1,
+      "created_at": "2026-10-24T11:16:09.199055+00:00",
+      "completed_at": "2026-10-24T11:16:14.532525+00:00",
+      "queue_to_ready_seconds": 5.33347
+    },
+    {
+      "document_version_id": "ef808d1b-3b85-4842-98c0-dfeaf3a9d766",
+      "status": "ready",
+      "attempts": 1,
+      "created_at": "2026-10-24T11:16:09.199055+00:00",
+      "completed_at": "2026-10-24T11:16:14.855734+00:00",
+      "queue_to_ready_seconds": 5.656679
+    },
+    {
+      "document_version_id": "24524961-8112-427b-ae37-83a35f67e098",
+      "status": "ready",
+      "attempts": 1,
+      "created_at": "2026-10-24T11:16:09.199055+00:00",
+      "completed_at": "2026-10-24T11:16:14.784038+00:00",
+      "queue_to_ready_seconds": 5.584983
+    },
+    {
+      "document_version_id": "9789a02d-a16d-4dfe-b553-81bb62f59203",
+      "status": "ready",
+      "attempts": 1,
+      "created_at": "2026-10-24T11:16:09.199055+00:00",
+      "completed_at": "2026-10-24T11:16:14.677345+00:00",
+      "queue_to_ready_seconds": 5.47829
+    },
+    {
+      "document_version_id": "e48bbe88-74ae-4421-bbcd-a39211bf3118",
+      "status": "ready",
+      "attempts": 2,
+      "created_at": "2026-10-24T11:16:09.199055+00:00",
+      "completed_at": "2026-10-24T11:16:19.799315+00:00",
+      "queue_to_ready_seconds": 10.60026
+    },
+    {
+      "document_version_id": "49cebc97-e6d5-4bcd-b376-6b2ecea48d3b",
+      "status": "ready",
+      "attempts": 1,
+      "created_at": "2026-10-24T11:16:09.199055+00:00",
+      "completed_at": "2026-10-24T11:16:14.897171+00:00",
+      "queue_to_ready_seconds": 5.698116
+    }
+  ],
+  "windows": 45
+}

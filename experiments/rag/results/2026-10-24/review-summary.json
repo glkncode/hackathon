@@ -1,0 +1,74 @@
+{
+  "fts": {
+    "development": {
+      "positive_queries": 16,
+      "negative_queries": 4,
+      "grounded_answer_accuracy": 0.25,
+      "positive_answer_citation_set_faithfulness": 1.0,
+      "citation_id_membership_valid": true,
+      "false_factual_answer_rate_on_negatives": 0.0,
+      "negative_answered_status_rate": 0.0,
+      "generation_ms_p50": 20.068000012543052,
+      "generation_ms_p95": 2237.6147600021795
+    },
+    "holdout": {
+      "positive_queries": 20,
+      "negative_queries": 6,
+      "grounded_answer_accuracy": 0.2,
+      "positive_answer_citation_set_faithfulness": 1.0,
+      "citation_id_membership_valid": true,
+      "false_factual_answer_rate_on_negatives": 0.0,
+      "negative_answered_status_rate": 0.0,
+      "generation_ms_p50": 17.49050000216812,
+      "generation_ms_p95": 2396.455825015437
+    }
+  },
+  "semantic": {
+    "development": {
+      "positive_queries": 16,
+      "negative_queries": 4,
+      "grounded_answer_accuracy": 1.0,
+      "positive_answer_citation_set_faithfulness": 1.0,
+      "citation_id_membership_valid": true,
+      "false_factual_answer_rate_on_negatives": 0.0,
+      "negative_answered_status_rate": 0.0,
+      "generation_ms_p50": 3808.709249991807,
+      "generation_ms_p95": 5742.82458000671
+    },
+    "holdout": {
+      "positive_queries": 20,
+      "negative_queries": 6,
+      "grounded_answer_accuracy": 0.8,
+      "positive_answer_citation_set_faithfulness": 0.9411764705882353,
+      "citation_id_membership_valid": true,
+      "false_factual_answer_rate_on_negatives": 0.0,
+      "negative_answered_status_rate": 0.16666666666666666,
+      "generation_ms_p50": 4112.1911499940325,
+      "generation_ms_p95": 7013.992100015457
+    }
+  },
+  "hybrid": {
+    "development": {
+      "positive_queries": 16,
+      "negative_queries": 4,
+      "grounded_answer_accuracy": 1.0,
+      "positive_answer_citation_set_faithfulness": 1.0,
+      "citation_id_membership_valid": true,
+      "false_factual_answer_rate_on_negatives": 0.0,
+      "negative_answered_status_rate": 0.25,
+      "generation_ms_p50": 4169.420200007153,
+      "generation_ms_p95": 6506.110144985724
+    },
+    "holdout": {
+      "positive_queries": 20,
+      "negative_queries": 6,
+      "grounded_answer_accuracy": 0.85,
+      "positive_answer_citation_set_faithfulness": 0.9444444444444444,
+      "citation_id_membership_valid": true,
+      "false_factual_answer_rate_on_negatives": 0.0,
+      "negative_answered_status_rate": 0.16666666666666666,
+      "generation_ms_p50": 4091.1987500003306,
+      "generation_ms_p95": 6926.512300000468
+    }
+  }
+}

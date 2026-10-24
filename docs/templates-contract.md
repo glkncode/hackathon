@@ -12,6 +12,14 @@ Requests use multipart/form-data. Uploads with unknown Content-Length are accept
 | --- | --- | --- |
 | template | Required DOCX file | Required same DOCX file |
 | values | Optional JSON object as a form string, defaults to {} | Required JSON object as a form string |
+| schema | Optional JSON array of field definitions | Same registered schema, if configured |
+
+Version 2 additionally accepts a strict profile **object** in `schema` (up to 192 KiB),
+including fields, rules, exact source SHA, structural cleanup, conditional blocks and
+row repeaters. It returns `validation` alongside the existing inspection fields.
+The array and simple-placeholder modes keep their v1 behavior. See
+[Template Generator 2.0](template-generator-v2.md) for the public API, report,
+security limits and supported original modules. No LLM is used in any mode.
 
 Do not send values as a JSON file upload or as the overall request body.
 Use the same authorized template version for inspect and render.
@@ -20,7 +28,7 @@ Use the same authorized template version for inspect and render.
 
 Use simple, flat string fields such as {{ recipient_name }}. Field identifiers
 match [a-z][a-z0-9_]{0,63}. Every discovered field is required in this first
-version. Values must be strings; missing/blank/whitespace-only values require
+mode without schema. Values must be strings; missing/blank/whitespace-only values require
 clarification. Numbers, dates and booleans must be formatted by Go as strings.
 Unknown keys and duplicate JSON keys are rejected so typos are not ignored.
 Field order is stable and alphabetical.
@@ -28,13 +36,23 @@ Field order is stable and alphabetical.
 Placeholders work in paragraphs, tables, headers, footers and footnotes.
 Ordinary Word runs may split a placeholder; docxtpl repairs them.
 Jinja control flow, expressions, filters, attribute access, calls, includes and
-docxtpl rich-text instructions are not supported. There are no optional/default
-values or type-specific validators yet. Go can map field names to human-readable
-labels or clarification questions.
+docxtpl rich-text instructions are not supported. With an explicit schema, fields
+support text, multiline_text, person, date and person_list, required/optional values,
+length limits and questions. Dates use ISO YYYY-MM-DD as input. A person_list is
+an array of up to 50 nonblank strings. Metadata-only schemas must match all
+discovered placeholder names. The no-schema contract remains unchanged.
+
+For ordinary fill-in lines, the same engine accepts explicit bindings to a part,
+paragraph index and exact text range, preserving existing Word runs and properties.
+Bindings are checked against the pinned original; overlapping ranges and protected
+NEVER DELETE / НЕ УДАЛЯТЬ paragraphs are rejected. This is manual configuration,
+not automatic discovery of arbitrary DOCX fields. See [the public Go API and
+configured schema contract](template-generator.md) and the real working-group profile
+in `docs/template-profiles/working-group.json`.
 
 Uploaded DOCX ZIP/XML is validated before processing. Macros, embedded objects,
 ActiveX, external relationships (including external hyperlinks/images), field
-codes, DTD/entities, unsafe ZIP paths and placeholders in unsupported parts or
+codes except passive PAGE/NUMPAGES, DTD/entities, unsafe ZIP paths and placeholders in unsupported parts or
 attributes are rejected. Use static plain DOCX templates, not arbitrary Office
 files. Values are escaped as XML and never evaluated again as Jinja.
 This is a restricted renderer, not a general Jinja execution service or antivirus.

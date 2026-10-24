@@ -30,6 +30,18 @@ func (s *httpSearchStore) Search(_ context.Context, id uuid.UUID, role domain.Ro
 	return s.results, s.err
 }
 
+func (s *httpSearchStore) SearchVariants(ctx context.Context, id uuid.UUID, role domain.Role, queries []domain.SearchQuery) ([][]domain.SearchResult, error) {
+	lists := make([][]domain.SearchResult, 0, len(queries))
+	for _, query := range queries {
+		results, err := s.Search(ctx, id, role, query)
+		if err != nil {
+			return nil, err
+		}
+		lists = append(lists, results)
+	}
+	return lists, nil
+}
+
 func TestSearchRouteAuthenticationValidationAndSources(t *testing.T) {
 	_, auth := routerFixture(t)
 	auth.result.User.IsActive = true

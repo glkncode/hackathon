@@ -1,0 +1,38 @@
+{
+  "fts": {
+    "positive_queries": 12,
+    "negative_queries": 6,
+    "grounded_correct_count": 0,
+    "grounded_answer_accuracy": 0.0,
+    "generated_answers": 0,
+    "citation_correctness": null,
+    "false_factual_answer_rate_on_negatives": 0.0,
+    "negative_answered_status_rate": 0.0,
+    "chat_latency_ms_p50": 10.849149999557994,
+    "chat_latency_ms_p95": 18.1917349982541
+  },
+  "semantic": {
+    "positive_queries": 12,
+    "negative_queries": 6,
+    "grounded_correct_count": 11,
+    "grounded_answer_accuracy": 0.9166666666666666,
+    "generated_answers": 11,
+    "citation_correctness": 1.0,
+    "false_factual_answer_rate_on_negatives": 0.0,
+    "negative_answered_status_rate": 0.0,
+    "chat_latency_ms_p50": 4031.251650012564,
+    "chat_latency_ms_p95": 5033.80416000582
+  },
+  "hybrid": {
+    "positive_queries": 12,
+    "negative_queries": 6,
+    "grounded_correct_count": 11,
+    "grounded_answer_accuracy": 0.9166666666666666,
+    "generated_answers": 11,
+    "citation_correctness": 1.0,
+    "false_factual_answer_rate_on_negatives": 0.0,
+    "negative_answered_status_rate": 0.0,
+    "chat_latency_ms_p50": 3356.584400011343,
+    "chat_latency_ms_p95": 4599.804529979883
+  }
+}

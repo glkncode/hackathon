@@ -58,6 +58,26 @@ and a nonblank clarification_question. insufficient_information returns both tex
 fields null and used_source_ids=[]. With sources=[] this state is returned
 without an inference call, even if no model is configured.
 
+Status selection distinguishes missing values from missing evidence:
+
+- `answered`: sources support the requested facts, a useful partial answer, or
+  an explicitly unfilled field. Describe known roles/requirements and identify
+  the missing values without inventing people, dates, numbers or assignments.
+- `needs_clarification`: the subject or materially different interpretations of
+  the question cannot be resolved from the question and history. An unfilled
+  template field alone does not require clarification.
+- `insufficient_information`: the question is clear, but sources provide neither
+  the requested facts nor evidence of the corresponding blank field. Silence
+  about a requirement does not prove that the requirement does not exist.
+
+For tables split across sources, the prompt instructs the model to interpret
+the introduction, headers and rows together only when their relationship is
+supported, and cite the actual rows supporting its claims. Placeholders and
+filling notes are not concrete values; a signature does not establish a control
+assignment. These are general model instructions, not answer substitutions.
+Python validation preserves a valid model status; invalid states/citations
+produce 502 rather than being converted to insufficient_information.
+
 Go should render authoritative titles, sections, page numbers and links using its
 own source metadata, not parse them from answer prose. The model is instructed not
 to include those citation details in prose. ID validation is enforced in code;
@@ -160,3 +180,32 @@ malicious source text and adversarial document titles. Have reviewers check each
 claim against cited chunks, citation precision/recall, abstention quality,
 clarification usefulness and leakage/injection resistance. Include plausible
 wrong answers citing valid IDs: ID validation alone cannot detect them.
+
+`tests/test_rag_templates.py` uses mock LLM outputs to check preservation of
+valid partial answers and statuses, complete table context, untrusted-data
+boundaries, privacy and unchanged citation/state validation. These tests verify
+the Python contract, not the real model's semantic behavior.
+
+For an opt-in local Qwen evaluation, prepare a private JSON array of existing
+source rows with `chunk_index` plus the request source fields. The benchmark
+uses the unchanged working-group DOCX indices from the ingestion golden fixture;
+use IDs from the actual existing version, not synthetic IDs. It performs no
+retrieval or database writes. From the repository root:
+
+```powershell
+& ai-service/.venv/Scripts/python.exe ai-service/scripts/evaluate_template_rag.py --sources .local-integration/rag-template-eval/sources.json --output .local-integration/rag-template-eval/accepted.json --env-file .env
+```
+
+This explicitly loads only `LLM_*` configuration from the supplied env file,
+requires `qwen3.6-35b-a3b`, and repeats each of 12 cases at least five times with
+the production generation parameters. `--core-only` selects the original five
+questions; `--case` selects a particular case and `--prompt-file` can load a
+saved baseline `prompts.py` for comparison.
+Each raw response is replayed through production validation without a second
+inference to detect status conversion. Console output contains only case labels,
+status/check counts and preservation flags. The report contains raw answers;
+keep it and the source export private, under the ignored `.local-integration/`
+directory, and review claims against cited rows. Lexical benchmark checks alone
+do not establish semantic correctness or detect every invented name/value.
+
+See [the measured Qwen before/after results](rag-template-generation-verification.md).

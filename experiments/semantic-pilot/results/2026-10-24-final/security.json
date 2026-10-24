@@ -1,0 +1,7 @@
+{
+  "acl_revoke": true,
+  "history_redaction": true,
+  "fts_with_python_stopped": true,
+  "chat_with_python_stopped": true,
+  "vectors_survive_restart": true
+}

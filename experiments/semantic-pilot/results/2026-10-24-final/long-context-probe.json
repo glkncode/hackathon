@@ -1,0 +1,55 @@
+{
+  "document_id": "d7d200a5-fe05-4fbd-99cb-75a75899d250",
+  "version_id": "145220c3-3417-49d6-a3d0-9882980830a6",
+  "chunks": [
+    {
+      "id": "49351302-ad86-411d-bacc-757db5bcfe3e",
+      "total_tokens": 2154,
+      "window_count": 5
+    }
+  ],
+  "windows": [
+    {
+      "chunk_id": "49351302-ad86-411d-bacc-757db5bcfe3e",
+      "window_index": 0,
+      "start_token": 0,
+      "end_token": 508,
+      "dimensions": 384,
+      "norm": 1.0000000007114933
+    },
+    {
+      "chunk_id": "49351302-ad86-411d-bacc-757db5bcfe3e",
+      "window_index": 1,
+      "start_token": 444,
+      "end_token": 952,
+      "dimensions": 384,
+      "norm": 0.9999999994753098
+    },
+    {
+      "chunk_id": "49351302-ad86-411d-bacc-757db5bcfe3e",
+      "window_index": 2,
+      "start_token": 888,
+      "end_token": 1396,
+      "dimensions": 384,
+      "norm": 0.999999999220234
+    },
+    {
+      "chunk_id": "49351302-ad86-411d-bacc-757db5bcfe3e",
+      "window_index": 3,
+      "start_token": 1332,
+      "end_token": 1840,
+      "dimensions": 384,
+      "norm": 0.9999999981927142
+    },
+    {
+      "chunk_id": "49351302-ad86-411d-bacc-757db5bcfe3e",
+      "window_index": 4,
+      "start_token": 1776,
+      "end_token": 2154,
+      "dimensions": 384,
+      "norm": 1.0000000009796306
+    }
+  ],
+  "tail_found_through_go_semantic_search": true,
+  "measured_after_frozen_quality_evaluation": true
+}

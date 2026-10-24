@@ -1,0 +1,118 @@
+name: ${COMPOSE_PROJECT_NAME:-hackathon}
+
+services:
+  postgres:
+    # Existing volumes: follow docs/semantic-search.md before the first switch.
+    image: pgvector/pgvector:pg17-bookworm
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-app}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:-ai_assistant}
+    command: ["postgres", "-c", "shared_buffers=128MB", "-c", "max_connections=40"]
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+    restart: unless-stopped
+
+  ai-service:
+    build: ./ai-service
+    environment:
+      AI_SERVICE_TOKEN: ${AI_SERVICE_TOKEN:?Set AI_SERVICE_TOKEN in .env}
+      LLM_BASE_URL: ${LLM_BASE_URL:-}
+      LLM_MODEL: ${LLM_MODEL:-}
+      LLM_API_KEY: ${LLM_API_KEY:-}
+      LLM_TIMEOUT: ${LLM_TIMEOUT:-60}
+      LLM_ALLOW_REMOTE: ${LLM_ALLOW_REMOTE:-false}
+      EMBEDDING_MODEL_PATH: /models/e5-small
+      EMBEDDING_TIMEOUT_SECONDS: ${EMBEDDING_TIMEOUT_SECONDS:-30}
+    volumes:
+      - embedding_models:/models
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3).close()"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    restart: unless-stopped
+
+  api:
+    build: .
+    platform: linux/amd64
+    environment:
+      APP_ENV: ${APP_ENV:-development}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      SERVICE_NAME: ${SERVICE_NAME:-ai-assistant}
+      # For reserved characters, supply a complete percent-encoded DATABASE_URL.
+      DATABASE_URL: ${DATABASE_URL:-postgres://${POSTGRES_USER:-app}:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}@postgres:5432/${POSTGRES_DB:-ai_assistant}?sslmode=disable}
+      DB_MAX_OPEN_CONNS: ${DB_MAX_OPEN_CONNS:-10}
+      DB_MAX_IDLE_CONNS: ${DB_MAX_IDLE_CONNS:-5}
+      DB_CONNECT_TIMEOUT: ${DB_CONNECT_TIMEOUT:-10s}
+      DB_MIGRATION_TIMEOUT: ${DB_MIGRATION_TIMEOUT:-60s}
+      AUTO_MIGRATE: ${AUTO_MIGRATE:-true}
+      ALLOW_PRODUCTION_MIGRATION_DOWN: ${ALLOW_PRODUCTION_MIGRATION_DOWN:-false}
+      HTTP_PORT: "8080"
+      BOOTSTRAP_ADMIN: ${BOOTSTRAP_ADMIN:-true}
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
+      SESSION_TTL: ${SESSION_TTL:-12h}
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:8080,http://127.0.0.1:8080}
+      DOCUMENT_STORAGE_DIR: /app/data/documents
+      DOCUMENT_MAX_UPLOAD_BYTES: ${DOCUMENT_MAX_UPLOAD_BYTES:-20971520}
+      AI_SERVICE_URL: http://ai-service:8000
+      AI_SERVICE_TOKEN: ${AI_SERVICE_TOKEN:?Set AI_SERVICE_TOKEN in .env}
+      INGESTION_ENABLED: ${INGESTION_ENABLED:-true}
+      INGESTION_WORKERS: ${INGESTION_WORKERS:-1}
+      INGESTION_POLL_INTERVAL: ${INGESTION_POLL_INTERVAL:-5s}
+      INGESTION_REQUEST_TIMEOUT: ${INGESTION_REQUEST_TIMEOUT:-120s}
+      INGESTION_MAX_ATTEMPTS: ${INGESTION_MAX_ATTEMPTS:-5}
+      RAG_ENABLED: ${RAG_ENABLED:-true}
+      RAG_TIMEOUT: ${RAG_TIMEOUT:-60s}
+      RAG_MAX_SOURCES: ${RAG_MAX_SOURCES:-8}
+      RAG_MAX_HISTORY_MESSAGES: ${RAG_MAX_HISTORY_MESSAGES:-10}
+      SEMANTIC_SEARCH_ENABLED: ${SEMANTIC_SEARCH_ENABLED:-false}
+      SEMANTIC_INDEXING_ENABLED: ${SEMANTIC_INDEXING_ENABLED:-${SEMANTIC_SEARCH_ENABLED:-false}}
+      SEMANTIC_SUPPLEMENT_FTS: ${SEMANTIC_SUPPLEMENT_FTS:-false}
+      SEMANTIC_SEARCH_TIMEOUT: ${SEMANTIC_SEARCH_TIMEOUT:-45s}
+      EMBEDDING_MODEL: ${EMBEDDING_MODEL:-intfloat/multilingual-e5-small}
+      EMBEDDING_DIMENSIONS: ${EMBEDDING_DIMENSIONS:-384}
+      EMBEDDING_REQUEST_TIMEOUT: ${EMBEDDING_REQUEST_TIMEOUT:-30s}
+    volumes:
+      - documents_data:/app/data/documents
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8080/healthz"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 30s
+    stop_grace_period: 30s
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "${WEB_BIND_ADDRESS:-127.0.0.1}:${WEB_PORT:-8080}:80"
+    depends_on:
+      api:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1/healthz"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    # Existing installations must select a logically restored volume explicitly.
+    name: ${POSTGRES_DATA_VOLUME:?Set POSTGRES_DATA_VOLUME to the verified target volume; see docs/semantic-search-main.md}
+  documents_data:
+  embedding_models:

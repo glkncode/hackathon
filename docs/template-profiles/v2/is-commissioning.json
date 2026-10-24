@@ -1,0 +1,822 @@
+{
+  "profile_version": 2,
+  "profile_id": "is-commissioning",
+  "revision": "2.0.2",
+  "rules_version": "2026-10-24.3",
+  "engine_version": "docx-profile/2.0.0",
+  "template_kind": "is_commissioning_order",
+  "source_sha256": "ad933ae5158d8409ebc3db68482c28d53d86dd41a31d141f4a99f0776943e1a5",
+  "field_source": {
+    "name": "Модуль_приказа_о_вводе_в_эксплуатацию_информационной_системы.docx",
+    "version": "sha256:ad933ae5158d8409ebc3db68482c28d53d86dd41a31d141f4a99f0776943e1a5",
+    "section": "Примечания по заполнению; раздел «Общие правила»"
+  },
+  "fields": [
+    {
+      "key": "organization",
+      "label": "Наименование организации",
+      "type": "text",
+      "required": true,
+      "question": "Наименование организации?",
+      "description": "",
+      "max_length": 2000,
+      "source": {
+        "name": "Инструкция_по_ДОУ_учебный_пример.pdf",
+        "version": "sha256:3b7461fb98911f39d3e8a951bee2cdddfb3ab4b98d6c135f146d130e01d96d90",
+        "section": "8.4"
+      }
+    },
+    {
+      "key": "signer",
+      "label": "Подписант: инициалы и фамилия",
+      "type": "person",
+      "required": true,
+      "question": "Подписант: инициалы и фамилия?",
+      "description": "Выберите уполномоченного подписанта; фактические полномочия и подписание проверяются вне генератора.",
+      "max_length": 2000,
+      "source": {
+        "name": "Модуль_приказа_о_вводе_в_эксплуатацию_информационной_системы.docx",
+        "version": "sha256:ad933ae5158d8409ebc3db68482c28d53d86dd41a31d141f4a99f0776943e1a5",
+        "section": "Примечание 15"
+      }
+    },
+    {
+      "key": "module_current_confirmed",
+      "label": "Актуальность модуля проверена в реестре?",
+      "type": "choice",
+      "required": false,
+      "question": "Актуальность модуля проверена в реестре??",
+      "description": "",
+      "max_length": 2000,
+      "options": [
+        "yes",
+        "no"
+      ],
+      "source": {
+        "name": "Методические_рекомендации_по_работе_с_модульными_документами.docx",
+        "version": "sha256:95a0a1d9881e3bd74df7b1ab7fa942d5d2f5ec0696eea6ae53dc5accaf93ba8e",
+        "section": "1.2"
+      }
+    },
+    {
+      "key": "signer_authority_confirmed",
+      "label": "Полномочия подписанта проверены?",
+      "type": "choice",
+      "required": false,
+      "question": "Полномочия подписанта проверены??",
+      "description": "",
+      "max_length": 2000,
+      "options": [
+        "yes",
+        "no"
+      ],
+      "source": {
+        "name": "Инструкция_по_ДОУ_учебный_пример.pdf",
+        "version": "sha256:3b7461fb98911f39d3e8a951bee2cdddfb3ab4b98d6c135f146d130e01d96d90",
+        "section": "8.19; 10.15"
+      }
+    },
+    {
+      "key": "affected_departments",
+      "label": "Дополнительные подразделения по затронутой компетенции",
+      "type": "text_list",
+      "required": false,
+      "question": "Дополнительные подразделения по затронутой компетенции?",
+      "description": "",
+      "max_length": 2000,
+      "minimum_items": 1,
+      "maximum_items": 30,
+      "source": {
+        "name": "Матрица_обязательного_визирования_внутренних_и_внешних_документов.docx",
+        "version": "sha256:9d1c59e89bc833ed813b738e3709f23ecb0a247f26e13394ca6dae6542756e83",
+        "section": "Положения 1–3; внутренние документы, строки 2, 6"
+      }
+    },
+    {
+      "key": "system_full_name",
+      "label": "Полное официальное наименование системы или компонента",
+      "type": "text",
+      "required": true,
+      "question": "Полное официальное наименование системы или компонента?",
+      "description": "Официальное собственное наименование в кавычках. В преамбуле уже есть слова «компонента информационной системы»; не дублируйте их.",
+      "max_length": 2000,
+      "source": {
+        "name": "Модуль_приказа_о_вводе_в_эксплуатацию_информационной_системы.docx",
+        "version": "sha256:ad933ae5158d8409ebc3db68482c28d53d86dd41a31d141f4a99f0776943e1a5",
+        "section": "Примечание 1"
+      }
+    },
+    {
+      "key": "system_short_name",
+      "label": "Единое сокращённое наименование",
+      "type": "text",
+      "required": true,
+      "question": "Единое сокращённое наименование?",
+      "description": "",
+      "max_length": 2000,
+      "source": {
+        "name": "Модуль_приказа_о_вводе_в_эксплуатацию_информационной_системы.docx",
+        "version": "sha256:ad933ae5158d8409ebc3db68482c28d53d86dd41a31d141f4a99f0776943e1a5",
+        "section": "Примечание 4"
+      }
+    },
+    {
+      "key": "readiness_document",
+      "label": "Вид и название документа о готовности",
+      "type": "text",
+      "required": true,
+      "question": "Вид и название документа о готовности?",
+      "description": "В родительном падеже после «На основании».",
+      "max_length": 2000,
+      "source": {
+        "name": "Модуль_приказа_о_вводе_в_эксплуатацию_информационной_системы.docx",
+        "version": "sha256:ad933ae5158d8409ebc3db68482c28d53d86dd41a31d141f4a99f0776943e1a5",
+        "section": "Примечание 2"
+      }
+    },
+    {
+      "key": "readiness_number",
+      "label": "Номер документа о готовности",
+      "type": "text",
+      "required": true,
+      "question": "Номер документа о готовности?",
+      "description": "",
+      "max_length": 2000,
+      "source": {
+        "name": "Модуль_приказа_о_вводе_в_эксплуатацию_информационной_системы.docx",
+        "version": "sha256:ad933ae5158d8409ebc3db68482c28d53d86dd41a31d141f4a99f0776943e1a5",
+        "section": "Примечание 2"
+      }
+    },
+    {
+      "key": "development_document",
+      "label": "Вид и название документа, определившего работы",
+      "type": "text",
+      "required": true,
+      "question": "Вид и название документа, определившего работы?",
+      "description": "В творительном падеже после «в соответствии с».",
+      "max_length": 2000,
+      "source": {
+        "name": "Модуль_приказа_о_вводе_в_эксплуатацию_информационной_системы.docx",
+        "version": "sha256:ad933ae5158d8409ebc3db68482c28d53d86dd41a31d141f4a99f0776943e1a5",
+        "section": "Примечание 6"
+      }
+    },
+    {
+      "key": "development_number",
+      "label": "Номер документа, определившего работы",
+      "type": "text",
+      "required": true,
+      "question": "Номер документа, определившего работы?",
+      "description": "",
+      "max_length": 2000,
+      "source": {
+        "name": "Модуль_приказа_о_вводе_в_эксплуатацию_информационной_системы.docx",
+        "version": "sha256:ad933ae5158d8409ebc3db68482c28d53d86dd41a31d141f4a99f0776943e1a5",
+        "section": "Примечание 6"
+      }
+    },
+    {
+      "key": "customer",
+      "label": "Функциональный заказчик",
+      "type": "text",
+      "required": true,
+      "question": "Функциональный заказчик?",
+      "description": "В дательном падеже перед «обеспечить».",
+      "max_length": 2000,
+      "source": {
+        "name": "Модуль_приказа_о_вводе_в_эксплуатацию_информационной_системы.docx",
+        "version": "sha256:ad933ae5158d8409ebc3db68482c28d53d86dd41a31d141f4a99f0776943e1a5",
+        "section": "Примечание 9"
+      }
+    },
+    {
+      "key": "purpose",
+      "label": "Назначение компонента",
+      "type": "text",
+      "required": true,
+      "question": "Назначение компонента?",
+      "description": "В форме после «по следующему назначению».",
+      "max_length": 2000,
+      "source": {
+        "name": "Модуль_приказа_о_вводе_в_эксплуатацию_информационной_системы.docx",
+        "version": "sha256:ad933ae5158d8409ebc3db68482c28d53d86dd41a31d141f4a99f0776943e1a5",
+        "section": "Примечание 11"
+      }
+    },
+    {
+      "key": "it_department",
+      "label": "Официальное наименование ИТ-подразделения",
+      "type": "text",
+      "required": true,
+      "question": "Официальное наименование ИТ-подразделения?",
+      "description": "В дательном падеже перед «обеспечить».",
+      "max_length": 2000,
+      "source": {
+        "name": "Модуль_приказа_о_вводе_в_эксплуатацию_информационной_системы.docx",
+        "version": "sha256:ad933ae5158d8409ebc3db68482c28d53d86dd41a31d141f4a99f0776943e1a5",
+        "section": "Общие правила"
+      }
+    },
+    {
+      "key": "readiness_date",
+      "label": "Дата документа о готовности",
+      "type": "date",
+      "required": true,
+      "question": "Дата документа о готовности?",
+      "description": "",
+      "max_length": 2000,
+      "source": {
+        "name": "Модуль_приказа_о_вводе_в_эксплуатацию_информационной_системы.docx",
+        "version": "sha256:ad933ae5158d8409ebc3db68482c28d53d86dd41a31d141f4a99f0776943e1a5",
+        "section": "Примечание 2"
+      }
+    },
+    {
+      "key": "development_date",
+      "label": "Дата документа, определившего работы",
+      "type": "date",
+      "required": true,
+      "question": "Дата документа, определившего работы?",
+      "description": "",
+      "max_length": 2000,
+      "source": {
+        "name": "Модуль_приказа_о_вводе_в_эксплуатацию_информационной_системы.docx",
+        "version": "sha256:ad933ae5158d8409ebc3db68482c28d53d86dd41a31d141f4a99f0776943e1a5",
+        "section": "Примечание 6"
+      }
+    },
+    {
+      "key": "commissioning_date",
+      "label": "Дата промышленного ввода",
+      "type": "date",
+      "required": true,
+      "question": "Дата промышленного ввода?",
+      "description": "",
+      "max_length": 2000,
+      "source": {
+        "name": "Модуль_приказа_о_вводе_в_эксплуатацию_информационной_системы.docx",
+        "version": "sha256:ad933ae5158d8409ebc3db68482c28d53d86dd41a31d141f4a99f0776943e1a5",
+        "section": "Примечание 8"
+      }
+    },
+    {
+      "key": "change_kind",
+      "label": "Разработка или изменение?",
+      "type": "choice",
+      "required": true,
+      "question": "Разработка или изменение??",
+      "description": "",
+      "max_length": 2000,
+      "options": [
+        "developed",
+        "modified"
+      ],
+      "source": {
+        "name": "Модуль_приказа_о_вводе_в_эксплуатацию_информационной_системы.docx",
+        "version": "sha256:ad933ae5158d8409ebc3db68482c28d53d86dd41a31d141f4a99f0776943e1a5",
+        "section": "Примечание 5"
+      }
+    },
+    {
+      "key": "date_exception",
+      "label": "Иной порядок даты ввода прямо предусмотрен и подтверждён?",
+      "type": "choice",
+      "required": true,
+      "question": "Иной порядок даты ввода прямо предусмотрен и подтверждён??",
+      "description": "",
+      "max_length": 2000,
+      "options": [
+        "yes",
+        "no"
+      ],
+      "source": {
+        "name": "Модуль_приказа_о_вводе_в_эксплуатацию_информационной_системы.docx",
+        "version": "sha256:ad933ae5158d8409ebc3db68482c28d53d86dd41a31d141f4a99f0776943e1a5",
+        "section": "Примечание 8"
+      }
+    },
+    {
+      "key": "date_exception_basis",
+      "label": "Точные реквизиты и обоснование исключения",
+      "type": "text",
+      "required": false,
+      "question": "Точные реквизиты и обоснование исключения?",
+      "description": "",
+      "max_length": 2000,
+      "required_if": {
+        "op": "equals",
+        "field": "date_exception",
+        "value": "yes"
+      },
+      "visible_if": {
+        "op": "equals",
+        "field": "date_exception",
+        "value": "yes"
+      },
+      "source": {
+        "name": "Модуль_приказа_о_вводе_в_эксплуатацию_информационной_системы.docx",
+        "version": "sha256:ad933ae5158d8409ebc3db68482c28d53d86dd41a31d141f4a99f0776943e1a5",
+        "section": "Примечание 8"
+      }
+    },
+    {
+      "key": "operating_docs_confirmation",
+      "label": "Сведения об утверждении/принятии эксплуатационной документации",
+      "type": "text",
+      "required": false,
+      "question": "Сведения об утверждении/принятии эксплуатационной документации?",
+      "description": "",
+      "max_length": 2000,
+      "source": {
+        "name": "Модуль_приказа_о_вводе_в_эксплуатацию_информационной_системы.docx",
+        "version": "sha256:ad933ae5158d8409ebc3db68482c28d53d86dd41a31d141f4a99f0776943e1a5",
+        "section": "Примечание 12"
+      }
+    },
+    {
+      "key": "responsible",
+      "label": "Ответственный за исполнение",
+      "type": "person",
+      "required": true,
+      "question": "Ответственный за исполнение?",
+      "description": "В именительном падеже: должность, подразделение, фамилия и инициалы.",
+      "max_length": 2000,
+      "source": {
+        "name": "Модуль_приказа_о_вводе_в_эксплуатацию_информационной_системы.docx",
+        "version": "sha256:ad933ae5158d8409ebc3db68482c28d53d86dd41a31d141f4a99f0776943e1a5",
+        "section": "Примечание 14"
+      }
+    },
+    {
+      "key": "signer_position",
+      "label": "Должность подписанта",
+      "type": "text",
+      "required": true,
+      "question": "Должность подписанта?",
+      "description": "",
+      "max_length": 2000,
+      "source": {
+        "name": "Модуль_приказа_о_вводе_в_эксплуатацию_информационной_системы.docx",
+        "version": "sha256:ad933ae5158d8409ebc3db68482c28d53d86dd41a31d141f4a99f0776943e1a5",
+        "section": "Примечание 15"
+      }
+    }
+  ],
+  "bindings": [
+    {
+      "paragraph": 8,
+      "match": "НАИМЕНОВАНИЕ ОРГАНИЗАЦИИ",
+      "value": [
+        {
+          "field": "organization"
+        }
+      ]
+    },
+    {
+      "paragraph": 12,
+      "match": "О вводе в эксплуатацию _______________________________________________ [1]",
+      "value": [
+        {
+          "literal": "О вводе в эксплуатацию "
+        },
+        {
+          "field": "system_full_name"
+        },
+        {
+          "literal": ""
+        }
+      ]
+    },
+    {
+      "paragraph": 13,
+      "match": "На основании ___________________________________________________________ [2], содержащего решение о готовности к вводу в эксплуатацию компонента информационной системы _______________________________________________ [3] (далее - ________________________») [4], разработанного / измененного [5] в соответствии с ______________________________________________________ [6],",
+      "value": [
+        {
+          "literal": "На основании "
+        },
+        {
+          "field": "readiness_document"
+        },
+        {
+          "literal": " от "
+        },
+        {
+          "field": "readiness_date"
+        },
+        {
+          "literal": " № "
+        },
+        {
+          "field": "readiness_number"
+        },
+        {
+          "literal": ", содержащего решение о готовности к вводу в эксплуатацию компонента информационной системы "
+        },
+        {
+          "field": "system_full_name"
+        },
+        {
+          "literal": " (далее - «"
+        },
+        {
+          "field": "system_short_name"
+        },
+        {
+          "literal": "»), "
+        },
+        {
+          "when": {
+            "op": "equals",
+            "field": "change_kind",
+            "value": "developed"
+          },
+          "then": [
+            {
+              "literal": "разработанного"
+            }
+          ],
+          "otherwise": [
+            {
+              "literal": "измененного"
+            }
+          ]
+        },
+        {
+          "literal": " в соответствии с "
+        },
+        {
+          "field": "development_document"
+        },
+        {
+          "literal": " от "
+        },
+        {
+          "field": "development_date"
+        },
+        {
+          "literal": " № "
+        },
+        {
+          "field": "development_number"
+        },
+        {
+          "literal": ","
+        }
+      ]
+    },
+    {
+      "paragraph": 15,
+      "match": "1. Ввести «_______» [7] в эксплуатацию с [8] «___» ____________ 20___ г.",
+      "value": [
+        {
+          "literal": "1. Ввести «"
+        },
+        {
+          "field": "system_short_name"
+        },
+        {
+          "literal": "» в эксплуатацию с "
+        },
+        {
+          "field": "commissioning_date"
+        },
+        {
+          "literal": "."
+        }
+      ]
+    },
+    {
+      "paragraph": 16,
+      "match": "2. ___________________________________________________________[9]",
+      "value": [
+        {
+          "literal": "2. "
+        },
+        {
+          "field": "customer"
+        }
+      ]
+    },
+    {
+      "paragraph": 17,
+      "match": "обеспечить применение «____________________________» [10] по следующему назначению: ____________________________________________________________. [11]",
+      "value": [
+        {
+          "literal": "обеспечить применение «"
+        },
+        {
+          "field": "system_short_name"
+        },
+        {
+          "literal": "» по следующему назначению: "
+        },
+        {
+          "field": "purpose"
+        },
+        {
+          "literal": "."
+        }
+      ]
+    },
+    {
+      "paragraph": 18,
+      "match": "3. Департаменту информационных технологий обеспечить:",
+      "value": [
+        {
+          "literal": "3. "
+        },
+        {
+          "field": "it_department"
+        },
+        {
+          "literal": " обеспечить:"
+        }
+      ]
+    },
+    {
+      "paragraph": 19,
+      "match": "3.1. функционирование «____________________________» [12] в соответствии с эксплуатационной документацией;",
+      "value": [
+        {
+          "literal": "3.1. функционирование «"
+        },
+        {
+          "field": "system_short_name"
+        },
+        {
+          "literal": "» в соответствии с эксплуатационной документацией;"
+        }
+      ]
+    },
+    {
+      "paragraph": 20,
+      "match": "3.2. сопровождение «____________________________» [13] с привлечением при необходимости внешних подрядных организаций.",
+      "value": [
+        {
+          "literal": "3.2. сопровождение «"
+        },
+        {
+          "field": "system_short_name"
+        },
+        {
+          "literal": "» с привлечением при необходимости внешних подрядных организаций."
+        }
+      ]
+    },
+    {
+      "paragraph": 21,
+      "match": "4. Ответственным за исполнение настоящего приказа является __________________________________________________________________. [14]",
+      "value": [
+        {
+          "literal": "4. Ответственным за исполнение настоящего приказа является "
+        },
+        {
+          "field": "responsible"
+        },
+        {
+          "literal": "."
+        }
+      ]
+    },
+    {
+      "paragraph": 22,
+      "match": "Заместитель Председателя Организации",
+      "value": [
+        {
+          "field": "signer_position"
+        }
+      ]
+    },
+    {
+      "paragraph": 24,
+      "match": "И. О. Фамилия [15]",
+      "value": [
+        {
+          "field": "signer"
+        }
+      ]
+    }
+  ],
+  "conditional_blocks": [],
+  "repeaters": [],
+  "numbered_paragraphs": [],
+  "rules": [
+    {
+      "id": "module.currency",
+      "category": "warning",
+      "description": "Проверьте актуальный статус, редакцию и начало применения модуля в реестре. Ответ пользователя не заменяет проверку реестра.",
+      "source": {
+        "name": "Методические_рекомендации_по_работе_с_модульными_документами.docx",
+        "version": "sha256:95a0a1d9881e3bd74df7b1ab7fa942d5d2f5ec0696eea6ae53dc5accaf93ba8e",
+        "section": "1.2"
+      },
+      "check": {
+        "op": "equals",
+        "field": "module_current_confirmed",
+        "value": "yes"
+      }
+    },
+    {
+      "id": "signer.authority",
+      "category": "manual_review",
+      "description": "Проверьте полномочия подписанта, должность и оформление подписи. Генератор не выполняет подписание.",
+      "source": {
+        "name": "Инструкция_по_ДОУ_учебный_пример.pdf",
+        "version": "sha256:3b7461fb98911f39d3e8a951bee2cdddfb3ab4b98d6c135f146d130e01d96d90",
+        "section": "8.19–8.20; 10.15"
+      },
+      "check": {
+        "op": "equals",
+        "field": "signer_authority_confirmed",
+        "value": "yes"
+      }
+    },
+    {
+      "id": "document.review",
+      "category": "manual_review",
+      "description": "Сопоставьте постоянные формулировки, грамматику, приложения и оформление с модулем; при отличии определите полный маршрут. Предусмотрите лингвистическую экспертизу.",
+      "source": {
+        "name": "Методические_рекомендации_по_работе_с_модульными_документами.docx",
+        "version": "sha256:95a0a1d9881e3bd74df7b1ab7fa942d5d2f5ec0696eea6ae53dc5accaf93ba8e",
+        "section": "1.3; 3.3; 4.1–4.3"
+      }
+    },
+    {
+      "id": "module.application",
+      "category": "manual_review",
+      "description": "Проверьте условия применения модуля, общий маршрут визирования и лингвистическую экспертизу. Автоматическое соответствие профилю не устанавливает юридическую применимость и не выполняет согласование.",
+      "source": {
+        "name": "Инструкция_по_ДОУ_учебный_пример.pdf",
+        "version": "sha256:3b7461fb98911f39d3e8a951bee2cdddfb3ab4b98d6c135f146d130e01d96d90",
+        "section": "9.16–9.16.3; 10.6; 10.11; 10.13"
+      }
+    },
+    {
+      "id": "sources.educational",
+      "category": "info",
+      "description": "Инструкция — учебный пример, не действующий документ. Актуальность и применимость официальных правил автоматически не установлены.",
+      "source": {
+        "name": "Инструкция_по_ДОУ_учебный_пример.pdf",
+        "version": "sha256:3b7461fb98911f39d3e8a951bee2cdddfb3ab4b98d6c135f146d130e01d96d90",
+        "section": "Маркировка страниц; 12.10–12.11"
+      }
+    },
+    {
+      "id": "project.registration",
+      "category": "info",
+      "description": "Это проект. Регистрация, номер, подпись, ЭП и визы выполняются в установленном порядке после проверки.",
+      "source": {
+        "name": "Методические_рекомендации_по_работе_с_модульными_документами.docx",
+        "version": "sha256:95a0a1d9881e3bd74df7b1ab7fa942d5d2f5ec0696eea6ae53dc5accaf93ba8e",
+        "section": "2.1; 5.1–5.3"
+      }
+    },
+    {
+      "id": "structure.cleanup",
+      "category": "info",
+      "description": "При генерации удаляются служебные элементы модуля по закреплённым структурным якорям; дата, регистрационный номер и визуализация ЭП сохраняются.",
+      "source": {
+        "name": "Методические_рекомендации_по_работе_с_модульными_документами.docx",
+        "version": "sha256:95a0a1d9881e3bd74df7b1ab7fa942d5d2f5ec0696eea6ae53dc5accaf93ba8e",
+        "section": "3.1–3.3"
+      }
+    },
+    {
+      "id": "is.date",
+      "category": "blocking",
+      "description": "Дата ввода не раньше даты готовности, кроме прямо предусмотренного и подтверждённого порядка.",
+      "source": {
+        "name": "Модуль_приказа_о_вводе_в_эксплуатацию_информационной_системы.docx",
+        "version": "sha256:ad933ae5158d8409ebc3db68482c28d53d86dd41a31d141f4a99f0776943e1a5",
+        "section": "Прим.8"
+      },
+      "when": {
+        "op": "all",
+        "args": [
+          {
+            "op": "present",
+            "field": "readiness_date"
+          },
+          {
+            "op": "present",
+            "field": "commissioning_date"
+          }
+        ]
+      },
+      "check": {
+        "op": "any",
+        "args": [
+          {
+            "op": "date_gte",
+            "field": "commissioning_date",
+            "other_field": "readiness_date"
+          },
+          {
+            "op": "all",
+            "args": [
+              {
+                "op": "equals",
+                "field": "date_exception",
+                "value": "yes"
+              },
+              {
+                "op": "present",
+                "field": "date_exception_basis"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "is.date_exception",
+      "category": "manual_review",
+      "description": "Проверьте документ и применимость исключения. Указанные пользователем реквизиты не означают фактическую проверку основания.",
+      "source": {
+        "name": "Модуль_приказа_о_вводе_в_эксплуатацию_информационной_системы.docx",
+        "version": "sha256:ad933ae5158d8409ebc3db68482c28d53d86dd41a31d141f4a99f0776943e1a5",
+        "section": "Прим.8"
+      },
+      "when": {
+        "op": "equals",
+        "field": "date_exception",
+        "value": "yes"
+      }
+    },
+    {
+      "id": "is.operating_docs",
+      "category": "manual_review",
+      "description": "Проверьте утверждение или принятие эксплуатационной документации до ввода либо одновременно с вводом. Указанные сведения не подтверждают исследование файла.",
+      "source": {
+        "name": "Модуль_приказа_о_вводе_в_эксплуатацию_информационной_системы.docx",
+        "version": "sha256:ad933ae5158d8409ebc3db68482c28d53d86dd41a31d141f4a99f0776943e1a5",
+        "section": "Прим.12"
+      },
+      "check": {
+        "op": "present",
+        "field": "operating_docs_confirmation"
+      }
+    },
+    {
+      "id": "is.evidence",
+      "category": "manual_review",
+      "description": "Сопоставьте наименования с технической и приёмочной документацией; проверьте документ о готовности и основания привлечения подрядчиков.",
+      "source": {
+        "name": "Модуль_приказа_о_вводе_в_эксплуатацию_информационной_системы.docx",
+        "version": "sha256:ad933ae5158d8409ebc3db68482c28d53d86dd41a31d141f4a99f0776943e1a5",
+        "section": "Прим.1–7, 9–15"
+      }
+    }
+  ],
+  "approval_route": [
+    {
+      "id": "internal.3",
+      "description": "Приказы по вопросам информационных систем",
+      "required_departments": [
+        "Юридическое подразделение",
+        "Департамент ДОУ",
+        "Департамент информационной безопасности",
+        "Департамент информационных технологий"
+      ],
+      "conditional_departments": [],
+      "source": {
+        "name": "Матрица_обязательного_визирования_внутренних_и_внешних_документов.docx",
+        "version": "sha256:9d1c59e89bc833ed813b738e3709f23ecb0a247f26e13394ca6dae6542756e83",
+        "section": "Положения 1–3; внутренние документы, строка 3"
+      }
+    }
+  ],
+  "document_cleanup": {
+    "approval_table": 0,
+    "approval_text": "УТВЕРЖДАЮЗаместитель Председателя Организации______________  ____________________«___» ____________ 20___ г.",
+    "marker": {
+      "paragraph": 5,
+      "text": "МОДУЛЬНЫЙ ДОКУМЕНТ"
+    },
+    "notes_start": {
+      "paragraph": 27,
+      "text": "Примечания по заполнению модульного приказа"
+    },
+    "notes_end": {
+      "paragraph": 50,
+      "text": "• дату, регистрационный номер и блок визуализации электронной подписи не удаляйте."
+    },
+    "protected": [
+      {
+        "paragraph": 10,
+        "text": "ДАТА / РЕГИСТРАЦИОННЫЙ НОМЕР (НЕ УДАЛЯТЬ)"
+      },
+      {
+        "paragraph": 25,
+        "text": "ВИЗУАЛИЗАЦИЯ ЭП (НЕ УДАЛЯТЬ)"
+      }
+    ],
+    "remove_paragraphs": [
+      {
+        "paragraph": 26,
+        "text": ""
+      }
+    ]
+  }
+}

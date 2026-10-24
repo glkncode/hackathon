@@ -1,0 +1,1244 @@
+{
+  "corpus_sha256": "8175e3eff8e998886bb1cd32499cae2bf4de4374722c2eaaa626cd9c16c07287",
+  "member_id": "348d260a-105e-4d1f-8d2c-40fb993ca3b0",
+  "documents": {
+    "travel": {
+      "id": "73ddc38b-b48d-4f14-b46d-e663283607bc",
+      "title": "Командировочные расходы",
+      "latest_version": {
+        "id": "44aea1d6-ce00-46c7-b1b3-ce3be766501a",
+        "document_id": "73ddc38b-b48d-4f14-b46d-e663283607bc",
+        "version_number": 2,
+        "storage_key": "55bdf86d-7eab-422f-ab89-814c00cbc1bb",
+        "original_filename": "travel.docx",
+        "mime_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "size_bytes": 37197,
+        "created_at": "2026-10-24T10:26:27.724564+00:00",
+        "status": "ready",
+        "sha256": "32634aed46b142042894536dca591c9ae86aa135ac42621d84f7cdf58e300613",
+        "updated_at": "2026-10-24T10:26:27.84801+00:00"
+      },
+      "key": "travel",
+      "sha256": "32634aed46b142042894536dca591c9ae86aa135ac42621d84f7cdf58e300613",
+      "historical_version_id": "d4988b37-3e69-4b64-bfcd-eca2f87569ac"
+    },
+    "security": {
+      "id": "b9afbc02-59ac-43c8-a70e-9d3fac7c1c34",
+      "title": "Защита учётных записей",
+      "latest_version": {
+        "id": "3e442e45-26a1-42c0-9578-f4d5327f8ee7",
+        "document_id": "b9afbc02-59ac-43c8-a70e-9d3fac7c1c34",
+        "version_number": 1,
+        "storage_key": "73b046f2-87a3-4b4d-9fe7-a563b00f426c",
+        "original_filename": "security.txt",
+        "mime_type": "text/plain; charset=utf-8",
+        "size_bytes": 858,
+        "created_at": "2026-10-24T10:26:28.400026+00:00",
+        "status": "ready",
+        "sha256": "86d74c9e75c8709c63d8765d7064a0a1f3858cb114dbc3c91f9ac24d8758f0a3",
+        "updated_at": "2026-10-24T10:26:28.469366+00:00"
+      },
+      "key": "security",
+      "sha256": "86d74c9e75c8709c63d8765d7064a0a1f3858cb114dbc3c91f9ac24d8758f0a3"
+    },
+    "procurement": {
+      "id": "ea195f74-8985-4886-ac20-3c4830d5c7c3",
+      "title": "Закупка оборудования",
+      "latest_version": {
+        "id": "246aa3fc-f79a-4ef9-88a0-c0f0df0fa82e",
+        "document_id": "ea195f74-8985-4886-ac20-3c4830d5c7c3",
+        "version_number": 1,
+        "storage_key": "3b19017e-16f0-463c-810a-ecd17b1208a3",
+        "original_filename": "procurement.docx",
+        "mime_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "size_bytes": 37018,
+        "created_at": "2026-10-24T10:26:28.631325+00:00",
+        "status": "ready",
+        "sha256": "07ad2e1d8a497f9b61b0d650d6308f0fcffb169e5cafd6f580c9b9b6941f4a55",
+        "updated_at": "2026-10-24T10:26:28.691157+00:00"
+      },
+      "key": "procurement",
+      "sha256": "07ad2e1d8a497f9b61b0d650d6308f0fcffb169e5cafd6f580c9b9b6941f4a55"
+    },
+    "backup": {
+      "id": "792278e2-cacf-4e8f-9a19-f0c8656b9a45",
+      "title": "Восстановление резервных копий",
+      "latest_version": {
+        "id": "377bf4ac-236d-4659-a749-990c125cd534",
+        "document_id": "792278e2-cacf-4e8f-9a19-f0c8656b9a45",
+        "version_number": 1,
+        "storage_key": "9eb36a87-ec51-4315-9aaa-fea329c85ff6",
+        "original_filename": "backup.txt",
+        "mime_type": "text/plain; charset=utf-8",
+        "size_bytes": 5372,
+        "created_at": "2026-10-24T10:26:28.842617+00:00",
+        "status": "ready",
+        "sha256": "d0238f6b6b1ab2f78b90290b11cb733264e1b378610b0a31eb3eedd471f322ad",
+        "updated_at": "2026-10-24T10:26:28.903484+00:00"
+      },
+      "key": "backup",
+      "sha256": "d0238f6b6b1ab2f78b90290b11cb733264e1b378610b0a31eb3eedd471f322ad"
+    },
+    "laboratory": {
+      "id": "a96bc416-abed-427f-bd7e-a37b39a1c2d1",
+      "title": "Транспортировка лабораторных образцов",
+      "latest_version": {
+        "id": "f4535836-29ec-4243-b993-c06af0b400fd",
+        "document_id": "a96bc416-abed-427f-bd7e-a37b39a1c2d1",
+        "version_number": 1,
+        "storage_key": "a47f43c6-0440-40b3-a50e-ce80876086c9",
+        "original_filename": "laboratory.docx",
+        "mime_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "size_bytes": 37162,
+        "created_at": "2026-10-24T10:26:29.082456+00:00",
+        "status": "ready",
+        "sha256": "830d7bb9063faa2e14709bf757c603c7e181aa7a239a0480445aa1cc0e4984d3",
+        "updated_at": "2026-10-24T10:26:29.127139+00:00"
+      },
+      "key": "laboratory",
+      "sha256": "830d7bb9063faa2e14709bf757c603c7e181aa7a239a0480445aa1cc0e4984d3"
+    },
+    "fire": {
+      "id": "276bcc74-0ef0-43c7-83b1-1ac69ca1d7ab",
+      "title": "Эвакуация из офисного здания",
+      "latest_version": {
+        "id": "48a455a5-8895-4ff3-aeb4-d148c45b45e3",
+        "document_id": "276bcc74-0ef0-43c7-83b1-1ac69ca1d7ab",
+        "version_number": 1,
+        "storage_key": "040440bd-2631-426e-a904-b0043b76443c",
+        "original_filename": "fire.pdf",
+        "mime_type": "application/pdf",
+        "size_bytes": 1080496,
+        "created_at": "2026-10-24T10:26:30.097352+00:00",
+        "status": "ready",
+        "sha256": "15b619a9efe6f1668b1abc04d227ce50749da73cae3ec8f052d6743e95637332",
+        "updated_at": "2026-10-24T10:26:30.172944+00:00"
+      },
+      "key": "fire",
+      "sha256": "15b619a9efe6f1668b1abc04d227ce50749da73cae3ec8f052d6743e95637332"
+    },
+    "records": {
+      "id": "f75f60db-0414-44b1-bd37-707731dc45ee",
+      "title": "Хранение договоров",
+      "latest_version": {
+        "id": "124a92a1-631a-4cc4-90c2-ddec74666557",
+        "document_id": "f75f60db-0414-44b1-bd37-707731dc45ee",
+        "version_number": 1,
+        "storage_key": "7495027a-e68c-4c6c-93b0-be602dbd8de4",
+        "original_filename": "records.txt",
+        "mime_type": "text/plain; charset=utf-8",
+        "size_bytes": 826,
+        "created_at": "2026-10-24T10:26:30.313315+00:00",
+        "status": "ready",
+        "sha256": "337f3cd2c665fbd03ad95a1d1cf603f6f7629dc452d482e86c2dac68f341f289",
+        "updated_at": "2026-10-24T10:26:30.385602+00:00"
+      },
+      "key": "records",
+      "sha256": "337f3cd2c665fbd03ad95a1d1cf603f6f7629dc452d482e86c2dac68f341f289"
+    },
+    "support": {
+      "id": "22ee08a2-7300-4179-a607-68ffbb62833b",
+      "title": "Стандарт поддержки клиентов",
+      "latest_version": {
+        "id": "f51a977a-f9fd-44d0-9757-e5e48b4b793e",
+        "document_id": "22ee08a2-7300-4179-a607-68ffbb62833b",
+        "version_number": 1,
+        "storage_key": "4e015ec0-480e-44df-a2d7-43273c1ddfe2",
+        "original_filename": "support.docx",
+        "mime_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "size_bytes": 36938,
+        "created_at": "2026-10-24T10:26:30.56163+00:00",
+        "status": "ready",
+        "sha256": "af1bc73764e6ff1d784eb3700f35c20a717792822d1dd72f979e3e954c52cb87",
+        "updated_at": "2026-10-24T10:26:30.606293+00:00"
+      },
+      "key": "support",
+      "sha256": "af1bc73764e6ff1d784eb3700f35c20a717792822d1dd72f979e3e954c52cb87"
+    },
+    "premium": {
+      "id": "3a5ebadb-3a7d-4ca5-9daa-c74cff7afcf3",
+      "title": "Исключение для премиального обслуживания",
+      "latest_version": {
+        "id": "afd1391a-7f31-428c-9e47-56391c51a77c",
+        "document_id": "3a5ebadb-3a7d-4ca5-9daa-c74cff7afcf3",
+        "version_number": 1,
+        "storage_key": "4b20f4fb-7ed2-45b4-ab85-e339e2b92c68",
+        "original_filename": "premium.txt",
+        "mime_type": "text/plain; charset=utf-8",
+        "size_bytes": 651,
+        "created_at": "2026-10-24T10:26:30.783599+00:00",
+        "status": "ready",
+        "sha256": "82354455c10616f432135a86b07bd897a4de751af36c56af764a51fd07293025",
+        "updated_at": "2026-10-24T10:26:30.818644+00:00"
+      },
+      "key": "premium",
+      "sha256": "82354455c10616f432135a86b07bd897a4de751af36c56af764a51fd07293025"
+    },
+    "private": {
+      "id": "3e83cebc-9736-4356-8f72-cd4f75d0f024",
+      "title": "Закрытая финансовая памятка",
+      "latest_version": {
+        "id": "2a2c8128-9e9c-4332-b826-943d0d0c9d97",
+        "document_id": "3e83cebc-9736-4356-8f72-cd4f75d0f024",
+        "version_number": 1,
+        "storage_key": "e612ab16-72d0-4ec1-b8c0-c9a7cd25e2f8",
+        "original_filename": "private.txt",
+        "mime_type": "text/plain; charset=utf-8",
+        "size_bytes": 196,
+        "created_at": "2026-10-24T10:26:31.001276+00:00",
+        "status": "ready",
+        "sha256": "b2b9bfb02c42fb6505ef2c579997965be1b9c6c3d0ff38767691530c152b2223",
+        "updated_at": "2026-10-24T10:26:31.030279+00:00"
+      },
+      "key": "private",
+      "sha256": "b2b9bfb02c42fb6505ef2c579997965be1b9c6c3d0ff38767691530c152b2223"
+    }
+  },
+  "chunks": [
+    {
+      "chunk_id": "673ed4a7-1742-4588-a890-2a1cd14795dc",
+      "document_version_id": "f51a977a-f9fd-44d0-9757-e5e48b4b793e",
+      "document_id": "22ee08a2-7300-4179-a607-68ffbb62833b",
+      "document_title": "Стандарт поддержки клиентов",
+      "version_number": 1,
+      "chunk_index": 0,
+      "content": "1. Для стандартного обслуживания критический инцидент регистрирует оператор поддержки. Первый ответ клиенту предоставляется в течение двух часов.",
+      "page_number": null,
+      "section_number": "1",
+      "section_title": "Для стандартного обслуживания критический инцидент регистрирует оператор поддержки. Первый ответ клиенту предоставляется в течение двух часов."
+    },
+    {
+      "chunk_id": "10d40d4e-e315-463c-bd05-ff9fb873d214",
+      "document_version_id": "f51a977a-f9fd-44d0-9757-e5e48b4b793e",
+      "document_id": "22ee08a2-7300-4179-a607-68ffbb62833b",
+      "document_title": "Стандарт поддержки клиентов",
+      "version_number": 1,
+      "chunk_index": 1,
+      "content": "2. Ночью обращения стандартного обслуживания принимаются автоматически, обработка начинается в 09:00 следующего рабочего дня.",
+      "page_number": null,
+      "section_number": "2",
+      "section_title": "Ночью обращения стандартного обслуживания принимаются автоматически, обработка начинается в 09:00 следующего рабочего дня."
+    },
+    {
+      "chunk_id": "846308e6-f7db-4976-925a-62b7d9a498fb",
+      "document_version_id": "f51a977a-f9fd-44d0-9757-e5e48b4b793e",
+      "document_id": "22ee08a2-7300-4179-a607-68ffbb62833b",
+      "document_title": "Стандарт поддержки клиентов",
+      "version_number": 1,
+      "chunk_index": 2,
+      "content": "3. Эскалацию критического инцидента выполняет дежурный инженер после подтверждения влияния на клиента.",
+      "page_number": null,
+      "section_number": "3",
+      "section_title": "Эскалацию критического инцидента выполняет дежурный инженер после подтверждения влияния на клиента."
+    },
+    {
+      "chunk_id": "4f29e31a-bfb5-470e-b8f1-e60e2c1090a0",
+      "document_version_id": "48a455a5-8895-4ff3-aeb4-d148c45b45e3",
+      "document_id": "276bcc74-0ef0-43c7-83b1-1ac69ca1d7ab",
+      "document_title": "Эвакуация из офисного здания",
+      "version_number": 1,
+      "chunk_index": 0,
+      "content": "1. При пожарной тревоге посетители и сотрудники немедленно покидают здание по\nближайшей лестнице. Пользоваться лифтом запрещается.",
+      "page_number": 1,
+      "section_number": "1",
+      "section_title": "При пожарной тревоге посетители и сотрудники немедленно покидают здание по"
+    },
+    {
+      "chunk_id": "5022b93a-c5d6-4f97-bf7b-ccbfb9b81f20",
+      "document_version_id": "48a455a5-8895-4ff3-aeb4-d148c45b45e3",
+      "document_id": "276bcc74-0ef0-43c7-83b1-1ac69ca1d7ab",
+      "document_title": "Эвакуация из офисного здания",
+      "version_number": 1,
+      "chunk_index": 1,
+      "content": "2. Место сбора после эвакуации — северная парковка за шлагбаумом. Дежурный\nадминистратор сверяет присутствующих со списком.",
+      "page_number": 2,
+      "section_number": "2",
+      "section_title": "Место сбора после эвакуации — северная парковка за шлагбаумом. Дежурный"
+    },
+    {
+      "chunk_id": "a2032270-81bc-4a4f-a1e7-c9dc325ec916",
+      "document_version_id": "48a455a5-8895-4ff3-aeb4-d148c45b45e3",
+      "document_id": "276bcc74-0ef0-43c7-83b1-1ac69ca1d7ab",
+      "document_title": "Эвакуация из офисного здания",
+      "version_number": 1,
+      "chunk_index": 2,
+      "content": "3. Возвращение в здание разрешается только после разрешения руководителя\nпожарного расчёта. Забытая личная вещь не является основанием для возвращения.",
+      "page_number": 3,
+      "section_number": "3",
+      "section_title": "Возвращение в здание разрешается только после разрешения руководителя"
+    },
+    {
+      "chunk_id": "dab487e9-6b06-4bb9-8a3f-2ce4ca1789b7",
+      "document_version_id": "afd1391a-7f31-428c-9e47-56391c51a77c",
+      "document_id": "3a5ebadb-3a7d-4ca5-9daa-c74cff7afcf3",
+      "document_title": "Исключение для премиального обслуживания",
+      "version_number": 1,
+      "chunk_index": 0,
+      "content": "1. Для премиального обслуживания первый ответ на критический инцидент предоставляется в течение пятнадцати минут круглосуточно. Это исключение заменяет двухчасовой срок стандарта поддержки только для клиентов с премиальным договором.",
+      "page_number": null,
+      "section_number": "1",
+      "section_title": "Для премиального обслуживания первый ответ на критический инцидент предоставляется в течение пятнадцати минут круглосуточно. Это исключение заменяет двухчасовой срок стандарта поддержки только для клиентов с премиальным договором."
+    },
+    {
+      "chunk_id": "840b4600-7f6e-4bea-82e2-62d85a5efcc4",
+      "document_version_id": "afd1391a-7f31-428c-9e47-56391c51a77c",
+      "document_id": "3a5ebadb-3a7d-4ca5-9daa-c74cff7afcf3",
+      "document_title": "Исключение для премиального обслуживания",
+      "version_number": 1,
+      "chunk_index": 1,
+      "content": "2. Статус премиального договора подтверждает менеджер аккаунта по реестру. Устного заявления клиента недостаточно.",
+      "page_number": null,
+      "section_number": "2",
+      "section_title": "Статус премиального договора подтверждает менеджер аккаунта по реестру. Устного заявления клиента недостаточно."
+    },
+    {
+      "chunk_id": "244755ca-01c4-492b-bfc0-9c38074b9f96",
+      "document_version_id": "44aea1d6-ce00-46c7-b1b3-ce3be766501a",
+      "document_id": "73ddc38b-b48d-4f14-b46d-e663283607bc",
+      "document_title": "Командировочные расходы",
+      "version_number": 2,
+      "chunk_index": 0,
+      "content": "1. Перед служебной поездкой сотрудник согласует заявку с финансовым менеджером. Билеты покупаются после согласования.",
+      "page_number": null,
+      "section_number": "1",
+      "section_title": "Перед служебной поездкой сотрудник согласует заявку с финансовым менеджером. Билеты покупаются после согласования."
+    },
+    {
+      "chunk_id": "fb69acce-5609-4276-b30c-a452e9df2921",
+      "document_version_id": "44aea1d6-ce00-46c7-b1b3-ce3be766501a",
+      "document_id": "73ddc38b-b48d-4f14-b46d-e663283607bc",
+      "document_title": "Командировочные расходы",
+      "version_number": 2,
+      "chunk_index": 1,
+      "content": "2. Суточные за день командировки:",
+      "page_number": null,
+      "section_number": "2",
+      "section_title": "Суточные за день командировки:"
+    },
+    {
+      "chunk_id": "58c1d500-89ae-43b7-be9a-f45b6974726c",
+      "document_version_id": "44aea1d6-ce00-46c7-b1b3-ce3be766501a",
+      "document_id": "73ddc38b-b48d-4f14-b46d-e663283607bc",
+      "document_title": "Командировочные расходы",
+      "version_number": 2,
+      "chunk_index": 2,
+      "content": "Территория\tСумма",
+      "page_number": null,
+      "section_number": "2",
+      "section_title": "Суточные за день командировки:"
+    },
+    {
+      "chunk_id": "52e6d4fb-a59a-4389-ab45-eb4634d006ff",
+      "document_version_id": "44aea1d6-ce00-46c7-b1b3-ce3be766501a",
+      "document_id": "73ddc38b-b48d-4f14-b46d-e663283607bc",
+      "document_title": "Командировочные расходы",
+      "version_number": 2,
+      "chunk_index": 3,
+      "content": "Россия\t900 рублей",
+      "page_number": null,
+      "section_number": "2",
+      "section_title": "Суточные за день командировки:"
+    },
+    {
+      "chunk_id": "660a19ee-7da0-4918-bd6f-3242202c566d",
+      "document_version_id": "44aea1d6-ce00-46c7-b1b3-ce3be766501a",
+      "document_id": "73ddc38b-b48d-4f14-b46d-e663283607bc",
+      "document_title": "Командировочные расходы",
+      "version_number": 2,
+      "chunk_index": 4,
+      "content": "Казахстан\t1800 рублей",
+      "page_number": null,
+      "section_number": "2",
+      "section_title": "Суточные за день командировки:"
+    },
+    {
+      "chunk_id": "c5df9829-f039-4f42-b0f8-11376fc15888",
+      "document_version_id": "44aea1d6-ce00-46c7-b1b3-ce3be766501a",
+      "document_id": "73ddc38b-b48d-4f14-b46d-e663283607bc",
+      "document_title": "Командировочные расходы",
+      "version_number": 2,
+      "chunk_index": 5,
+      "content": "3. Авансовый отчёт и чеки необходимо передать в бухгалтерию не позднее пяти рабочих дней после возвращения.",
+      "page_number": null,
+      "section_number": "3",
+      "section_title": "Авансовый отчёт и чеки необходимо передать в бухгалтерию не позднее пяти рабочих дней после возвращения."
+    },
+    {
+      "chunk_id": "271d4aef-5bd8-489e-9166-3915ca7b781a",
+      "document_version_id": "44aea1d6-ce00-46c7-b1b3-ce3be766501a",
+      "document_id": "73ddc38b-b48d-4f14-b46d-e663283607bc",
+      "document_title": "Командировочные расходы",
+      "version_number": 2,
+      "chunk_index": 6,
+      "content": "4. Расходы на алкоголь не возмещаются. Оплата такси допускается только при отсутствии общественного транспорта.",
+      "page_number": null,
+      "section_number": "4",
+      "section_title": "Расходы на алкоголь не возмещаются. Оплата такси допускается только при отсутствии общественного транспорта."
+    },
+    {
+      "chunk_id": "4a06b824-b999-4c4b-8634-fcb06b8a95ef",
+      "document_version_id": "377bf4ac-236d-4659-a749-990c125cd534",
+      "document_id": "792278e2-cacf-4e8f-9a19-f0c8656b9a45",
+      "document_title": "Восстановление резервных копий",
+      "version_number": 1,
+      "chunk_index": 0,
+      "content": "1. Инкрементное резервирование выполняется ежедневно в 02:00. Полная резервная копия создаётся по воскресеньям.",
+      "page_number": null,
+      "section_number": "1",
+      "section_title": "Инкрементное резервирование выполняется ежедневно в 02:00. Полная резервная копия создаётся по воскресеньям."
+    },
+    {
+      "chunk_id": "dacb4aa9-e1e4-4f29-8f18-ed5a2d382ca4",
+      "document_version_id": "377bf4ac-236d-4659-a749-990c125cd534",
+      "document_id": "792278e2-cacf-4e8f-9a19-f0c8656b9a45",
+      "document_title": "Восстановление резервных копий",
+      "version_number": 1,
+      "chunk_index": 1,
+      "content": "2. Копии хранятся в отдельном хранилище 45 дней. Проверку восстановления инженер эксплуатации проводит ежемесячно.\nВ журнале технического обслуживания фиксируются номер операции, дата проверки носителя и состояние оборудования. В журнале технического обслуживания фиксируются номер операции, дата проверки носителя и состояние оборудования. В журнале технического обслуживания фиксируются номер операции, дата проверки носителя и состояние оборудования. В журнале технического обслуживания фиксируются номер операции, дата проверки носителя и состояние оборудования. В журнале технического обслуживания фиксируются номер операции, дата проверки носителя и состояние оборудования. В журнале технического обслуживания фиксируются номер операции, дата проверки носителя и состояние оборудования. В журнале технического обслуживания фиксируются номер операции, дата проверки носителя и состояние оборудования. В журнале технического обслуживания фиксируются номер операции, дата проверки носителя и состояние оборудования. В журнале технического обслуживания фиксируются номер операции, дата проверки носителя и состояние оборудования. В журнале технического обслуживания фиксируются номер операции, дата проверки носителя и состояние оборудования. В журнале технического обслуживания фиксируются номер операции, дата проверки носителя и состояние оборудования. В журнале технического обслуживания фиксируются номер операции, дата проверки носителя и состояние оборудования. В журнале технического обслуживания фиксируются номер операции, дата проверки носителя и состояние оборудования. В журнале технического обслуживания фиксируются номер операции, дата проверки носителя и состояние оборудования. В журнале технического обслуживания фиксируются номер операции, дата проверки носителя и состояние оборудования. В журнале технического обслуживания фиксируются номер операции, дата проверки носителя и состояние оборудования. В журнале технического обслуживания фиксируются номер операции, дата проверки носителя и состояние оборудования. В журнале технического обслуживания фиксируются номер операции, дата проверки носителя и состояние оборудования. В журнале технического обслуживания фиксируются номер операции, дата проверки носителя и состояние оборудования. В журнале технического обслуживания фиксируются номер операции, дата проверки носителя и состояние оборудования. В журнале технического обслуживания фиксируются номер операции, дата проверки носителя и состояние оборудования. В журнале технического обслуживания фиксируются номер операции, дата проверки носителя и состояние оборудования.  При потере основной базы восстановление начинается с последней полной копии, затем применяются все последующие инкременты. Целевое время восстановления базы — 90 минут.",
+      "page_number": null,
+      "section_number": "2",
+      "section_title": "Копии хранятся в отдельном хранилище 45 дней. Проверку восстановления инженер эксплуатации проводит ежемесячно."
+    },
+    {
+      "chunk_id": "b9e42c08-bc2e-4613-bd71-c2e633222a1a",
+      "document_version_id": "f4535836-29ec-4243-b993-c06af0b400fd",
+      "document_id": "a96bc416-abed-427f-bd7e-a37b39a1c2d1",
+      "document_title": "Транспортировка лабораторных образцов",
+      "version_number": 1,
+      "chunk_index": 0,
+      "content": "1. Биологические образцы перевозятся в герметичных контейнерах с индикатором температуры. При нарушении герметичности образец утилизируется.",
+      "page_number": null,
+      "section_number": "1",
+      "section_title": "Биологические образцы перевозятся в герметичных контейнерах с индикатором температуры. При нарушении герметичности образец утилизируется."
+    },
+    {
+      "chunk_id": "b651a517-4c6c-4bd8-b248-c90b0c07f68f",
+      "document_version_id": "f4535836-29ec-4243-b993-c06af0b400fd",
+      "document_id": "a96bc416-abed-427f-bd7e-a37b39a1c2d1",
+      "document_title": "Транспортировка лабораторных образцов",
+      "version_number": 1,
+      "chunk_index": 1,
+      "content": "2. Условия хранения образцов:",
+      "page_number": null,
+      "section_number": "2",
+      "section_title": "Условия хранения образцов:"
+    },
+    {
+      "chunk_id": "edbf7764-cfe2-4b6e-8d73-0e473be54fd6",
+      "document_version_id": "f4535836-29ec-4243-b993-c06af0b400fd",
+      "document_id": "a96bc416-abed-427f-bd7e-a37b39a1c2d1",
+      "document_title": "Транспортировка лабораторных образцов",
+      "version_number": 1,
+      "chunk_index": 2,
+      "content": "Материал\tТемпература\tПредельное время",
+      "page_number": null,
+      "section_number": "2",
+      "section_title": "Условия хранения образцов:"
+    },
+    {
+      "chunk_id": "c052a5b8-1541-4f5f-9a56-f56d92f00e69",
+      "document_version_id": "f4535836-29ec-4243-b993-c06af0b400fd",
+      "document_id": "a96bc416-abed-427f-bd7e-a37b39a1c2d1",
+      "document_title": "Транспортировка лабораторных образцов",
+      "version_number": 1,
+      "chunk_index": 3,
+      "content": "Сыворотка\tот +2 до +8 градусов\t24 часа",
+      "page_number": null,
+      "section_number": "2",
+      "section_title": "Условия хранения образцов:"
+    },
+    {
+      "chunk_id": "55089196-f3f4-4303-9cc8-7114a171a0f6",
+      "document_version_id": "f4535836-29ec-4243-b993-c06af0b400fd",
+      "document_id": "a96bc416-abed-427f-bd7e-a37b39a1c2d1",
+      "document_title": "Транспортировка лабораторных образцов",
+      "version_number": 1,
+      "chunk_index": 4,
+      "content": "Цельная кровь\tот +18 до +25 градусов\t6 часов",
+      "page_number": null,
+      "section_number": "2",
+      "section_title": "Условия хранения образцов:"
+    },
+    {
+      "chunk_id": "c88500e9-e026-4cb4-8113-9c458af6994f",
+      "document_version_id": "f4535836-29ec-4243-b993-c06af0b400fd",
+      "document_id": "a96bc416-abed-427f-bd7e-a37b39a1c2d1",
+      "document_title": "Транспортировка лабораторных образцов",
+      "version_number": 1,
+      "chunk_index": 5,
+      "content": "3. Превышение температурного диапазона регистрирует лаборант. Решение о пригодности принимает заведующий лабораторией.",
+      "page_number": null,
+      "section_number": "3",
+      "section_title": "Превышение температурного диапазона регистрирует лаборант. Решение о пригодности принимает заведующий лабораторией."
+    },
+    {
+      "chunk_id": "9fd7258f-ff7e-4065-a36d-b8fa5231fcee",
+      "document_version_id": "3e442e45-26a1-42c0-9578-f4d5327f8ee7",
+      "document_id": "b9afbc02-59ac-43c8-a70e-9d3fac7c1c34",
+      "document_title": "Защита учётных записей",
+      "version_number": 1,
+      "chunk_index": 0,
+      "content": "1. Доступ к корпоративной почте разрешён только с многофакторной аутентификацией. Одноразовые коды запрещено сообщать коллегам и службе поддержки.",
+      "page_number": null,
+      "section_number": "1",
+      "section_title": "Доступ к корпоративной почте разрешён только с многофакторной аутентификацией. Одноразовые коды запрещено сообщать коллегам и службе поддержки."
+    },
+    {
+      "chunk_id": "1fc911c9-3882-4d44-9f3b-670688d0cd67",
+      "document_version_id": "3e442e45-26a1-42c0-9578-f4d5327f8ee7",
+      "document_id": "b9afbc02-59ac-43c8-a70e-9d3fac7c1c34",
+      "document_title": "Защита учётных записей",
+      "version_number": 1,
+      "chunk_index": 1,
+      "content": "2. При подозрении на компрометацию учётной записи сотрудник немедленно блокирует сеансы через портал безопасности и уведомляет дежурного аналитика SOC.",
+      "page_number": null,
+      "section_number": "2",
+      "section_title": "При подозрении на компрометацию учётной записи сотрудник немедленно блокирует сеансы через портал безопасности и уведомляет дежурного аналитика SOC."
+    },
+    {
+      "chunk_id": "ec7104fa-2a80-421c-b5b8-a5c5bfee96c0",
+      "document_version_id": "3e442e45-26a1-42c0-9578-f4d5327f8ee7",
+      "document_id": "b9afbc02-59ac-43c8-a70e-9d3fac7c1c34",
+      "document_title": "Защита учётных записей",
+      "version_number": 1,
+      "chunk_index": 2,
+      "content": "3. Пароль содержит минимум четырнадцать символов. Повторное использование пароля из личных сервисов запрещено. Плановая смена требуется раз в сто восемьдесят дней.",
+      "page_number": null,
+      "section_number": "3",
+      "section_title": "Пароль содержит минимум четырнадцать символов. Повторное использование пароля из личных сервисов запрещено. Плановая смена требуется раз в сто восемьдесят дней."
+    },
+    {
+      "chunk_id": "8e06fac9-bb2a-4d47-aa9b-ef89223e93b5",
+      "document_version_id": "246aa3fc-f79a-4ef9-88a0-c0f0df0fa82e",
+      "document_id": "ea195f74-8985-4886-ac20-3c4830d5c7c3",
+      "document_title": "Закупка оборудования",
+      "version_number": 1,
+      "chunk_index": 0,
+      "content": "1. Закупка оборудования стоимостью до 60000 рублей согласуется начальником отдела. Для суммы свыше 60000 рублей дополнительно требуется одобрение финансового директора.",
+      "page_number": null,
+      "section_number": "1",
+      "section_title": "Закупка оборудования стоимостью до 60000 рублей согласуется начальником отдела. Для суммы свыше 60000 рублей дополнительно требуется одобрение финансового директора."
+    },
+    {
+      "chunk_id": "f39b623a-55c9-447a-8005-9a91d6e49508",
+      "document_version_id": "246aa3fc-f79a-4ef9-88a0-c0f0df0fa82e",
+      "document_id": "ea195f74-8985-4886-ac20-3c4830d5c7c3",
+      "document_title": "Закупка оборудования",
+      "version_number": 1,
+      "chunk_index": 1,
+      "content": "2. Для закупок свыше 200000 рублей отдел снабжения собирает три коммерческих предложения. Единственный поставщик допускается по письменному обоснованию директора.",
+      "page_number": null,
+      "section_number": "2",
+      "section_title": "Для закупок свыше 200000 рублей отдел снабжения собирает три коммерческих предложения. Единственный поставщик допускается по письменному обоснованию директора."
+    },
+    {
+      "chunk_id": "48a59a33-825f-4c60-99b1-67d26bc4f46a",
+      "document_version_id": "246aa3fc-f79a-4ef9-88a0-c0f0df0fa82e",
+      "document_id": "ea195f74-8985-4886-ac20-3c4830d5c7c3",
+      "document_title": "Закупка оборудования",
+      "version_number": 1,
+      "chunk_index": 2,
+      "content": "3. После доставки кладовщик проверяет комплектность и подписывает акт приёмки. Повреждённое оборудование не принимается до оформления претензии.",
+      "page_number": null,
+      "section_number": "3",
+      "section_title": "После доставки кладовщик проверяет комплектность и подписывает акт приёмки. Повреждённое оборудование не принимается до оформления претензии."
+    },
+    {
+      "chunk_id": "68b28349-435b-4c97-a846-670ece86cd6a",
+      "document_version_id": "124a92a1-631a-4cc4-90c2-ddec74666557",
+      "document_id": "f75f60db-0414-44b1-bd37-707731dc45ee",
+      "document_title": "Хранение договоров",
+      "version_number": 1,
+      "chunk_index": 0,
+      "content": "1. Подписанные договоры хранятся семь лет после окончания действия. Оригиналы передаются в архив по описи не позднее тридцати дней после закрытия договора.",
+      "page_number": null,
+      "section_number": "1",
+      "section_title": "Подписанные договоры хранятся семь лет после окончания действия. Оригиналы передаются в архив по описи не позднее тридцати дней после закрытия договора."
+    },
+    {
+      "chunk_id": "afccb23b-9534-469f-81c4-53602553a5e7",
+      "document_version_id": "124a92a1-631a-4cc4-90c2-ddec74666557",
+      "document_id": "f75f60db-0414-44b1-bd37-707731dc45ee",
+      "document_title": "Хранение договоров",
+      "version_number": 1,
+      "chunk_index": 1,
+      "content": "2. Уничтожение договоров согласует юридический отдел. Если ведётся судебный спор, уничтожение запрещено до его завершения независимо от истечения срока хранения.",
+      "page_number": null,
+      "section_number": "2",
+      "section_title": "Уничтожение договоров согласует юридический отдел. Если ведётся судебный спор, уничтожение запрещено до его завершения независимо от истечения срока хранения."
+    },
+    {
+      "chunk_id": "21ca050a-a8a9-41a0-ae6e-7ca70bf3dba3",
+      "document_version_id": "124a92a1-631a-4cc4-90c2-ddec74666557",
+      "document_id": "f75f60db-0414-44b1-bd37-707731dc45ee",
+      "document_title": "Хранение договоров",
+      "version_number": 1,
+      "chunk_index": 2,
+      "content": "3. Электронные копии доступны только юристам и владельцу договора. Доступ временного сотрудника прекращается в день увольнения.",
+      "page_number": null,
+      "section_number": "3",
+      "section_title": "Электронные копии доступны только юристам и владельцу договора. Доступ временного сотрудника прекращается в день увольнения."
+    }
+  ],
+  "questions": [
+    {
+      "id": "d01",
+      "query": "Кому передать авансовый отчёт и чеки?",
+      "gold": [
+        "Авансовый отчёт и чеки"
+      ],
+      "facts": [
+        "бухгалтер",
+        "пяти"
+      ],
+      "document_key": "travel",
+      "split": "development",
+      "gold_chunk_ids": [
+        "c5df9829-f039-4f42-b0f8-11376fc15888"
+      ]
+    },
+    {
+      "id": "d02",
+      "query": "Я вернулся из поездки по работе. Сколько у меня времени, чтобы отчитаться о тратах?",
+      "gold": [
+        "Авансовый отчёт и чеки"
+      ],
+      "facts": [
+        "пяти",
+        "рабоч"
+      ],
+      "document_key": "travel",
+      "split": "development",
+      "gold_chunk_ids": [
+        "c5df9829-f039-4f42-b0f8-11376fc15888"
+      ]
+    },
+    {
+      "id": "d03",
+      "query": "Сколько суточных положено при поездке в Казахстан?",
+      "gold": [
+        "Казахстан"
+      ],
+      "facts": [
+        "1800"
+      ],
+      "document_key": "travel",
+      "split": "development",
+      "gold_chunk_ids": [
+        "660a19ee-7da0-4918-bd6f-3242202c566d"
+      ]
+    },
+    {
+      "id": "d04",
+      "query": "Можно ли оплатить такси, когда автобусы ходят?",
+      "gold": [
+        "Расходы на алкоголь"
+      ],
+      "facts": [
+        "нет"
+      ],
+      "kind": "negation",
+      "document_key": "travel",
+      "split": "development",
+      "gold_chunk_ids": [
+        "271d4aef-5bd8-489e-9166-3915ca7b781a"
+      ]
+    },
+    {
+      "id": "d05",
+      "query": "Кого уведомить при компрометации учётной записи?",
+      "gold": [
+        "При подозрении"
+      ],
+      "facts": [
+        "SOC"
+      ],
+      "document_key": "security",
+      "split": "development",
+      "gold_chunk_ids": [
+        "1fc911c9-3882-4d44-9f3b-670688d0cd67"
+      ]
+    },
+    {
+      "id": "d06",
+      "query": "Похоже, кто-то вошёл в мой аккаунт. Как действовать?",
+      "gold": [
+        "При подозрении"
+      ],
+      "facts": [
+        "блокир",
+        "SOC"
+      ],
+      "document_key": "security",
+      "split": "development",
+      "gold_chunk_ids": [
+        "1fc911c9-3882-4d44-9f3b-670688d0cd67"
+      ]
+    },
+    {
+      "id": "d07",
+      "query": "Можно сообщать одноразовые коды службе поддержки?",
+      "gold": [
+        "Доступ к корпоративной"
+      ],
+      "facts": [
+        "запрещ"
+      ],
+      "document_key": "security",
+      "split": "development",
+      "gold_chunk_ids": [
+        "9fd7258f-ff7e-4065-a36d-b8fa5231fcee"
+      ]
+    },
+    {
+      "id": "d08",
+      "query": "А как часто его менять?",
+      "history": [
+        {
+          "role": "user",
+          "content": "Каковы требования к паролю корпоративной учётной записи?"
+        },
+        {
+          "role": "assistant",
+          "content": "Пароль содержит минимум четырнадцать символов."
+        }
+      ],
+      "gold": [
+        "Пароль содержит"
+      ],
+      "facts": [
+        "восемьдесят"
+      ],
+      "kind": "followup",
+      "document_key": "security",
+      "split": "development",
+      "gold_chunk_ids": [
+        "ec7104fa-2a80-421c-b5b8-a5c5bfee96c0"
+      ]
+    },
+    {
+      "id": "d09",
+      "query": "Кто проверяет комплектность оборудования после доставки?",
+      "gold": [
+        "После доставки"
+      ],
+      "facts": [
+        "кладовщик"
+      ],
+      "document_key": "procurement",
+      "split": "development",
+      "gold_chunk_ids": [
+        "48a59a33-825f-4c60-99b1-67d26bc4f46a"
+      ]
+    },
+    {
+      "id": "d10",
+      "query": "Нужен ноутбук за 85000 рублей. Чьё разрешение получить?",
+      "gold": [
+        "Закупка оборудования стоимостью"
+      ],
+      "facts": [
+        "начальник",
+        "финансов"
+      ],
+      "document_key": "procurement",
+      "split": "development",
+      "gold_chunk_ids": [
+        "8e06fac9-bb2a-4d47-aa9b-ef89223e93b5"
+      ]
+    },
+    {
+      "id": "d11",
+      "query": "Разрешено ли принять сломанный прибор без претензии?",
+      "gold": [
+        "После доставки"
+      ],
+      "facts": [
+        "не принима"
+      ],
+      "document_key": "procurement",
+      "split": "development",
+      "gold_chunk_ids": [
+        "48a59a33-825f-4c60-99b1-67d26bc4f46a"
+      ]
+    },
+    {
+      "id": "d12",
+      "query": "Какие согласования нужны для закупки за 250000 рублей и сколько предложений собрать?",
+      "gold": [
+        "Закупка оборудования стоимостью",
+        "Для закупок свыше"
+      ],
+      "facts": [
+        "директор",
+        "три"
+      ],
+      "kind": "compound",
+      "document_key": "procurement",
+      "split": "development",
+      "gold_chunk_ids": [
+        "8e06fac9-bb2a-4d47-aa9b-ef89223e93b5",
+        "f39b623a-55c9-447a-8005-9a91d6e49508"
+      ]
+    },
+    {
+      "id": "d13",
+      "query": "Как часто инженер эксплуатации проверяет восстановление?",
+      "gold": [
+        "Копии хранятся"
+      ],
+      "facts": [
+        "ежемесяч"
+      ],
+      "document_key": "backup",
+      "split": "development",
+      "gold_chunk_ids": [
+        "dacb4aa9-e1e4-4f29-8f18-ed5a2d382ca4"
+      ]
+    },
+    {
+      "id": "d14",
+      "query": "База целиком пропала. В какой последовательности вернуть данные?",
+      "gold": [
+        "При потере основной базы"
+      ],
+      "facts": [
+        "полной",
+        "инкремент"
+      ],
+      "document_key": "backup",
+      "split": "development",
+      "gold_chunk_ids": [
+        "dacb4aa9-e1e4-4f29-8f18-ed5a2d382ca4"
+      ]
+    },
+    {
+      "id": "d15",
+      "query": "За сколько минут требуется поднять базу после потери?",
+      "gold": [
+        "При потере основной базы"
+      ],
+      "facts": [
+        "90"
+      ],
+      "document_key": "backup",
+      "split": "development",
+      "gold_chunk_ids": [
+        "dacb4aa9-e1e4-4f29-8f18-ed5a2d382ca4"
+      ]
+    },
+    {
+      "id": "d16",
+      "query": "Когда создаётся полная резервная копия?",
+      "gold": [
+        "Инкрементное резервирование"
+      ],
+      "facts": [
+        "воскресень"
+      ],
+      "document_key": "backup",
+      "split": "development",
+      "gold_chunk_ids": [
+        "4a06b824-b999-4c4b-8634-fcb06b8a95ef"
+      ]
+    },
+    {
+      "id": "h01",
+      "query": "Кто принимает решение о пригодности образца?",
+      "gold": [
+        "Превышение температурного"
+      ],
+      "facts": [
+        "заведующ"
+      ],
+      "document_key": "laboratory",
+      "split": "holdout",
+      "gold_chunk_ids": [
+        "c88500e9-e026-4cb4-8113-9c458af6994f"
+      ]
+    },
+    {
+      "id": "h02",
+      "query": "Пробирка протекла во время дороги. Что делать с содержимым?",
+      "gold": [
+        "Биологические образцы"
+      ],
+      "facts": [
+        "утилиз"
+      ],
+      "document_key": "laboratory",
+      "split": "holdout",
+      "gold_chunk_ids": [
+        "b9e42c08-bc2e-4613-bd71-c2e633222a1a"
+      ]
+    },
+    {
+      "id": "h03",
+      "query": "Как долго можно везти сыворотку и при какой температуре?",
+      "gold": [
+        "Сыворотка"
+      ],
+      "facts": [
+        "24",
+        "+2",
+        "+8"
+      ],
+      "document_key": "laboratory",
+      "split": "holdout",
+      "gold_chunk_ids": [
+        "c052a5b8-1541-4f5f-9a56-f56d92f00e69"
+      ]
+    },
+    {
+      "id": "h04",
+      "query": "Кому сообщить, если образец перегрелся, и кто решит, можно ли его использовать?",
+      "gold": [
+        "Превышение температурного"
+      ],
+      "facts": [
+        "лаборант",
+        "заведующ"
+      ],
+      "document_key": "laboratory",
+      "split": "holdout",
+      "gold_chunk_ids": [
+        "c88500e9-e026-4cb4-8113-9c458af6994f"
+      ]
+    },
+    {
+      "id": "h05",
+      "query": "Где место сбора после эвакуации?",
+      "gold": [
+        "Место сбора"
+      ],
+      "facts": [
+        "северн",
+        "парковк"
+      ],
+      "document_key": "fire",
+      "split": "holdout",
+      "gold_chunk_ids": [
+        "5022b93a-c5d6-4f97-bf7b-ccbfb9b81f20"
+      ]
+    },
+    {
+      "id": "h06",
+      "query": "Сработала сигнализация. Можно спуститься в кабине подъёмника?",
+      "gold": [
+        "При пожарной тревоге"
+      ],
+      "facts": [
+        "запрещ"
+      ],
+      "document_key": "fire",
+      "split": "holdout",
+      "gold_chunk_ids": [
+        "4f29e31a-bfb5-470e-b8f1-e60e2c1090a0"
+      ]
+    },
+    {
+      "id": "h07",
+      "query": "Кто разрешает снова войти в офис после пожара?",
+      "gold": [
+        "Возвращение в здание"
+      ],
+      "facts": [
+        "руководител",
+        "пожарн"
+      ],
+      "document_key": "fire",
+      "split": "holdout",
+      "gold_chunk_ids": [
+        "a2032270-81bc-4a4f-a1e7-c9dc325ec916"
+      ]
+    },
+    {
+      "id": "h08",
+      "query": "А если я забыл там телефон?",
+      "history": [
+        {
+          "role": "user",
+          "content": "Когда можно вернуться в здание после эвакуации?"
+        },
+        {
+          "role": "assistant",
+          "content": "Только после разрешения руководителя пожарного расчёта."
+        }
+      ],
+      "gold": [
+        "Возвращение в здание"
+      ],
+      "facts": [
+        "не является"
+      ],
+      "kind": "followup",
+      "document_key": "fire",
+      "split": "holdout",
+      "gold_chunk_ids": [
+        "a2032270-81bc-4a4f-a1e7-c9dc325ec916"
+      ]
+    },
+    {
+      "id": "h09",
+      "query": "Как долго хранятся подписанные договоры?",
+      "gold": [
+        "Подписанные договоры"
+      ],
+      "facts": [
+        "семь"
+      ],
+      "document_key": "records",
+      "split": "holdout",
+      "gold_chunk_ids": [
+        "68b28349-435b-4c97-a846-670ece86cd6a"
+      ]
+    },
+    {
+      "id": "h10",
+      "query": "Семь лет истекли, но контрагент судится с нами. Можно выбросить оригиналы?",
+      "gold": [
+        "Уничтожение договоров"
+      ],
+      "facts": [
+        "запрещ"
+      ],
+      "document_key": "records",
+      "split": "holdout",
+      "gold_chunk_ids": [
+        "afccb23b-9534-469f-81c4-53602553a5e7"
+      ]
+    },
+    {
+      "id": "h11",
+      "query": "У кого запросить разрешение на утилизацию старых контрактов?",
+      "gold": [
+        "Уничтожение договоров"
+      ],
+      "facts": [
+        "юридическ"
+      ],
+      "document_key": "records",
+      "split": "holdout",
+      "gold_chunk_ids": [
+        "afccb23b-9534-469f-81c4-53602553a5e7"
+      ]
+    },
+    {
+      "id": "h12",
+      "query": "Через сколько дней после закрытия договора передать оригиналы в архив?",
+      "gold": [
+        "Подписанные договоры"
+      ],
+      "facts": [
+        "тридцат"
+      ],
+      "document_key": "records",
+      "split": "holdout",
+      "gold_chunk_ids": [
+        "68b28349-435b-4c97-a846-670ece86cd6a"
+      ]
+    },
+    {
+      "id": "h13",
+      "query": "Кто регистрирует критический инцидент стандартного обслуживания?",
+      "gold": [
+        "Для стандартного"
+      ],
+      "facts": [
+        "оператор"
+      ],
+      "document_key": "support",
+      "split": "holdout",
+      "gold_chunk_ids": [
+        "673ed4a7-1742-4588-a890-2a1cd14795dc"
+      ]
+    },
+    {
+      "id": "h14",
+      "query": "Как быстро ответят обычному клиенту при серьёзном сбое?",
+      "gold": [
+        "Для стандартного"
+      ],
+      "facts": [
+        "двух"
+      ],
+      "document_key": "support",
+      "split": "holdout",
+      "gold_chunk_ids": [
+        "673ed4a7-1742-4588-a890-2a1cd14795dc"
+      ]
+    },
+    {
+      "id": "h15",
+      "query": "Заявку по обычному обслуживанию оставили глубокой ночью. Когда её начнут разбирать?",
+      "gold": [
+        "Ночью обращения"
+      ],
+      "facts": [
+        "09:00"
+      ],
+      "document_key": "support",
+      "split": "holdout",
+      "gold_chunk_ids": [
+        "10d40d4e-e315-463c-bd05-ff9fb873d214"
+      ]
+    },
+    {
+      "id": "h16",
+      "query": "Чем отличается срок первого ответа при критическом инциденте у стандартных и премиальных клиентов?",
+      "gold": [
+        "support::Для стандартного",
+        "premium::Для премиального"
+      ],
+      "facts": [
+        "двух",
+        "пятнадцат"
+      ],
+      "kind": "multi_document",
+      "document_key": "support",
+      "split": "holdout",
+      "gold_chunk_ids": [
+        "673ed4a7-1742-4588-a890-2a1cd14795dc",
+        "dab487e9-6b06-4bb9-8a3f-2ce4ca1789b7"
+      ]
+    },
+    {
+      "id": "h17",
+      "query": "Сколько ждать первого ответа на критический инцидент премиального обслуживания?",
+      "gold": [
+        "Для премиального"
+      ],
+      "facts": [
+        "пятнадцат"
+      ],
+      "document_key": "premium",
+      "split": "holdout",
+      "gold_chunk_ids": [
+        "dab487e9-6b06-4bb9-8a3f-2ce4ca1789b7"
+      ]
+    },
+    {
+      "id": "h18",
+      "query": "Клиент говорит, что у него повышенный уровень сервиса. Кто должен это проверить?",
+      "gold": [
+        "Статус премиального"
+      ],
+      "facts": [
+        "менеджер",
+        "реестр"
+      ],
+      "document_key": "premium",
+      "split": "holdout",
+      "gold_chunk_ids": [
+        "840b4600-7f6e-4bea-82e2-62d85a5efcc4"
+      ]
+    },
+    {
+      "id": "h19",
+      "query": "Срок первого ответа на критический инцидент",
+      "gold": [
+        "support::Для стандартного",
+        "premium::Для премиального"
+      ],
+      "facts": [
+        "двух",
+        "пятнадцат"
+      ],
+      "kind": "contradiction",
+      "document_key": "premium",
+      "split": "holdout",
+      "gold_chunk_ids": [
+        "673ed4a7-1742-4588-a890-2a1cd14795dc",
+        "dab487e9-6b06-4bb9-8a3f-2ce4ca1789b7"
+      ]
+    },
+    {
+      "id": "dn01",
+      "split": "development",
+      "query": "Какую зарплату получает финансовый менеджер?",
+      "gold": [],
+      "gold_chunk_ids": []
+    },
+    {
+      "id": "dn02",
+      "split": "development",
+      "query": "Как зовут дежурного аналитика SOC?",
+      "gold": [],
+      "gold_chunk_ids": []
+    },
+    {
+      "id": "dn03",
+      "split": "development",
+      "query": "Сколько стоит аренда автомобиля в командировке?",
+      "gold": [],
+      "gold_chunk_ids": []
+    },
+    {
+      "id": "dn04",
+      "split": "development",
+      "query": "Разрешена ли закупка криптовалюты?",
+      "gold": [],
+      "gold_chunk_ids": []
+    },
+    {
+      "id": "hn01",
+      "split": "holdout",
+      "query": "Как зовут заведующего лабораторией?",
+      "gold": [],
+      "gold_chunk_ids": []
+    },
+    {
+      "id": "hn02",
+      "split": "holdout",
+      "query": "Какой штраф за использование лифта при пожаре?",
+      "gold": [],
+      "gold_chunk_ids": []
+    },
+    {
+      "id": "hn03",
+      "split": "holdout",
+      "query": "Какова стоимость премиального договора в рублях?",
+      "gold": [],
+      "gold_chunk_ids": []
+    },
+    {
+      "id": "hn04",
+      "split": "holdout",
+      "query": "Сколько лет хранить медицинские карты?",
+      "gold": [],
+      "gold_chunk_ids": []
+    },
+    {
+      "id": "hn05",
+      "split": "holdout",
+      "query": "Какой код секретного сейфа финансового отдела?",
+      "gold": [],
+      "kind": "acl",
+      "gold_chunk_ids": []
+    },
+    {
+      "id": "hn06",
+      "split": "holdout",
+      "query": "Когда уничтожаются договоры, если судебный спор ещё не завершён?",
+      "gold": [
+        "records::Уничтожение договоров"
+      ],
+      "facts": [
+        "запрещ"
+      ],
+      "kind": "negation",
+      "gold_chunk_ids": [
+        "afccb23b-9534-469f-81c4-53602553a5e7"
+      ]
+    },
+    {
+      "id": "hn07",
+      "split": "holdout",
+      "query": "Какой код архивного тарифа поездки?",
+      "gold": [],
+      "kind": "historical_version",
+      "gold_chunk_ids": []
+    }
+  ],
+  "index_revision": "6211d2c882693897202963fd5c33a32db1949ec538c3db41eaf0c55f139b00de"
+}

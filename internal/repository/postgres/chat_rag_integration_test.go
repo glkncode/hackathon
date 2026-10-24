@@ -141,9 +141,7 @@ func TestIntegrationRAGUsesCurrentRoleAndFailsClosed(t *testing.T) {
 		t.Fatal("unprovenanced generated text exposed", err)
 	}
 	// Rollback is deliberate: old constraints cannot preserve generated modes.
-	if err := migrator.Down(f.ctx, f.db, zap.NewNop()); err != nil {
-		t.Fatal(err)
-	}
+	rollbackTo(t, f.ctx, f.db, 6)
 	var mode, content string
 	if err := f.db.QueryRowContext(f.ctx, `SELECT mode,content FROM chat_messages WHERE id=$1`, turn.AssistantMessage.ID).Scan(&mode, &content); err != nil || mode != "no_sources" || strings.Contains(content, "Закрытый текст") {
 		t.Fatal("unsafe downgrade", err)

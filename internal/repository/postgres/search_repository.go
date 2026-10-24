@@ -160,6 +160,52 @@ SELECT * FROM table_context
 ` + searchOrderSQL
 
 func (r *SearchRepository) Search(ctx context.Context, userID uuid.UUID, role domain.Role, query domain.SearchQuery) ([]domain.SearchResult, error) {
+	return searchChunks(ctx, r.db, userID, role, query)
+}
+
+// SearchVariants keeps ACL and active-ready selection consistent across the
+// whole plan. The read-only transaction contains only SQL, never an LLM call.
+func (r *SearchRepository) SearchVariants(ctx context.Context, userID uuid.UUID, role domain.Role, queries []domain.SearchQuery) ([][]domain.SearchResult, error) {
+	if userID == uuid.Nil || !role.Valid() {
+		return nil, domain.ErrAccessDenied
+	}
+	if len(queries) < 1 || len(queries) > 2 {
+		return nil, domain.ErrInvalidInput
+	}
+	for _, query := range queries {
+		if _, err := query.Normalize(); err != nil {
+			return nil, err
+		}
+	}
+	ctx, cancel := context.WithTimeout(ctx, searchTimeout)
+	defer cancel()
+	tx, err := r.db.BeginTx(ctx, &sql.TxOptions{ReadOnly: true, Isolation: sql.LevelRepeatableRead})
+	if err != nil {
+		return nil, mapError("begin search plan", err)
+	}
+	defer tx.Rollback()
+	lists := make([][]domain.SearchResult, 0, len(queries))
+	for _, query := range queries {
+		results, err := searchChunks(ctx, tx, userID, role, query)
+		if err != nil {
+			return nil, err
+		}
+		lists = append(lists, results)
+	}
+	if err := tx.Commit(); err != nil {
+		if ctx.Err() != nil {
+			err = ctx.Err()
+		}
+		return nil, mapError("commit search plan", err)
+	}
+	return lists, nil
+}
+
+type searchQuerier interface {
+	QueryContext(context.Context, string, ...any) (*sql.Rows, error)
+}
+
+func searchChunks(ctx context.Context, db searchQuerier, userID uuid.UUID, role domain.Role, query domain.SearchQuery) ([]domain.SearchResult, error) {
 	if userID == uuid.Nil || !role.Valid() {
 		return nil, domain.ErrAccessDenied
 	}
@@ -169,7 +215,7 @@ func (r *SearchRepository) Search(ctx context.Context, userID uuid.UUID, role do
 	}
 	ctx, cancel := context.WithTimeout(ctx, searchTimeout)
 	defer cancel()
-	rows, err := r.db.QueryContext(ctx, searchSQL, userID, role, query.Query, query.Limit)
+	rows, err := db.QueryContext(ctx, searchSQL, userID, role, query.Query, query.Limit)
 	if err != nil {
 		if ctx.Err() != nil {
 			err = ctx.Err()

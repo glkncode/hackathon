@@ -1,0 +1,3 @@
+# Text extraction uses the classic PyMuPDF API, without local layout/OCR models.
+# PyMuPDF 2 pulls onnxruntime, numpy and layout/LLM packages into the image.
+PyMuPDF<2
