@@ -1,0 +1,38 @@
+@layer app-components {
+  .template-field {
+    display: grid;
+    gap: 10px;
+  }
+  .template-field-error {
+    color: #a51f2b;
+    font-weight: 600;
+  }
+  .template-field [aria-invalid='true'] {
+    border-color: #a51f2b;
+  }
+  .template-field > label {
+    font-weight: 600;
+    display: grid;
+    gap: 8px;
+  }
+  .template-field fieldset {
+    border: 0;
+    padding: 0;
+    display: grid;
+    gap: 14px;
+    min-width: 0;
+  }
+  .template-row {
+    background: #f7f9fc;
+    border: 1px solid #dfe5ee;
+    padding: 18px;
+    border-radius: 10px;
+    display: grid;
+    gap: 12px;
+  }
+  .template-item-label {
+    display: grid;
+    gap: 5px;
+    font-size: 13px;
+  }
+}

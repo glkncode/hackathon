@@ -1,0 +1,47 @@
+@layer app-components {
+  .template-source {
+    color: #566780;
+    font-size: 12px;
+    overflow-wrap: anywhere;
+    line-height: 1.6;
+  }
+  .template-report {
+    display: grid;
+    gap: 16px;
+  }
+  .template-check {
+    border: 1px solid #dce4ef;
+    border-left-width: 4px;
+    border-radius: 9px;
+    padding: 16px;
+    display: grid;
+    gap: 7px;
+    background: white;
+  }
+  .template-check.blocking {
+    border-left-color: #bf2e33;
+    background: #fff6f6;
+  }
+  .template-check.warning,
+  .template-check.manual_review {
+    border-left-color: #bd7b17;
+    background: #fffbef;
+  }
+  .template-check.info {
+    border-left-color: #5084cc;
+  }
+  .template-check.passed,
+  .template-check.not_applicable {
+    background: #f8fafc;
+    border-left-color: #94a3b8;
+  }
+  .template-check-group {
+    display: grid;
+    gap: 10px;
+  }
+  .template-route summary {
+    cursor: pointer;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+}

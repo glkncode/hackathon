@@ -1,0 +1,29 @@
+@value button from "../../../shared/ui/ui.module.css";
+
+@layer app-components {
+  .template-card {
+    background: white;
+    border: 1px solid #dfe5ee;
+    border-radius: 14px;
+    padding: 24px;
+  }
+  .template-card {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    align-items: flex-start;
+    line-height: 1.6;
+  }
+  .template-card > .button {
+    margin-top: auto;
+    width: 100%;
+  }
+  .template-card > svg {
+    color: #2863e7;
+  }
+  @media (max-width: 700px) {
+    .template-card {
+      padding: 18px;
+    }
+  }
+}

@@ -41,17 +41,19 @@ frontend/
 ├── public/favicon.svg
 ├── src/
 │   ├── app/                 App, providers, router
-│   ├── api/                 client, auth, search, documents, chat, tests
-│   ├── components/
-│   │   ├── layout/          AppLayout, Sidebar, Header
-│   │   ├── chat/            ChatMessage, ChatInput, SourceCard
-│   │   └── ui/              Feedback
-│   ├── features/auth/       ProtectedRoute, useAuth, useLogout
-│   ├── hooks/               useChatSessions
-│   ├── lib/                 download
-│   ├── pages/               Login, Chat, Documents, NotFound
-│   ├── styles/index.css
-│   ├── types/api.ts
+│   │   └── layout/         AppLayout, Sidebar, Header и CSS Modules
+│   ├── features/
+│   │   ├── auth/           авторизация, сессия, API, хуки, типы
+│   │   ├── chat/           чат, история, поиск, источники, API, типы
+│   │   ├── documents/      документы, загрузка, версии, API, типы
+│   │   └── templates/      каталог, черновики, поля, проверки, результаты
+│   ├── pages/              отдельная папка на каждый маршрут
+│   ├── shared/
+│   │   ├── api/            HTTP-клиент и скачивание версии документа
+│   │   ├── lib/            download, cx
+│   │   ├── styles/         global.css: reset, базовые правила, Tailwind
+│   │   ├── types/          общий Collection
+│   │   └── ui/             Feedback и общие UI-стили в CSS Module
 │   └── main.tsx
 ├── index.html
 ├── package.json
@@ -61,6 +63,18 @@ frontend/
 └── vite.config.ts
 ```
 
+Внешние потребители импортируют TypeScript API фич через `features/<feature>/index.ts`.
+Внутри фич используются прямые импорты. `shared` не зависит от фич и страниц,
+фичи не импортируют друг друга. Регистрация шаблона объединяет документы и
+шаблоны в хуке страницы. Общие стили шаблонов доступны их страницам напрямую.
+
+Компонентные стили находятся рядом с компонентами в `*.module.css`.
+Каскад задан слоями `app-base`, `app-ui`, `app-components` после слоёв Tailwind.
+Для селекторов общих классов используется CSS Modules `@value`, для условных
+классов — `cx`. Имена классов стабильны относительно пути и локального имени,
+поэтому межмодульные селекторы сохраняются при HMR.
+Подробный аудит, дерево файлов и результаты проверки: [REFACTORING.md](REFACTORING.md).
+
 ## Страницы и контракты
 
 - `/login`: вход, ошибки, восстановление сессии через `GET /auth/me`.
@@ -68,6 +82,10 @@ frontend/
 - `/chat?session=<uuid>`: сохранённый диалог, архивирование.
 - `/documents`: список с пагинацией, версии, статусы, скачивание активного
   оригинала; для admin — загрузка PDF/DOCX/TXT.
+- `/templates`: каталог и сохранённые черновики.
+- `/templates/register`: регистрация шаблона администратором.
+- `/templates/drafts/:id`: заполнение, изменение и проверка черновика.
+- `/templates/results/:id`: результат генерации и скачивание DOCX.
 - `/`: переход в защищённый `/chat`, затем `/login`, если сессия отсутствует.
 - Неизвестный адрес: страница 404.
 
@@ -130,8 +148,8 @@ backend. Кнопка «Обновить» повторно получает с�
 
 После появления Chat API на запущенном сервере нажмите «Проверить снова» в
 истории либо перезагрузите страницу. Если контракт останется как в `docs/chat.md`,
-изменения frontend не нужны. При изменении DTO обновите `src/types/api.ts` и
-`src/api/chat.ts`. Все четыре текущих режима (`search`, `no_sources`, `generated`,
+изменения frontend не нужны. При изменении DTO обновите `src/features/chat/types/chat.ts` и
+`src/features/chat/api/chat.ts`. Все четыре текущих режима (`search`, `no_sources`, `generated`,
 `clarification`) поддержаны в типах и отображении. Уточняющий вопрос не блокирует
 отправку следующего сообщения.
 
@@ -149,8 +167,8 @@ backend. Кнопка «Обновить» повторно получает с�
   сохранённый диалог перечитывается с актуальным ACL.
 - Готовые bundle-файлы находятся в `dist/`. Production-хост должен отдавать
   `index.html` для клиентских маршрутов и проксировать `/api` на том же origin;
-  backend требует HTTPS и secure cookies в production. `vite preview` только
-  для просмотра сборки, API proxy в нём не настроен.
+  backend требует HTTPS и secure cookies в production. `vite preview` предназначен
+  для локальной проверки сборки и наследует `/api` proxy из конфигурации Vite.
 
 Генеративные ответы и уточняющие вопросы отображаются из Go Chat API; frontend
 сам не вызывает LLM. PDF viewer, ACL UI, управление пользователями, редакторы,

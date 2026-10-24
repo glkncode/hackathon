@@ -1,0 +1,24 @@
+@layer app-components {
+  .template-metadata {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 12px;
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+  .template-metadata dt {
+    color: #61718a;
+  }
+  .template-metadata dd {
+    margin: 0;
+  }
+  @media (max-width: 700px) {
+    .template-metadata {
+      grid-template-columns: 1fr;
+      gap: 5px;
+    }
+    .template-metadata dd {
+      margin-bottom: 10px;
+    }
+  }
+}

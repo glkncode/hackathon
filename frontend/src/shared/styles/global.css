@@ -1,0 +1,90 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Segoe UI', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Component overrides must win over shared primitives, including CSS Modules imports. */
+
+@layer app-base, app-ui, app-components;
+
+@layer app-base {
+  :root {
+    font-family: var(--font-sans);
+    color: #202c40;
+    background: #f8fafc;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    font-size: 14px;
+  }
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    min-width: 320px;
+  }
+  button,
+  input,
+  textarea {
+    font: inherit;
+  }
+  button,
+  a,
+  input,
+  textarea {
+    -webkit-tap-highlight-color: transparent;
+  }
+  button,
+  a {
+    touch-action: manipulation;
+  }
+  button {
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+  button,
+  input,
+  textarea {
+    outline: none;
+  }
+  :focus-visible {
+    outline: 3px solid #8fb4ff;
+    outline-offset: 3px;
+  }
+  input:focus-visible,
+  textarea:focus-visible {
+    outline-offset: 1px;
+  }
+  h1,
+  h2,
+  h3,
+  p {
+    margin: 0;
+  }
+  svg {
+    flex-shrink: 0;
+  }
+  button {
+    transition:
+      background-color 0.15s,
+      border-color 0.15s;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      scroll-behavior: auto !important;
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+}

@@ -1,0 +1,109 @@
+@value button from "../../../shared/ui/ui.module.css";
+
+@layer app-components {
+  .templates-page {
+    padding: 32px;
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    gap: 24px;
+  }
+  .templates-page h2 {
+    font-size: 20px;
+    font-weight: 650;
+    margin-bottom: 12px;
+  }
+  .templates-page h3 {
+    font-size: 15px;
+    font-weight: 650;
+  }
+  .templates-page section > h2 {
+    margin-bottom: 18px;
+  }
+  .template-panel {
+    background: white;
+    border: 1px solid #dfe5ee;
+    border-radius: 14px;
+    padding: 24px;
+    display: grid;
+    gap: 16px;
+    line-height: 1.65;
+  }
+  .template-panel h2 {
+    margin: 0;
+  }
+  .template-panel details {
+    overflow-wrap: anywhere;
+  }
+  .template-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .templates-page input,
+  .templates-page select,
+  .templates-page textarea {
+    border: 1px solid #b8c5d7;
+    background: white;
+    padding: 11px 13px;
+    border-radius: 8px;
+    width: 100%;
+    color: #202c40;
+    font: inherit;
+    min-height: 44px;
+  }
+  .templates-page textarea {
+    resize: vertical;
+  }
+  .templates-page input:focus,
+  .templates-page select:focus,
+  .templates-page textarea:focus {
+    border-color: #2863e7;
+  }
+  .template-row-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .template-success {
+    color: #216541;
+    background: #edf8f1;
+    padding: 12px 16px;
+    border-radius: 9px;
+  }
+  .template-warning {
+    color: #814408;
+    background: #fff5dc;
+    padding: 12px 16px;
+    border-radius: 9px;
+  }
+  .template-empty {
+    background: white;
+    padding: 28px;
+    border: 1px dashed #bdcadd;
+    border-radius: 12px;
+    line-height: 1.7;
+  }
+  .template-value {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    margin-top: 7px;
+  }
+  @media (max-width: 700px) {
+    .templates-page {
+      padding: 18px;
+      gap: 18px;
+    }
+    .template-panel {
+      padding: 18px;
+    }
+    .template-row-heading {
+      flex-wrap: wrap;
+    }
+    .template-actions > .button {
+      white-space: normal;
+    }
+  }
+}

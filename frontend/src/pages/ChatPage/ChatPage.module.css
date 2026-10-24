@@ -1,0 +1,111 @@
+@value error-notice from "../../shared/ui/ui.module.css";
+
+@layer app-components {
+  .chat-page {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .chat-scroll {
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
+  }
+  .chat-content {
+    max-width: 850px;
+    padding: 28px 32px;
+    margin: 0 auto;
+  }
+  .chat-bottom {
+    flex-shrink: 0;
+    max-width: 850px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 10px 32px 19px;
+  }
+  .chat-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    color: #a7b0c0;
+    font-size: 9px;
+    margin-top: 19px;
+  }
+  .temporary-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 11px 13px;
+    border: 1px solid #e2eaf6;
+    background: #f7faff;
+    color: #6b80a1;
+    border-radius: 8px;
+    font-size: 11px;
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+  .temporary-notice svg {
+    margin-top: 1px;
+  }
+  .conversation-top {
+    flex-shrink: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 17px 34px 0;
+  }
+  .conversation-top h1 {
+    font-size: 13px;
+    font-weight: 500;
+    color: #71809a;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .archive-button {
+    color: #929eb1;
+    flex-shrink: 0;
+    font-size: 10px;
+  }
+  .messages {
+    display: flex;
+    flex-direction: column;
+    gap: 27px;
+  }
+  .pending-turn {
+    margin-top: 26px;
+  }
+  .chat-content > .error-notice {
+    margin-top: 14px;
+  }
+  @media (max-width: 850px) {
+    .chat-content,
+    .chat-bottom {
+      padding-inline: 24px;
+    }
+  }
+  @media (max-width: 700px) {
+    .chat-content {
+      padding: 20px;
+    }
+    .chat-bottom {
+      padding: 9px 20px 15px;
+    }
+    .chat-footer {
+      margin-top: 13px;
+      font-size: 8px;
+    }
+    .conversation-top {
+      padding-inline: 20px;
+    }
+  }
+  @media (max-width: 400px) {
+    .chat-content,
+    .chat-bottom {
+      padding-inline: 16px;
+    }
+  }
+}
