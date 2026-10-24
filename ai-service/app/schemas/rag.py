@@ -1,11 +1,24 @@
+"""Схемы вопроса, истории, источников и проверенного ответа модели."""
+
 import json
 from typing import Annotated, Literal
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_validator
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    StringConstraints,
+    model_validator,
+)
 
-Text = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=4000)]
-SourceText = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=16000)]
+
+Text = Annotated[
+    str, StringConstraints(strip_whitespace=True, min_length=1, max_length=4000)
+]
+SourceText = Annotated[
+    str, StringConstraints(strip_whitespace=True, min_length=1, max_length=16000)
+]
 
 
 class StrictModel(BaseModel):
@@ -40,10 +53,18 @@ class HistoryMessage(StrictModel):
 
 class Source(StrictModel):
     chunk_id: UUID
-    document_title: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=512)]
-    version_number: Annotated[int, Field(strict=True, ge=1)]
-    section_number: Annotated[str, StringConstraints(max_length=128)] | None = None
-    page_number: Annotated[int, Field(strict=True, ge=1, le=1000000)] | None = None
+    document_title: Annotated[
+        str, StringConstraints(strip_whitespace=True, min_length=1, max_length=512)
+    ]
+    version_number: Annotated[
+        int, Field(strict=True, ge=1)
+    ]
+    section_number: Annotated[
+        str, StringConstraints(max_length=128)
+    ] | None = None
+    page_number: Annotated[
+        int, Field(strict=True, ge=1, le=1000000)
+    ] | None = None
     content: SourceText
 
 

@@ -1,1 +1,1 @@
-"""Configurable private inference adapter."""
+"""Клиент API языковой модели."""

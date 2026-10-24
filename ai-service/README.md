@@ -1,83 +1,157 @@
-# Python document ingestion
+# Python-сервис документов и RAG
 
-Implements the private API defined in [the Go contract](../docs/ingestion-contract.md).
-Go stores originals, retries requests and saves returned chunks. Python uses isolated
-temporary directories and removes them after parsing, including on errors.
-Ingestion does not use embeddings or inference. The separate RAG generation
-endpoint uses an explicitly configured inference API; see below.
+Сервис принимает файлы от Go, извлекает текст и возвращает фрагменты.
+Отдельная ручка отправляет вопрос и найденные Go источники языковой модели.
+Go отвечает за пользователей, права, поиск, хранение оригиналов и переписки.
 
-## Local startup (PowerShell)
+## Структура
 
-Run from the ai-service directory:
+```text
+ai-service/
+├── main.py                     # Точка входа Uvicorn
+├── app/
+│   ├── application.py          # Сборка FastAPI, ручек и обработчиков ошибок
+│   ├── api/
+│   │   ├── health.py           # Проверка доступности
+│   │   ├── ingestion.py        # Приём файла от Go
+│   │   ├── rag.py              # Приём вопроса, истории и источников
+│   │   └── templates.py        # Проверка и заполнение DOCX-шаблонов
+│   ├── schemas/
+│   │   ├── ingestion.py        # Схемы фрагмента и результата разбора
+│   │   ├── rag.py              # Схемы вопроса, источников и ответа модели
+│   │   └── templates.py        # Схемы полей шаблона и результата проверки
+│   ├── core/
+│   │   ├── config.py           # Лимиты, параллелизм и настройки модели
+│   │   ├── lifespan.py         # Общие ресурсы при запуске и остановке
+│   │   ├── middleware.py       # Служебный токен и ограничение тела запроса
+│   │   └── exceptions.py       # Преобразование ошибок в HTTP-ответы
+│   ├── ingestion/
+│   │   ├── service.py          # Временное сохранение, разбор и очистка
+│   │   ├── errors.py           # Ошибки обработки документов
+│   │   └── parsers/
+│   │       ├── __init__.py     # Выбор парсера по расширению
+│   │       ├── pdf.py          # Текст PDF и номера страниц
+│   │       ├── docx.py         # Абзацы и таблицы DOCX
+│   │       └── txt.py          # Текст UTF-8 с поддержкой BOM
+│   ├── chunking/text.py        # Разбиение текста и определение разделов
+│   ├── llm/client.py           # HTTP-клиент OpenAI-совместимого API
+│   ├── rag/
+│   │   ├── prompts.py          # Системная инструкция и сообщения модели
+│   │   └── generator.py        # Вызов модели и проверка ответа/источников
+│   └── templates/engine.py     # Проверка DOCX и подстановка {{ полей }}
+├── examples/                   # Демонстрационный DOCX и значения полей
+├── tests/                      # Тесты API, обработки файлов и модели
+├── requirements.txt            # Python-зависимости
+├── Dockerfile                  # Сборка контейнера
+└── .env                        # Локальные настройки, исключённые из Git
+```
+
+Папки `app/embeddings` и `app/retrieval` пока являются заготовками.
+В текущей реализации эмбеддинги не используются, а поиск выполняет Go через
+полнотекстовый поиск PostgreSQL. Для работы сервиса эти заготовки не нужны.
+
+## Где вносить правки
+
+| Задача | Файл |
+| --- | --- |
+| Изменить чтение PDF, DOCX или TXT | Соответствующий файл в `app/ingestion/parsers/` |
+| Изменить размер фрагментов и правила заголовков | `app/core/config.py`, `app/chunking/text.py` |
+| Изменить поля API | `app/schemas/`, соответствующая ручка в `app/api/` и контракт Go |
+| Изменить инструкцию нейронке | `app/rag/prompts.py` |
+| Изменить параметры HTTP-запроса к модели | `app/llm/client.py` |
+| Изменить проверку ответа модели | `app/rag/generator.py`, `app/schemas/rag.py` |
+| Изменить адрес/название модели | `.env`: `LLM_BASE_URL`, `LLM_MODEL` |
+| Изменить обработку шаблонов | `app/templates/engine.py` |
+| Изменить лимиты и параллелизм | `app/core/config.py` |
+
+## Путь файла и вопроса
+
+Файл: `api/ingestion.py` → `ingestion/service.py` → `ingestion/parsers/` →
+`chunking/text.py` → JSON с фрагментами для Go.
+У каждого запроса своя временная папка. Она удаляется и при ошибках.
+Оригинал и возвращённые фрагменты хранит Go, Python в БД не пишет.
+
+Вопрос: Go выполняет поиск и проверяет права → `api/rag.py` → `rag/generator.py` →
+`rag/prompts.py` → `llm/client.py` → модель → проверенный JSON для Go.
+Загрузка документов не обучает модель и не меняет её веса.
+
+## Запуск через Docker
+
+Из корня репозитория в PowerShell:
+
+```powershell
+.\scripts\start-local.ps1
+```
+
+Скрипт читает `ai-service/.env`, подготавливает локальные настройки и запускает
+Go, Python и PostgreSQL. Swagger: http://127.0.0.1:8000/docs.
+После изменения кода или `.env` запусти скрипт ещё раз: исходники находятся внутри
+образа, поэтому нужна пересборка. Подробности: [Docker](../docs/docker-local.md).
+
+## Запуск Python без Docker
+
+Из папки `ai-service`, когда порт 8000 свободен:
 
 ```powershell
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
-$env:AI_SERVICE_TOKEN = "your-shared-private-secret"
-.\.venv\Scripts\python.exe -m uvicorn main:app --host 127.0.0.1 --port 8000
-```
-
-Set the same AI_SERVICE_TOKEN in Go. Environment variables are not automatically
-loaded from .env. Missing/blank tokens prevent Python startup.
-
-For local testing, a private token is saved in ai-service/.env (ignored by Git).
-To explicitly load that file when starting:
-
-```powershell
 .\.venv\Scripts\python.exe -c "from dotenv import load_dotenv; load_dotenv('.env'); import uvicorn; uvicorn.run('main:app', host='127.0.0.1', port=8000)"
 ```
 
-Open http://127.0.0.1:8000/docs and send POST /internal/v1/ingest with a
-X-Service-Token header, document_id and document_version_id (nonzero UUIDs),
-mime_type and file. Swagger offers the token in the request headers through its
-generated schema. PDF, DOCX and UTF-8 TXT are supported.
+Простой `uvicorn main:app` сам `.env` не читает. Для запуска нужен непустой
+`AI_SERVICE_TOKEN`, совпадающий с токеном Go. Нет настроенной модели — генерация
+с источниками вернёт 503; разбор файлов продолжит работать.
 
-The response contains only document_version_id, chunks and warnings.
-PDF chunks retain 1-based page numbers. DOCX/TXT page numbers are null.
-Numbered heading detection is heuristic; section fields remain null until a heading
-is found. DOCX paragraphs and tables retain document order; headers, footers,
-text boxes and scanned-image OCR are outside this first parser.
+## Ручки и контракты
 
-Limits: 20 MiB per file, 21 MiB per multipart request (including streaming bodies),
-8 MiB extracted text, 2000 chunks, 4000 characters per chunk, 64 MiB decompressed
-DOCX and 10000 PDF pages. Parsing runs in a thread, one document at a time per
-process; other requests wait without blocking the event loop. This is not a
-durable job queue. Go owns retries and job tracking. On cancellation an already
-running thread finishes cleanup before its uploaded file is closed.
-For hostile documents or strict CPU/memory deadlines, use isolated worker
-processes with operating-system resource limits.
+Для внутренних ручек нужен заголовок `X-Service-Token`. Он виден в Swagger.
+Названия полей и ошибки сохранены для совместимости с Go.
 
-Errors: 401 invalid/missing token, 413 upload too large, 415 unsupported format or
-MIME mismatch, 422 invalid identifiers/unreadable/empty document or output limit.
-Scanned PDFs without text return 422, since Go requires at least one chunk.
-Duplicate requests produce deterministic chunks and do not write to Go's database.
-Keep the service on loopback/private networking as required by the Go contract.
+| Метод и путь | Назначение |
+| --- | --- |
+| `GET /health` | Проверка доступности HTTP, без проверки модели |
+| `POST /internal/v1/ingest` | Файл, `document_id`, `document_version_id`, `mime_type` |
+| `POST /internal/v1/rag/generate` | JSON с `query`, `history`, `sources` |
+| `POST /internal/v1/templates/inspect` | Проверка полей DOCX-шаблона |
+| `POST /internal/v1/templates/render` | Заполнение DOCX и возврат готового файла |
 
-## RAG generation
+Контракты: [разбор документов](../docs/ingestion-contract.md),
+[RAG](../docs/rag-generation-contract.md), [шаблоны](../docs/templates-contract.md).
+Шаблоны используют плоские строковые поля `{{ name }}`, все найденные поля обязательны.
+Проверка и заполнение шаблонов не обращаются к модели.
 
-POST /internal/v1/rag/generate accepts a query, bounded user/assistant history
-and sources already authorized by Go. It shares X-Service-Token with ingestion.
-It returns answered, needs_clarification or insufficient_information, with
-validated source IDs. Search, ACL and chat storage remain in Go.
+## Ограничения
 
-Configuration, JSON examples, errors/fallback and quality limits:
-[RAG generation contract](../docs/rag-generation-contract.md).
-LLM_BASE_URL points to an OpenAI-compatible /v1 origin/path (Ollama supported).
-LLM_MODEL must refer to an approved installed model. No model is installed or
-downloaded automatically. Without configured inference, nonempty-source requests
-return 503; empty-source requests return insufficient_information without a call.
+- Файл: 20 МиБ; multipart-запрос: 21 МиБ; извлечённый текст: 8 МиБ.
+- До 2000 фрагментов по 4000 символов; до 10000 страниц PDF.
+- DOCX: до 10000 ZIP-записей и 64 МиБ после распаковки.
+- Шаблон: 5 МиБ; до 1000 ZIP-записей и 32 МиБ после распаковки.
+- Разбор: один документ одновременно на процесс; запросы ждут асинхронно,
+  сама обработка выполняется в потоке. Это не долговечная очередь заданий.
+- Модель: до четырёх одновременных запросов на процесс; шаблоны: до двух.
+- PDF сохраняет номера страниц; для DOCX/TXT `page_number` равен `null`.
+- Скан без текстового слоя требует OCR, который пока не реализован.
+- У DOCX читаются абзацы и таблицы; колонтитулы и текстовые блоки не извлекаются.
+- Определение нумерованных заголовков эвристическое.
 
-## DOCX templates
+Тексты документов и необработанные ответы модели не включаются в ошибки RAG.
+При отмене разбора уже запущенный поток завершает очистку перед закрытием файла.
+Для жёстких ограничений CPU/памяти нужны отдельные рабочие процессы с лимитами ОС.
 
-POST /internal/v1/templates/inspect discovers required string fields and reports
-missing values. POST /internal/v1/templates/render fills the uploaded DOCX and
-returns a binary document. Both use the existing X-Service-Token.
-Go owns drafts, storage and access control. No LLM is used.
+## Проверка
 
-[Template API contract and demo](../docs/templates-contract.md).
-Synthetic demo inputs: examples/memo-template.docx and examples/memo-values.json.
-
-## Tests
+Тесты запускаются из `ai-service`:
 
 ```powershell
 .\.venv\Scripts\python.exe -m pytest -q
 ```
+
+Сценарии проверки работающих Go/Python/PostgreSQL и настоящей Qwen запускаются
+из корня репозитория; они создают тестовые документы и чат в локальной БД:
+
+```powershell
+.\ai-service\.venv\Scripts\python.exe .local-integration\check_exchange.py
+.\ai-service\.venv\Scripts\python.exe .local-integration\check_chat.py
+```
+
+Эти сценарии и их локальные учётные данные находятся в `.local-integration`,
+которая не включается в Git.

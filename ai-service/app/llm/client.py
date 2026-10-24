@@ -1,14 +1,11 @@
+"""Асинхронный клиент OpenAI-совместимого API модели."""
+
 import asyncio
-import ipaddress
 import json
-import math
-import os
-from dataclasses import dataclass
-from urllib.parse import urlsplit
 
 import httpx
 
-MAX_RESPONSE_BYTES = 128 * 1024
+from app.core.config import LLMConfig, LLM_CONCURRENCY, MAX_RESPONSE_BYTES
 
 
 class InferenceError(Exception):
@@ -17,50 +14,16 @@ class InferenceError(Exception):
         self.status_code = status_code
 
 
-@dataclass(frozen=True)
-class LLMConfig:
-    base_url: str = ""
-    model: str = ""
-    api_key: str = ""
-    timeout: float = 60
-
-    @classmethod
-    def from_env(cls):
-        base = os.environ.get("LLM_BASE_URL", "").strip().rstrip("/")
-        model = os.environ.get("LLM_MODEL", "").strip()
-        try:
-            timeout = float(os.environ.get("LLM_TIMEOUT", "60"))
-            if not math.isfinite(timeout) or not 0 < timeout <= 300:
-                raise ValueError()
-            if base:
-                url = urlsplit(base)
-                if (url.scheme not in {"http", "https"} or not url.hostname
-                        or url.username or url.password or url.query or url.fragment):
-                    raise ValueError()
-                _ = url.port
-                # Explicit operator opt-in is required before using nonlocal hosts.
-                local = url.hostname in {"localhost", "host.docker.internal", "ollama"}
-                try:
-                    local = local or ipaddress.ip_address(url.hostname).is_loopback
-                except ValueError:
-                    pass
-                if not local and os.environ.get("LLM_ALLOW_REMOTE") != "true":
-                    raise ValueError()
-        except ValueError:
-            raise RuntimeError("Invalid LLM configuration; remote inference requires explicit approval") from None
-        return cls(base, model, os.environ.get("LLM_API_KEY", ""), timeout)
-
-
 class LLMClient:
-    """OpenAI-compatible chat protocol, including Ollama's /v1 endpoint."""
+    """Отправляет запросы модели и ограничивает параллельные обращения."""
 
     def __init__(self, config: LLMConfig):
         self.config = config
         self.http = httpx.AsyncClient(
             timeout=config.timeout, trust_env=False, follow_redirects=False,
-            limits=httpx.Limits(max_connections=4, max_keepalive_connections=4),
+            limits=httpx.Limits(max_connections=LLM_CONCURRENCY, max_keepalive_connections=LLM_CONCURRENCY),
         )
-        self.slots = asyncio.Semaphore(4)
+        self.slots = asyncio.Semaphore(LLM_CONCURRENCY)
 
     async def close(self):
         await self.http.aclose()

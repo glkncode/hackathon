@@ -1,0 +1,10 @@
+.git
+.env
+.env.*
+.local-integration
+data
+**/.venv
+**/__pycache__
+**/.pytest_cache
+**/*.log
+frontend/node_modules

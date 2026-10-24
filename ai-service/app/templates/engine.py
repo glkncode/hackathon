@@ -1,3 +1,5 @@
+"""Проверка DOCX-архива и заполнение простых полей шаблона."""
+
 import io
 import json
 import re
@@ -9,9 +11,8 @@ from jinja2 import StrictUndefined, nodes
 from jinja2.sandbox import SandboxedEnvironment
 from lxml import etree
 
-MAX_TEMPLATE_BYTES = 5 * 1024 * 1024
-MAX_REQUEST_BYTES = MAX_TEMPLATE_BYTES + 1024 * 1024
-MAX_VALUES_BYTES = 64 * 1024
+from app.core.config import MAX_TEMPLATE_BYTES, MAX_VALUES_BYTES
+
 NAME = re.compile(r"^[a-z][a-z0-9_]{0,63}$")
 RENDER_PART = re.compile(r"^word/(document|header[0-9]+|footer[0-9]+|footnotes)\.xml$")
 MARKERS = ("{{", "}}", "{%", "%}", "{#", "#}")
@@ -115,7 +116,7 @@ def load_template(content: bytes):
             continue
         root = etree.fromstring(data, parser=etree.XMLParser(resolve_entities=False, no_network=True))
         text = "".join(root.itertext())
-        # No Jinja statements/comments or docxtpl rich-text instructions.
+        # Разрешены только простые поля {{ name }}, без кода и выражений Jinja.
         if any(marker in text for marker in ("{%", "%}", "{#", "#}")) or re.search(r"{{\s*r\s+", text):
             raise TemplateError("unsupported_template_syntax")
         xml = template.patch_xml(data.decode("utf-8"))
@@ -129,7 +130,7 @@ def load_template(content: bytes):
                 names.add(node.name)
     if len(names) > 64:
         raise TemplateError("too_many_fields")
-    # Reject a non-DOCX OPC package even if it has plausible ZIP entries.
+    # Проверяем, что архив действительно является документом Word.
     template.init_docx()
     return template, environment, sorted(names)
 
@@ -160,5 +161,5 @@ def process_template(content: bytes, raw_values: str, render: bool):
     except TemplateError:
         raise
     except Exception:
-        # Never disclose uploaded XML or field values in errors.
+        # Не возвращаем клиенту содержимое XML и значения полей при ошибке.
         raise TemplateError("invalid_template") from None

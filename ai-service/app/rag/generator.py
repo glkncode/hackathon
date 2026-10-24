@@ -1,10 +1,12 @@
+"""Генерация ответа и проверка ссылок на переданные источники."""
+
 import json
 
 from pydantic import ValidationError
 
 from app.llm.client import InferenceError, LLMClient
 from app.rag.prompts import messages_for
-from app.rag.schemas import GenerateRequest, GenerateResponse
+from app.schemas.rag import GenerateRequest, GenerateResponse
 
 
 def unique_object(pairs):
@@ -31,5 +33,5 @@ async def generate(request: GenerateRequest, client: LLMClient) -> GenerateRespo
             raise ValueError("Unknown source IDs")
         return result
     except (ValueError, TypeError, ValidationError):
-        # Never include inference output, questions or documents in errors/logs.
+        # Не раскрываем документы и необработанный ответ модели в сообщении ошибки.
         raise InferenceError("llm_invalid_response", 502) from None

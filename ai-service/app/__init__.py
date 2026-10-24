@@ -1,1 +1,1 @@
-"""Document parsing and RAG services."""
+"""Python-сервис обработки документов и генерации ответов."""

@@ -9,8 +9,9 @@ from docx import Document
 from fastapi.testclient import TestClient
 
 from main import app
-from app.templates.engine import MAX_TEMPLATE_BYTES
-from app.templates.routes import DOCX_MIME
+from app.core.config import MAX_TEMPLATE_BYTES, MIME_TYPES
+
+DOCX_MIME = MIME_TYPES[".docx"]
 
 TOKEN = "template-test-token"
 
