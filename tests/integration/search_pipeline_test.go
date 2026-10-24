@@ -26,6 +26,15 @@ var workingGroupQuestions = []struct {
 	query  string
 	chunks []int
 }{
+	{"секретарь", []int{13, 17}},
+	{"руководитель", []int{12, 16}},
+	{"Какие обязанности у руководителя?", []int{16}},
+	{"За что отвечает секретарь?", []int{17}},
+	{"Что должен делать руководитель?", []int{16}},
+	{"Каковы функции секретаря?", []int{17}},
+	{"Какие задачи выполняет руководитель?", []int{16}},
+	{"Чем занимается секретарь?", []int{17}},
+	{"Что входит в обязанности секретаря?", []int{17}},
 	{"Состав рабочей группы", []int{10, 11, 12, 13, 14}},
 	{"Кто входит в состав рабочей группы?", []int{10, 11, 12, 13, 14}},
 	{"Какие обязанности у руководителя рабочей группы?", []int{16}},
@@ -310,11 +319,11 @@ func workingGroupPipeline(t *testing.T, realModel bool) {
 					} else if !regexp.MustCompile(`шаблон|не\s+(заполн|указ)|нет\s+конкрет|незаполн`).MatchString(text) {
 						t.Fatal("clarification did not identify the unfilled template", reply.Message)
 					}
-				case 16:
+				case 12, 16:
 					if reply.Mode != "generated" || !strings.Contains(text, "организ") || !strings.Contains(text, "задач") {
 						t.Fatal("wrong leader duties", reply.Message)
 					}
-				case 17:
+				case 13, 17:
 					if reply.Mode != "generated" || !strings.Contains(text, "заседан") || !strings.Contains(text, "хранен") {
 						t.Fatal("wrong secretary duties", reply.Message)
 					}
@@ -336,6 +345,10 @@ func workingGroupPipeline(t *testing.T, realModel bool) {
 		})
 	}
 	for _, query := range []string{
+		"Какие обязанности у бухгалтера?",
+		"За что отвечает секретарь при утечке данных?",
+		"Какие обязанности у руководителя по оплате труда?",
+		"Какие обязанности у секретаря Иванова?",
 		"Как зовут контролирующего исполнение распоряжения?",
 		"Иванов контролирует исполнение распоряжения?",
 		"Назови фамилии участников рабочей группы",

@@ -27,6 +27,18 @@ func (s *searchStoreStub) Search(ctx context.Context, id uuid.UUID, role domain.
 	return s.results, s.err
 }
 
+func (s *searchStoreStub) SearchVariants(ctx context.Context, id uuid.UUID, role domain.Role, queries []domain.SearchQuery) ([][]domain.SearchResult, error) {
+	lists := make([][]domain.SearchResult, 0, len(queries))
+	for _, query := range queries {
+		results, err := s.Search(ctx, id, role, query)
+		if err != nil {
+			return nil, err
+		}
+		lists = append(lists, results)
+	}
+	return lists, nil
+}
+
 func searchActor() domain.User {
 	return domain.User{ID: uuid.New(), Role: domain.RoleMember, IsActive: true}
 }
