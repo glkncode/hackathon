@@ -6,7 +6,10 @@ import pytest
 from docx import Document
 from fastapi.testclient import TestClient
 
-from main import app, make_chunks, MAX_FILE_BYTES
+from main import app
+from app.chunking.text import make_chunks
+from app.core.config import MAX_FILE_BYTES
+from app.ingestion.errors import IngestionError
 
 TOKEN = "test-private-token"
 DOCUMENT_ID = str(uuid4())
@@ -143,11 +146,10 @@ def test_streamed_body_limit(client):
 
 
 def test_output_limits():
-    from fastapi import HTTPException
-    with pytest.raises(HTTPException) as error:
+    with pytest.raises(IngestionError) as error:
         make_chunks([(None, "x" * (8 * 1024 * 1024 + 1))])
     assert error.value.status_code == 422
-    with pytest.raises(HTTPException) as error:
+    with pytest.raises(IngestionError) as error:
         make_chunks([(None, "hello")] * 2001)
     assert error.value.status_code == 422
 

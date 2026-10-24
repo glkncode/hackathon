@@ -1,29 +1,17 @@
-from typing import Annotated, Literal
+"""HTTP-ручки проверки и заполнения DOCX-шаблонов."""
+
+from typing import Annotated
 
 from fastapi import APIRouter, File, Form, Header, Request, UploadFile
-from pydantic import BaseModel, ConfigDict
 from starlette.concurrency import run_in_threadpool
 from starlette.responses import JSONResponse, Response
 
-from app.templates.engine import MAX_TEMPLATE_BYTES, TemplateError, process_template
+from app.core.config import MAX_TEMPLATE_BYTES, MIME_TYPES
+from app.schemas.templates import Inspection
+from app.templates.engine import TemplateError, process_template
 
-DOCX_MIME = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+DOCX_MIME = MIME_TYPES[".docx"]
 router = APIRouter(prefix="/internal/v1/templates", tags=["templates"])
-
-
-class TemplateField(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-    name: str
-    type: Literal["string"] = "string"
-    required: bool = True
-
-
-class Inspection(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-    fields: list[TemplateField]
-    required_fields: list[str]
-    missing_fields: list[str]
-    can_render: bool
 
 
 async def handle(request: Request, template: UploadFile, values: str, render: bool):
@@ -32,7 +20,6 @@ async def handle(request: Request, template: UploadFile, values: str, render: bo
             raise TemplateError("unsupported_template_format", 415)
         content = await template.read(MAX_TEMPLATE_BYTES + 1)
         async with request.app.state.template_slots:
-            # A worker owns its byte buffer; cancellation cannot close it mid-read.
             result = await run_in_threadpool(process_template, content, values, render)
         if render:
             return Response(result, media_type=DOCX_MIME, headers={

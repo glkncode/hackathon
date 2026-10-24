@@ -45,6 +45,7 @@ yarn-error.log*
 pnpm-debug.log*
 
 # Local runtime data
+.local-integration/
 *.log
 *.pid
 *.sqlite

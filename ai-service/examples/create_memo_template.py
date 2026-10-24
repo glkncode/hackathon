@@ -1,4 +1,4 @@
-"""Rebuild the synthetic memo template; run from any working directory."""
+"""Пересоздание демонстрационного шаблона из любой рабочей папки."""
 from pathlib import Path
 
 from docx import Document
@@ -26,7 +26,7 @@ def build(destination: Path):
     title.font.color.rgb = RGBColor(0, 0, 0)
     title.paragraph_format.space_before = Pt(18)
     title.paragraph_format.space_after = Pt(16)
-    # Remove inherited theme fonts and decorative title rules from the base file.
+    # Убираем унаследованные шрифты темы и декоративные линии заголовка.
     for style in document.styles:
         for border in list(style.element.iter(qn("w:pBdr"))):
             border.getparent().remove(border)

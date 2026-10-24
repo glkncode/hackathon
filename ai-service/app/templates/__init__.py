@@ -1,1 +1,1 @@
-"""Stateless DOCX template inspection and rendering."""
+"""Проверка и заполнение DOCX-шаблонов."""
