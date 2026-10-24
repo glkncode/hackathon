@@ -1,0 +1,231 @@
+@layer app-ui {
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    border-width: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .button {
+    min-height: 42px;
+    padding: 10px 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    border-radius: 9px;
+    border: 1px solid transparent;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .primary {
+    background: #2863e7;
+    color: white;
+    box-shadow: 0 3px 7px #2454bf12;
+  }
+  .primary:hover:not(:disabled) {
+    background: #1f52ca;
+  }
+  .secondary {
+    background: white;
+    border-color: #dfe5ee;
+    color: #45526a;
+  }
+  .secondary:hover:not(:disabled) {
+    background: #f6f8fc;
+    border-color: #b9c7dc;
+  }
+  .icon-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
+    height: 35px;
+    border: none;
+    background: transparent;
+    color: #758299;
+    border-radius: 7px;
+  }
+  .icon-button:hover:not(:disabled) {
+    background: #eaf0f9;
+    color: #265cce;
+  }
+  .text-button {
+    border: 0;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: #356bd1;
+    font-size: 12px;
+    background: transparent;
+    text-align: left;
+  }
+  .text-button:hover:not(:disabled) {
+    color: #174ba9;
+    text-decoration: underline;
+  }
+  .eyebrow {
+    color: #71809a;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.8px;
+    display: block;
+  }
+  .muted {
+    color: #7c879b;
+    font-size: 12px;
+    font-weight: 400;
+  }
+  .full-state {
+    min-height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .full-state > * {
+    max-width: 440px;
+  }
+  .loading {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: #78859c;
+    font-size: 13px;
+    padding: 16px 0;
+  }
+  .primary .loading {
+    padding: 0;
+    color: white;
+  }
+  .error-notice {
+    padding: 12px 14px;
+    background: #fff4f2;
+    border: 1px solid #f2d5cf;
+    color: #a64433;
+    border-radius: 8px;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 12px;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+  }
+  .error-notice > svg {
+    margin-top: 2px;
+  }
+  .error-notice .text-button {
+    margin-top: 6px;
+    color: #a64433;
+  }
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+  .field label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #3b485e;
+  }
+  .field input {
+    width: 100%;
+    height: 46px;
+    border: 1px solid #dce2ec;
+    border-radius: 8px;
+    padding: 0 13px;
+    color: #25314a;
+    background: white;
+    font-size: 13px;
+  }
+  .field input::placeholder {
+    color: #a0a9b9;
+  }
+  .field input:focus {
+    border-color: #739ded;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding-left: 6px;
+    font-weight: 650;
+    font-size: 16px;
+    line-height: 1.15;
+    letter-spacing: -0.4px;
+  }
+  .brand-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #2863e7;
+    color: white;
+    width: 38px;
+    height: 41px;
+    border-radius: 11px;
+    box-shadow: 0 4px 10px #2863e720;
+  }
+  .brand-subtitle {
+    display: block;
+    margin-top: 6px;
+    letter-spacing: 2.4px;
+    font-size: 8px;
+    color: #8a95a9;
+    font-weight: 600;
+  }
+  .page-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+  .page-heading .eyebrow {
+    font-size: 9px;
+    margin-bottom: 11px;
+  }
+  .page-heading h1 {
+    font-size: 29px;
+    font-weight: 600;
+    letter-spacing: -0.7px;
+  }
+  .page-heading p {
+    color: #8c98ad;
+    font-size: 12px;
+    line-height: 1.8;
+    margin-top: 9px;
+  }
+  @media (max-width: 850px) {
+    .brand {
+      font-size: 14px;
+      gap: 9px;
+    }
+    .brand-icon {
+      width: 33px;
+      height: 37px;
+    }
+  }
+  @media (max-width: 700px) {
+    .page-heading {
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .page-heading .button {
+      padding: 8px 10px;
+      font-size: 10px;
+      min-height: 35px;
+    }
+    .page-heading h1 {
+      font-size: 26px;
+    }
+    .page-heading p {
+      font-size: 11px;
+    }
+  }
+}

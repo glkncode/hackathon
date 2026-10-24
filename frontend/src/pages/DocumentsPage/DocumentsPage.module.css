@@ -1,0 +1,131 @@
+@value loading from "../../shared/ui/ui.module.css";
+@value error-notice from "../../shared/ui/ui.module.css";
+@layer app-components {
+  .documents-page {
+    padding: 38px 40px;
+    overflow-y: auto;
+    flex: 1;
+    background: #fbfcfe;
+  }
+  .documents-panel {
+    border: 1px solid #e4e9f2;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .panel-heading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 20px 22px;
+  }
+  .panel-heading h2 {
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-weight: 600;
+    color: #52627d;
+  }
+  .panel-heading h2 > svg {
+    color: #92a5c4;
+  }
+  .count-badge {
+    color: #8899b2;
+    background: #f0f4fa;
+    padding: 3px 7px;
+    border-radius: 5px;
+    font-size: 10px;
+  }
+  .documents-panel > .loading,
+  .documents-panel > .error-notice {
+    margin: 16px 22px 22px;
+  }
+  .table-scroll {
+    overflow-x: auto;
+  }
+  .documents-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    white-space: nowrap;
+  }
+  .documents-table th {
+    background: #fafbfd;
+    color: #99a4b7;
+    font-size: 10px;
+    font-weight: 500;
+    padding: 13px 18px;
+    border-block: 1px solid #eef1f6;
+  }
+  .documents-table td {
+    padding: 20px 18px;
+    border-bottom: 1px solid #edf1f7;
+    font-size: 12px;
+  }
+  .documents-table tr:last-child td {
+    border-bottom: 0;
+  }
+  .documents-table td:first-child {
+    min-width: 220px;
+    max-width: 360px;
+    white-space: normal;
+  }
+  .documents-table .error-notice {
+    margin-top: 12px;
+    white-space: normal;
+  }
+  .empty-documents {
+    padding: 55px 20px 65px;
+    text-align: center;
+  }
+  .empty-documents > span {
+    color: #92add9;
+    background: #f1f6fe;
+    padding: 16px;
+    border-radius: 15px;
+    display: inline-flex;
+    margin-bottom: 20px;
+  }
+  .empty-documents h3 {
+    font-size: 15px;
+    font-weight: 500;
+    color: #6a7d9b;
+  }
+  .empty-documents p {
+    color: #9da9bb;
+    font-size: 12px;
+    line-height: 1.8;
+    margin-top: 10px;
+  }
+  .documents-footnote {
+    margin-top: 20px;
+    max-width: 750px;
+    color: #a0acbf;
+    font-size: 10px;
+    line-height: 1.8;
+  }
+  .pagination {
+    border-top: 1px solid #edf1f7;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    color: #93a0b5;
+    font-size: 11px;
+  }
+  .pagination > div {
+    display: flex;
+    gap: 8px;
+  }
+  @media (max-width: 1100px) {
+    .documents-page {
+      padding: 28px 25px;
+    }
+  }
+  @media (max-width: 700px) {
+    .documents-page {
+      padding: 27px 20px;
+    }
+  }
+}

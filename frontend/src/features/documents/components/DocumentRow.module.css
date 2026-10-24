@@ -1,0 +1,76 @@
+@layer app-components {
+  .document-name {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+  }
+  .document-name > div {
+    min-width: 0;
+  }
+  .document-name strong {
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+  }
+  .document-name span:not(.document-file-icon) {
+    display: block;
+    color: #a0aabb;
+    font-size: 10px;
+    margin-top: 5px;
+    overflow-wrap: anywhere;
+  }
+  .document-file-icon {
+    background: #f0f5fe;
+    color: #7898ce;
+    width: 34px;
+    height: 40px;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .version-number {
+    display: inline-block;
+    color: #6686ba;
+    padding: 4px 8px;
+    background: #f1f5fc;
+    border-radius: 5px;
+    font-size: 11px;
+  }
+  .latest-version {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: #7f8ea6;
+  }
+  .status-badge {
+    display: inline-block;
+    padding: 4px 7px;
+    background: #f2f5f9;
+    color: #8b99af;
+    border-radius: 5px;
+    font-size: 9px;
+  }
+  .status-badge.ready {
+    color: #4f8c75;
+    background: #edf7f2;
+  }
+  .status-badge.processing {
+    color: #a38b4c;
+    background: #fbf7eb;
+  }
+  .status-badge.failed {
+    color: #b27368;
+    background: #fcf1ef;
+  }
+  .date-cell {
+    color: #8c98ac;
+    font-size: 10px !important;
+  }
+  .skeleton {
+    color: #b2bdcd;
+    font-size: 10px;
+  }
+}

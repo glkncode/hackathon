@@ -1,0 +1,188 @@
+@value eyebrow from "../../../shared/ui/ui.module.css";
+
+@layer app-components {
+  .chat-welcome {
+    text-align: center;
+    padding-top: clamp(30px, 6vh, 80px);
+    padding-bottom: 16px;
+  }
+  .welcome-mark {
+    display: inline-flex;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e0e8fc;
+    background: linear-gradient(140deg, #f3f6ff, #e9f0ff);
+    color: #3470e8;
+    width: 72px;
+    height: 76px;
+    border-radius: 23px;
+    margin-bottom: 25px;
+    box-shadow: 0 8px 20px #3067cc08;
+  }
+  .welcome-mark > span {
+    position: absolute;
+    bottom: -5px;
+    right: -6px;
+    width: 29px;
+    height: 29px;
+    border-radius: 10px;
+    color: white;
+    background: #2863e7;
+    border: 3px solid white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .chat-welcome .eyebrow {
+    font-size: 9px;
+    color: #8b9ab1;
+    letter-spacing: 1.5px;
+    margin-bottom: 15px;
+  }
+  .chat-welcome h1 {
+    font-size: clamp(24px, 2.35vw, 32px);
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: -0.85px;
+    color: #2a354c;
+  }
+  .chat-welcome > p {
+    font-size: 13px;
+    color: #8a96a9;
+    line-height: 1.7;
+    margin-top: 16px;
+  }
+  .example-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 38px;
+    text-align: left;
+  }
+  .example-card {
+    position: relative;
+    background: white;
+    border: 1px solid #e3e8f1;
+    border-radius: 12px;
+    padding: 17px 15px 25px;
+    text-align: left;
+    min-height: 162px;
+    color: #516078;
+  }
+  .example-card:hover:not(:disabled) {
+    border-color: #a9c2f6;
+    background: #fbfcff;
+  }
+  .example-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: #f0f5ff;
+    color: #5c88db;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 13px;
+  }
+  .example-card strong {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    margin-bottom: 7px;
+    color: #536078;
+  }
+  .example-question {
+    display: block;
+    color: #94a0b3;
+    font-size: 11px;
+    line-height: 1.6;
+    padding-right: 9px;
+  }
+  .example-arrow {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    color: #9dabc1;
+  }
+  .welcome-caption {
+    margin-top: 20px;
+    color: #a1adbe;
+    display: flex;
+    justify-content: center;
+    gap: 7px;
+    font-size: 10px;
+  }
+  @media (max-width: 850px) {
+    .example-grid {
+      gap: 8px;
+    }
+    .example-card {
+      padding: 13px 11px 25px;
+    }
+    .example-card strong,
+    .example-question {
+      font-size: 10px;
+    }
+    .chat-welcome h1 {
+      font-size: 25px;
+    }
+  }
+  @media (max-width: 700px) {
+    .chat-welcome {
+      padding-top: 25px;
+    }
+    .chat-welcome h1 {
+      font-size: 25px;
+      line-height: 1.35;
+    }
+    .chat-welcome > p {
+      font-size: 12px;
+      max-width: 330px;
+      margin-inline: auto;
+    }
+    .example-grid {
+      margin-top: 26px;
+      gap: 9px;
+    }
+    .example-card {
+      min-height: 155px;
+    }
+  }
+  @media (max-width: 400px) {
+    .example-grid {
+      grid-template-columns: 1fr;
+    }
+    .example-card {
+      min-height: 0;
+      padding: 12px 30px 12px 52px;
+    }
+    .example-icon {
+      position: absolute;
+      left: 10px;
+      top: 12px;
+    }
+    .example-card strong {
+      margin-bottom: 4px;
+    }
+    .example-question {
+      padding: 0;
+    }
+    .chat-welcome {
+      padding-top: 6px;
+    }
+    .chat-welcome h1 {
+      font-size: 22px;
+    }
+    .welcome-mark {
+      margin-bottom: 20px;
+      width: 58px;
+      height: 60px;
+      border-radius: 17px;
+    }
+    .welcome-caption {
+      font-size: 8px;
+      line-height: 1.6;
+    }
+  }
+}

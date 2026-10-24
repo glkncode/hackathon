@@ -1,0 +1,7 @@
+@layer app-components {
+  .template-register label {
+    font-weight: 600;
+    display: grid;
+    gap: 8px;
+  }
+}

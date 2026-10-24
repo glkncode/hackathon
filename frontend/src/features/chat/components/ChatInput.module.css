@@ -1,0 +1,92 @@
+@layer app-components {
+  .composer {
+    border: 1px solid #dce4f0;
+    border-radius: 15px;
+    padding: 17px 18px 11px;
+    background: white;
+    box-shadow: 0 4px 20px #1b3e7307;
+  }
+  .composer:focus-within {
+    border-color: #92b2ef;
+    box-shadow: 0 0 0 3px #3478e908;
+  }
+  .composer.invalid {
+    border-color: #d99a90;
+  }
+  .composer textarea {
+    width: 100%;
+    resize: none;
+    max-height: 180px;
+    min-height: 32px;
+    border: 0;
+    padding: 0;
+    color: #36445d;
+    font-size: 13px;
+    line-height: 1.65;
+    background: transparent;
+  }
+  .composer textarea:focus-visible {
+    outline: none;
+  }
+  .composer textarea::placeholder {
+    color: #a0aabd;
+  }
+  .composer-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 7px;
+  }
+  .composer-bottom > span {
+    color: #a1aabc;
+    font-size: 10px;
+  }
+  .composer-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .character-count {
+    font-size: 9px;
+    color: #a1adbf;
+  }
+  .send-button {
+    color: white;
+    background: #2863e7;
+    border: 0;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+  }
+  .send-button:disabled {
+    background: #e8eef9;
+    color: #a6badc;
+    opacity: 1;
+  }
+  .send-button:hover:not(:disabled) {
+    background: #1c50c8;
+  }
+  .composer-bottom > .input-invalid {
+    color: #b25242;
+  }
+  .composer-hint {
+    display: flex;
+    justify-content: center;
+    gap: 9px;
+    color: #a0aabc;
+    font-size: 9px;
+    margin-top: 11px;
+  }
+  @media (max-width: 400px) {
+    .composer-bottom > span {
+      font-size: 8px;
+    }
+    .character-count {
+      display: none;
+    }
+  }
+}
