@@ -149,11 +149,12 @@ func readChatMessageRows(ctx context.Context, q chatQuerier, owner, session uuid
 		return items, nil
 	}
 	rows, err = q.QueryContext(ctx, `SELECT ms.message_id,ms.position,c.id,d.id,v.id,d.title,v.version_number,c.chunk_index,
-		c.content,c.page_number,c.section_number,c.section_title,ms.score
+		c.content,c.page_number,metadata.section_number,metadata.section_title,ms.score
 		FROM chat_message_sources ms JOIN chat_messages m ON m.id=ms.message_id
 		JOIN chat_sessions s ON s.id=m.session_id JOIN users u ON u.id=s.user_id AND u.is_active
 		JOIN document_chunks c ON c.id=ms.chunk_id JOIN document_versions v ON v.id=c.document_version_id
 		JOIN documents d ON d.id=v.document_id
+		`+chunkMetadataSQL+`
 		WHERE s.user_id=$1 AND s.id=$2 AND m.id=ANY($3::uuid[])
 		AND (u.role='admin' OR EXISTS (SELECT 1 FROM document_access a WHERE a.document_id=d.id AND a.user_id=u.id))
 		ORDER BY ms.message_id,ms.position`, owner, session, ids)
