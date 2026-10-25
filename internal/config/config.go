@@ -15,40 +15,43 @@ import (
 )
 
 type Config struct {
-	Logger                  logger.Config
-	Database                database.Config
-	MigrationTimeout        time.Duration
-	AutoMigrate             bool
-	AllowProductionDown     bool
-	HTTPPort                int
-	TLSCertFile             string
-	TLSKeyFile              string
-	BootstrapAdmin          bool
-	AdminUsername           string
-	AdminPassword           string // Secret: never log Config.
-	SessionTTL              time.Duration
-	CookieSecure            bool
-	AllowedOrigins          []string
-	DocumentStorageDir      string
-	DocumentMaxUploadBytes  int64
-	AIServiceURL            string
-	AIServiceToken          string // Secret: never log Config.
-	IngestionEnabled        bool
-	IngestionWorkers        int
-	IngestionPollInterval   time.Duration
-	IngestionRequestTimeout time.Duration
-	IngestionMaxAttempts    int
-	RAGEnabled              bool
-	RAGTimeout              time.Duration
-	RAGMaxSources           int
-	RAGMaxHistoryMessages   int
-	SemanticSearchEnabled   bool
-	SemanticIndexingEnabled bool
-	SemanticSupplementFTS   bool
-	EmbeddingModel          string
-	EmbeddingDimensions     int
-	EmbeddingRequestTimeout time.Duration
-	SemanticSearchTimeout   time.Duration
+	Logger                      logger.Config
+	Database                    database.Config
+	MigrationTimeout            time.Duration
+	AutoMigrate                 bool
+	AllowProductionDown         bool
+	HTTPPort                    int
+	TLSCertFile                 string
+	TLSKeyFile                  string
+	BootstrapAdmin              bool
+	AdminUsername               string
+	AdminPassword               string // Secret: never log Config.
+	SessionTTL                  time.Duration
+	CookieSecure                bool
+	AllowedOrigins              []string
+	DocumentStorageDir          string
+	DocumentMaxUploadBytes      int64
+	AIServiceURL                string
+	AIServiceToken              string // Secret: never log Config.
+	IngestionEnabled            bool
+	IngestionWorkers            int
+	IngestionPollInterval       time.Duration
+	IngestionRequestTimeout     time.Duration
+	IngestionMaxAttempts        int
+	ChatDocumentCreationEnabled bool
+	ContextResolverEnabled      bool
+	ContextResolverTimeout      time.Duration
+	RAGEnabled                  bool
+	RAGTimeout                  time.Duration
+	RAGMaxSources               int
+	RAGMaxHistoryMessages       int
+	SemanticSearchEnabled       bool
+	SemanticIndexingEnabled     bool
+	SemanticSupplementFTS       bool
+	EmbeddingModel              string
+	EmbeddingDimensions         int
+	EmbeddingRequestTimeout     time.Duration
+	SemanticSearchTimeout       time.Duration
 }
 
 func Load() (Config, error) { return load(os.Getenv) }
@@ -83,6 +86,7 @@ func load(getenv func(string) string) (Config, error) {
 		IngestionRequestTimeout: 120 * time.Second,
 		IngestionMaxAttempts:    5,
 		RAGTimeout:              60 * time.Second,
+		ContextResolverTimeout:  8 * time.Second,
 		RAGMaxSources:           8,
 		RAGMaxHistoryMessages:   10,
 		EmbeddingModel:          value(getenv, "EMBEDDING_MODEL", "intfloat/multilingual-e5-small"),
@@ -138,6 +142,7 @@ func load(getenv func(string) string) (Config, error) {
 		{"INGESTION_POLL_INTERVAL", &cfg.IngestionPollInterval},
 		{"INGESTION_REQUEST_TIMEOUT", &cfg.IngestionRequestTimeout},
 		{"RAG_TIMEOUT", &cfg.RAGTimeout},
+		{"CONTEXT_RESOLVER_TIMEOUT", &cfg.ContextResolverTimeout},
 		{"EMBEDDING_REQUEST_TIMEOUT", &cfg.EmbeddingRequestTimeout},
 		{"SEMANTIC_SEARCH_TIMEOUT", &cfg.SemanticSearchTimeout},
 	} {
@@ -159,6 +164,8 @@ func load(getenv func(string) string) (Config, error) {
 		{"COOKIE_SECURE", &cfg.CookieSecure},
 		{"INGESTION_ENABLED", &cfg.IngestionEnabled},
 		{"RAG_ENABLED", &cfg.RAGEnabled},
+		{"CHAT_DOCUMENT_CREATION_ENABLED", &cfg.ChatDocumentCreationEnabled},
+		{"CONTEXT_RESOLVER_ENABLED", &cfg.ContextResolverEnabled},
 		{"SEMANTIC_SEARCH_ENABLED", &cfg.SemanticSearchEnabled},
 		{"SEMANTIC_INDEXING_ENABLED", &cfg.SemanticIndexingEnabled},
 		{"SEMANTIC_SUPPLEMENT_FTS", &cfg.SemanticSupplementFTS},
@@ -192,6 +199,16 @@ func load(getenv func(string) string) (Config, error) {
 // ValidateServer is intentionally separate: migration CLI commands do not need
 // an administrator password, origins, or TLS certificates.
 func (c Config) ValidateServer() error {
+	if c.ChatDocumentCreationEnabled && (strings.TrimSpace(c.AIServiceURL) == "" || strings.TrimSpace(c.AIServiceToken) == "") {
+		return errors.New("config: CHAT_DOCUMENT_CREATION_ENABLED requires AI_SERVICE_URL and AI_SERVICE_TOKEN")
+	}
+	if c.ContextResolverTimeout < time.Second || c.ContextResolverTimeout > 30*time.Second {
+		return errors.New("config: CONTEXT_RESOLVER_TIMEOUT must be 1s..30s")
+	}
+	if c.ContextResolverEnabled && (!c.RAGEnabled || !c.SemanticSearchEnabled) {
+		return errors.New("config: context resolver requires RAG_ENABLED and SEMANTIC_SEARCH_ENABLED")
+	}
+
 	if c.EmbeddingModel != "intfloat/multilingual-e5-small" || c.EmbeddingDimensions != 384 || c.EmbeddingRequestTimeout < time.Second || c.EmbeddingRequestTimeout > time.Hour || c.SemanticSearchTimeout < time.Second || c.SemanticSearchTimeout > time.Hour {
 		return errors.New("config: unsupported embedding model/dimensions or timeout outside 1s..1h")
 	}

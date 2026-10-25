@@ -50,3 +50,32 @@ type SearchResult struct {
 	SectionTitle      *string   `json:"section_title"`
 	Score             float64   `json:"score"`
 }
+
+// RetrievalResult is internal: an empty candidate pool and an explicit Gate
+// rejection are different decisions, even though neither contains citations.
+type RetrievalDisposition string
+
+const (
+	RetrievalAvailable    RetrievalDisposition = "available"
+	RetrievalNoCandidates RetrievalDisposition = "no_candidates"
+	RetrievalRejected     RetrievalDisposition = "evidence_rejected"
+)
+
+type RetrievalResult struct {
+	Sources     []SearchResult
+	Disposition RetrievalDisposition
+}
+
+func (r RetrievalResult) Validate() error {
+	switch r.Disposition {
+	case RetrievalAvailable:
+		if len(r.Sources) > 0 {
+			return nil
+		}
+	case RetrievalNoCandidates, RetrievalRejected:
+		if len(r.Sources) == 0 {
+			return nil
+		}
+	}
+	return ErrInvalidState
+}

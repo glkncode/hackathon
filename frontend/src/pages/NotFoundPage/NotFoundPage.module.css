@@ -10,14 +10,14 @@
     padding: 30px;
   }
   .not-found > svg {
-    color: #7a9cd8;
+    color: var(--color-primary);
   }
   .not-found h1 {
     font-size: 28px;
     font-weight: 600;
   }
   .not-found p {
-    color: #8b99ae;
+    color: var(--color-text-muted);
     line-height: 1.7;
   }
 }

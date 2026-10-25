@@ -26,6 +26,9 @@ MIME_TYPES = {
 
 # Проверяем токен до разбора тела, а размер ограничиваем даже без Content-Length.
 PRIVATE_REQUEST_LIMITS = {
+    "/internal/v1/chat-documents/interpret": 300 * 1024,
+    "/internal/v1/rag/resolve": 32 * 1024,
+    "/internal/v1/rag/resolver-metrics": 1024,
     "/internal/v1/embeddings": 300 * 1024,
     "/internal/v1/evidence": 128 * 1024,
     "/internal/v1/ingest": MAX_REQUEST_BYTES,

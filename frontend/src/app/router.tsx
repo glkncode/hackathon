@@ -1,5 +1,5 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
-import { ProtectedRoute } from '../features/auth';
+import { AdminRoute, ProtectedRoute } from '../features/auth';
 import { ChatPage } from '../pages/ChatPage/ChatPage';
 import { DocumentsPage } from '../pages/DocumentsPage/DocumentsPage';
 import { LoginPage } from '../pages/LoginPage/LoginPage';
@@ -8,6 +8,7 @@ import { TemplateDraftPage } from '../pages/TemplateDraftPage/TemplateDraftPage'
 import { TemplateRegisterPage } from '../pages/TemplateRegisterPage/TemplateRegisterPage';
 import { TemplateResultPage } from '../pages/TemplateResultPage/TemplateResultPage';
 import { TemplatesPage } from '../pages/TemplatesPage/TemplatesPage';
+import { UsersPage } from '../pages/UsersPage/UsersPage';
 import { AppLayout } from './layout/AppLayout';
 
 export const router = createBrowserRouter([
@@ -21,6 +22,7 @@ export const router = createBrowserRouter([
           { path: '/', element: <Navigate to="/chat" replace /> },
           { path: '/chat', element: <ChatPage /> },
           { path: '/documents', element: <DocumentsPage /> },
+          { element: <AdminRoute />, children: [{ path: '/users', element: <UsersPage /> }] },
           { path: '/templates', element: <TemplatesPage /> },
           { path: '/templates/drafts/:id', element: <TemplateDraftPage /> },
           { path: '/templates/results/:id', element: <TemplateResultPage /> },

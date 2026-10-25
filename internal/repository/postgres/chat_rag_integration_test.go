@@ -15,6 +15,53 @@ func generatedTurn(mode domain.ChatMode, content string, deps ...uuid.UUID) doma
 	return domain.ChatTurn{UserMessage: domain.ChatMessage{Role: domain.ChatRoleUser, Content: "согласование"}, AssistantMessage: domain.ChatMessage{Role: domain.ChatRoleAssistant, Mode: &mode, Content: content, DependencyIDs: deps}}
 }
 
+func TestIntegrationClarificationWithoutSourcesRemainsReadable(t *testing.T) {
+	f := newSearchFixture(t)
+	repo := NewChatRepository(f.db)
+	session, err := repo.CreateSession(f.ctx, f.memberA.ID, "Clarification")
+	if err != nil {
+		t.Fatal(err)
+	}
+	key := uuid.New()
+	turn, err := repo.SaveMessageWithSources(f.ctx, f.memberA.ID, session.ID, key,
+		generatedTurn(domain.ChatModeClarification, "Срок какого действия вас интересует?"), nil)
+	if err != nil || turn.AssistantMessage.ContentUnavailable || len(turn.AssistantMessage.DependencyIDs) != 0 {
+		t.Fatal("source-free clarification could not be saved/read", err)
+	}
+	history, err := repo.RecentMessages(f.ctx, f.memberA.ID, session.ID, 10)
+	if err != nil || len(history) != 2 || history[1].Content != turn.AssistantMessage.Content {
+		t.Fatal("clarification lost from next-turn history", err)
+	}
+}
+
+func TestIntegrationTopicBoundaryPersistsPrivately(t *testing.T) {
+	f := newSearchFixture(t)
+	repo := NewChatRepository(f.db)
+	session, err := repo.CreateSession(f.ctx, f.memberA.ID, "Topic")
+	if err != nil {
+		t.Fatal(err)
+	}
+	turn := chatTestTurn("Independent question", false)
+	turn.UserMessage.StartsNewTopic = true
+	_, err = repo.SaveMessageWithSources(f.ctx, f.memberA.ID, session.ID, uuid.New(), turn, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	// New repository instance models a restart; metadata is read from PostgreSQL.
+	history, err := NewChatRepository(f.db).RecentMessages(f.ctx, f.memberA.ID, session.ID, 10)
+	if err != nil || len(history) != 2 || !history[0].StartsNewTopic || history[1].StartsNewTopic {
+		t.Fatal("topic boundary did not survive restart", err)
+	}
+	rollbackTo(t, f.ctx, f.db, 11)
+	if err = migrator.Up(f.ctx, f.db, zap.NewNop()); err != nil {
+		t.Fatal(err)
+	}
+	history, err = NewChatRepository(f.db).RecentMessages(f.ctx, f.memberA.ID, session.ID, 10)
+	if err != nil || len(history) != 2 || history[0].Content != "Independent question" || history[0].StartsNewTopic {
+		t.Fatal("topic migration lost messages or invalid default", err)
+	}
+}
+
 func TestIntegrationRAGRedactsWholeAnswerForUncitedDependency(t *testing.T) {
 	f := newSearchFixture(t)
 	repo := NewChatRepository(f.db)

@@ -1,10 +1,23 @@
 # Go → Python RAG
 
+Актуальная [стабилизация контекстного режима](rag-context-stabilization.md):
+типизированные результаты поиска, исправление no-candidates и независимый набор.
+Context Resolver сохранён под выключенным флагом. Отклонённые Coverage и Plain
+Language удалены вместе с конфигурацией; [архив и проверки](repository-cleanup-report.md).
+
+Опциональное восстановление контекста перед retrieval описано в
+[аудите контекста диалога](rag-dialogue-context.md). По умолчанию
+`CONTEXT_RESOLVER_ENABLED=false`; описание прежнего пути ниже относится к этому режиму.
+
+Последующая [проверка доработок Resolver и стиля](rag-context-improvements.md)
+содержит реальные ответы, причины отказов, задержки и ограничения схемы.
+Добавка стиля отклонена и удалена; рабочий системный промпт Generator сохранён.
+Из этой оценки сохраняются интеграция Resolver, проверки и известные ограничения.
+
 Go интегрирован с приватным `POST /internal/v1/rag/generate` по контракту ниже.
-По согласованию endpoint уже реализуется/реализован Python-разработчиком, но его
-код ещё не получен в этом checkout. Go-тесты используют HTTP mock, Python-код
-не меняется. После получения Python-коммита нужно выполнить совместную проверку
-этого контракта. До доступности endpoint ответы 404/503 дают search fallback.
+Endpoint реализован в `ai-service/app/api/rag.py` и зарегистрирован в FastAPI.
+Go-тесты проверяют контракт через HTTP mock; реальная Qwen проверяется отдельно
+в изолированном окружении. Недоступность модели приводит к search fallback.
 
 ## Конфигурация
 
@@ -17,7 +30,8 @@ RAG_MAX_SOURCES=8
 RAG_MAX_HISTORY_MESSAGES=10
 ```
 
-RAG по умолчанию отключён. При включении обязательны URL и непустой токен;
+При запуске Go вне Compose RAG по умолчанию отключён; в основном Compose
+он включён (`RAG_ENABLED=true`). При включении обязательны URL и непустой токен;
 некорректная конфигурация отклоняется при старте без вывода секретов.
 RAG_TIMEOUT допустим от 1s до 1h, RAG_MAX_SOURCES — 1–30, история — 0–50
 сообщений (0 выключает её передачу). Настройки ingestion остаются независимыми.
@@ -197,7 +211,7 @@ $env:RAG_MAX_HISTORY_MESSAGES='10'
 go run ./cmd/server
 ```
 
-AUTO_MIGRATE=true применит миграцию 7. Сначала должны быть ready chunks и ACL;
+AUTO_MIGRATE=true применит все отсутствующие миграции (текущая история — 1–12). Сначала должны быть ready chunks и ACL;
 тестовый пользователь входит, создаёт диалог и отправляет запрос через Chat API.
 Проверять отзыв ACL нужно под member: admin имеет доступ ко всем документам.
 Пример запросов в другом PowerShell (development, локальный доверенный Origin):
@@ -233,4 +247,4 @@ go build ./cmd/server
 internal/service/chat.go и chat_rag*.go, internal/domain/chat_message.go,
 postgres/chat_repository.go и chat_rag_integration_test.go, internal/config/*,
 cmd/server/main*.go, .env.example, migration 7, tests/integration/chat_rag_test.go,
-эта документация и уточнения docs/chat.md. Тесты миграций учитывают версию 7.
+эта документация и уточнения docs/chat.md. История миграций 1–12 сохранена и проверяется тестами.

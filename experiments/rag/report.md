@@ -1,5 +1,10 @@
 # Результаты локального RAG-эксперимента — 24.10.2026
 
+Исходные JSON-наблюдения и разметка этого исторического прогона перенесены
+во внешний архив. Пути и SHA-256 каждого файла, порядок восстановления и проверки
+указаны в [отчёте об уборке](../../docs/repository-cleanup-report.md).
+Названия JSON ниже обозначают записи внутри архива. Runners и корпуса сохранены.
+
 **Рекомендация: подготовить ограниченный pilot semantic retrieval с pgvector,
 сохранив FTS. Безусловный semantic top-k в основной backend сейчас не включать.**
 У e5 подтверждён рост recall на новых тематиках, но дополнительная польза RRF здесь
@@ -25,7 +30,7 @@ Go backend, Python RAG/ingestion, React, Compose, бизнес-документ�
 image поддерживает pgvector, но расширение/векторная миграция не устанавливались:
 на этом этапе exact cosine scan выполняется в локальном Python/NumPy. Никакого нового
 hybrid HTTP endpoint в основном Go нет. Инструкции запуска — [README.md](README.md),
-точные image digests и версии библиотек — [environment.json](results/2026-10-24/environment.json).
+точные image digests и версии библиотек — `environment.json`.
 
 Все документы синтетические, сгенерированы из [corpus.json](corpus.json), загружены
 через Go API и разобраны текущим Python ingestion. 9 разрешённых документов + 1
@@ -40,7 +45,7 @@ multi-document вопросы, отрицания, follow-up, противоре
 получена через Chat API и одинакова в generation arms; retrieval пока использует
 только текущий вопрос.
 
-До baseline зафиксированы настоящие IDs: [manifest.json](results/2026-10-24/manifest.json).
+До baseline зафиксированы настоящие IDs: `manifest.json`.
 SHA256 frozen manifest: `bd81f939cd9869c4dab6341e90b0a5a3e82ab5b0b2c8fc10448996f628413519`.
 Никаких синонимических словарей или специальных правил для вопросов корпуса не добавлено.
 RRF k=60 и pool=10 зафиксированы до оценки; порог по holdout не подбирался.
@@ -72,7 +77,7 @@ FTS достигается при очень малом числе резуль�
 не добавляет уникальных релевантных источников к e5. Разницу в генерации ниже нельзя
 приписывать RRF. Улучшение e5 против FTS наблюдается на всех девяти тематиках, в том
 числе каждой из пяти holdout-тематик; вопросы по двум документам учитываются в обоих
-документных срезах. Подробности — [per-document.json](results/2026-10-24/per-document.json).
+документных срезах. Подробности — `per-document.json`.
 
 | Тема | FTS Recall@10 | Semantic Recall@10 |
 |---|---:|---:|
@@ -129,9 +134,9 @@ retrieval, не выигрыш RRF. В предварительном диагн
 наблюдался HTTP 502 `llm_invalid_response`; финальный исправленный прогон завершил
 138/138 без HTTP errors. Предварительная ошибка не объявляется retrieval-пропуском.
 
-Raw outputs: [answers.json](results/2026-10-24/answers.json).
-Содержательная разметка: [review.json](results/2026-10-24/review.json),
-агрегаты: [review-summary.json](results/2026-10-24/review-summary.json).
+Raw outputs: `answers.json`.
+Содержательная разметка: `review.json`,
+агрегаты: `review-summary.json`.
 
 ## Примеры с настоящими source IDs
 
@@ -232,7 +237,7 @@ Memory snapshot не предлагается как production ACL cache: пе�
   **12 passed**, в том числе реальная e5 tokenization, window coverage, cosine/RRF
   deduplication и метрики составных вопросов.
 
-Метаданные проверки: [security-checks.json](results/2026-10-24/security-checks.json).
+Метаданные проверки: `security-checks.json`.
 Тестовые контейнеры после работы остановлены, данные и вектора сохранены локально;
 основной стек продолжает работать.
 

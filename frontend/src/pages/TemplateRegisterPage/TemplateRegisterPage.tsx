@@ -38,7 +38,7 @@ export function TemplateRegisterPage() {
       </Link>
       <div className={ui['page-heading']}>
         <div>
-          <span className={ui['eyebrow']}>АДМИНИСТРИРОВАНИЕ</span>
+          <span className={ui['eyebrow']}>Администрирование</span>
           <h1>Регистрация проверенного шаблона</h1>
           <p>
             Выберите исходный DOCX и подготовленный профиль v2, соответствующий его точной версии.
@@ -54,7 +54,7 @@ export function TemplateRegisterPage() {
           <Link className={ui['text-button']} to="/documents">
             базу знаний
           </Link>
-          . Проверенные JSON-профили находятся в docs/template-profiles/v2. Сервер проверяет схему,
+          . Загрузите проверенный JSON-профиль для выбранного шаблона. Сервер проверит схему,
           SHA-256 и структурные привязки; произвольный DOCX не становится поддерживаемым
           автоматически.
         </p>

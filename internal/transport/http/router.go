@@ -111,6 +111,8 @@ func NewRouter(auth Auth, log *zap.Logger, cfg RouterConfig, modules ...Modules)
 			mux.Handle("GET /api/v1/chat/sessions", requireAuth(http.HandlerFunc(chat.List)))
 			mux.Handle("GET /api/v1/chat/sessions/{id}", requireAuth(http.HandlerFunc(chat.Get)))
 			mux.Handle("POST /api/v1/chat/sessions/{id}/messages", requireAuth(csrf(http.HandlerFunc(chat.Send))))
+			mux.Handle("GET /api/v1/chat/sessions/{id}/document", requireAuth(http.HandlerFunc(chat.Document)))
+			mux.Handle("POST /api/v1/chat/sessions/{id}/document/actions", requireAuth(csrf(http.HandlerFunc(chat.DocumentAction))))
 			mux.Handle("DELETE /api/v1/chat/sessions/{id}", requireAuth(csrf(http.HandlerFunc(chat.Archive))))
 		}
 		if m.Search != nil {

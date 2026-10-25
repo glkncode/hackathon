@@ -8,9 +8,6 @@ PyMuPDF
 python-docx
 docxtpl==0.20.2
 
-# Подключение к ИИ по API
-openai
-
 # Виртуальное окружение
 python-dotenv
 

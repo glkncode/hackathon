@@ -36,7 +36,7 @@ export function LoginPage() {
         <div className={styles['login-story-main']}>
           <span className={ui['eyebrow']}>
             <span className={styles['small-dot']} />
-            ВАША ВНУТРЕННЯЯ БАЗА ЗНАНИЙ
+            Внутренняя база знаний
           </span>
           <h1>
             Нужное положение.
@@ -86,7 +86,7 @@ export function LoginPage() {
           </div>
         </div>
         <div className={styles['login-story-footer']}>
-          AI Document Assistant <span>Работайте с информацией уверенно</span>
+          Помощник по документам
         </div>
       </section>
       <section className={styles['login-form-side']}>
@@ -94,7 +94,7 @@ export function LoginPage() {
           <span className={styles['login-lock']}>
             <LockKeyhole size={24} />
           </span>
-          <span className={cx(ui['eyebrow'], styles['form-eyebrow'])}>ДОБРО ПОЖАЛОВАТЬ</span>
+          <span className={cx(ui['eyebrow'], styles['form-eyebrow'])}>Добро пожаловать</span>
           <h2>
             Войдите в рабочее
             <br />
@@ -186,7 +186,7 @@ function LinkBrand() {
         <FileText size={23} />
       </span>
       <span>
-        AI Document<span className={ui['brand-subtitle']}>ASSISTANT</span>
+        Помощник<span className={ui['brand-subtitle']}>по документам</span>
       </span>
     </div>
   );

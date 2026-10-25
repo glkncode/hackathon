@@ -1,22 +1,46 @@
 @import 'tailwindcss';
-
+@source not '../../../design-review';
 @theme {
   --font-sans: 'Segoe UI', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
-
-/* Component overrides must win over shared primitives, including CSS Modules imports. */
-
+/* Shared primitives precede components regardless of import order. */
 @layer app-base, app-ui, app-components;
-
 @layer app-base {
   :root {
+    --color-background: #f9fcfb;
+    --color-surface: #ffffff;
+    --color-surface-soft: #f0faf7;
+    --color-sidebar: #eaf6f1;
+    --color-text: #142523;
+    --color-text-secondary: #45635d;
+    --color-text-muted: #57736c;
+    --color-primary: #0b806e;
+    --color-primary-hover: #086c5e;
+    --color-primary-soft: #dff4ec;
+    --color-accent: #64e7c4;
+    --color-border: #d5e7df;
+    --color-border-strong: #a7c7ba;
+    --color-danger: #ad303e;
+    --color-danger-soft: #fff3f3;
+    --color-warning: #805600;
+    --color-warning-soft: #fff8e6;
+    --shadow-soft: 0 8px 30px rgb(12 74 62 / 6%);
+    --radius-card: 18px;
+    --radius-control: 12px;
+    --text-caption: 0.8125rem;
+    --text-small: 0.875rem;
+    --text-body: 1rem;
+    --text-answer: 1.0625rem;
+    --text-card: 1.125rem;
+    --text-heading: clamp(28px, 2.4vw, 34px);
     font-family: var(--font-sans);
-    color: #202c40;
-    background: #f8fafc;
+    color: var(--color-text);
+    background: var(--color-background);
     font-synthesis: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
-    font-size: 14px;
+    font-size: 16px;
+    line-height: 1.6;
   }
   * {
     box-sizing: border-box;
@@ -27,13 +51,15 @@
   }
   button,
   input,
-  textarea {
+  textarea,
+  select {
     font: inherit;
   }
   button,
   a,
   input,
-  textarea {
+  textarea,
+  select {
     -webkit-tap-highlight-color: transparent;
   }
   button,
@@ -42,27 +68,26 @@
   }
   button {
     cursor: pointer;
+    transition:
+      background-color 0.15s,
+      border-color 0.15s;
   }
   button:disabled {
     cursor: not-allowed;
-    opacity: 0.5;
+    opacity: 0.55;
   }
   a {
     text-decoration: none;
     color: inherit;
   }
-  button,
-  input,
-  textarea {
-    outline: none;
-  }
   :focus-visible {
-    outline: 3px solid #8fb4ff;
-    outline-offset: 3px;
+    outline: 3px solid var(--color-primary);
+    outline-offset: 4px;
   }
   input:focus-visible,
-  textarea:focus-visible {
-    outline-offset: 1px;
+  textarea:focus-visible,
+  select:focus-visible {
+    outline-offset: 2px;
   }
   h1,
   h2,
@@ -70,13 +95,33 @@
   p {
     margin: 0;
   }
+  h1,
+  h2,
+  h3 {
+    color: var(--color-text);
+    overflow-wrap: anywhere;
+  }
   svg {
     flex-shrink: 0;
   }
-  button {
-    transition:
-      background-color 0.15s,
-      border-color 0.15s;
+  input,
+  textarea,
+  select {
+    min-width: 0;
+    accent-color: var(--color-primary);
+  }
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--color-text-muted);
+    opacity: 1;
+  }
+  summary {
+    cursor: pointer;
+    padding-block: 8px;
+  }
+  ::selection {
+    background: var(--color-primary-soft);
+    color: var(--color-text);
   }
   @media (prefers-reduced-motion: reduce) {
     *,

@@ -1,5 +1,10 @@
 # Semantic pilot: Go + pgvector + CPU E5 + existing Qwen
 
+Исторические `results/2026-10-24*` перенесены во внешний архив, проверенный
+по SHA-256: [отчёт об уборке](../../docs/repository-cleanup-report.md).
+Для проверки старой разметки сначала восстановите нужный каталог из архива.
+Команда `export` может вновь создать локальную копию результатов; runtime их не читает.
+
 The original `experiments/rag` results remain unchanged. The new implementation
 is tested through the real Go Search/Chat endpoints and ingestion workers.
 No fixture/question-specific rules are installed in application code.

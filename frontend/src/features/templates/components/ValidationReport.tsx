@@ -168,7 +168,7 @@ export function ApprovalRoute({ report }: { report: TemplateValidation }) {
   if (!route) return null;
   return (
     <section className={cx(templateStyles['template-panel'], styles['template-route'])}>
-      <span className={ui['eyebrow']}>РЕКОМЕНДАЦИЯ</span>
+      <span className={ui['eyebrow']}>Рекомендация</span>
       <h2>Рекомендуемый маршрут согласования</h2>
       <p>{route.note}</p>
       <h3>Требуется визирование</h3>

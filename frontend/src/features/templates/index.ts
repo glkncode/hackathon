@@ -7,7 +7,7 @@ export { ApprovalRoute, ValidationReport } from './components/ValidationReport';
 export { useTemplateCatalogController } from './hooks/useTemplateCatalogController';
 export { useTemplateResult } from './hooks/useTemplateResult';
 export { loadTemplateDraft } from './hooks/useTemplates';
-export { formatTemplateDate, moduleTitle, ruleFields } from './lib/templateDisplay';
+export { formatTemplateDate, moduleTitle, ruleFields, valueText } from './lib/templateDisplay';
 export type {
   DocumentTemplate,
   FieldValue,

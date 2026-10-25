@@ -60,7 +60,7 @@ export function DocumentRow({ document }: { document: DocumentRecord }) {
           {metadata.isPending ? (
             <span className={styles['skeleton']}>Загрузка…</span>
           ) : metadata.data?.active ? (
-            <span className={styles['version-number']}>v{metadata.data.active.version_number}</span>
+            <span className={styles['version-number']}>Версия {metadata.data.active.version_number}</span>
           ) : (
             <span className={ui['muted']}>
               {metadata.isError ? 'Недоступна' : 'Не опубликована'}
@@ -70,7 +70,7 @@ export function DocumentRow({ document }: { document: DocumentRecord }) {
         <td>
           {metadata.data?.latest ? (
             <div className={styles['latest-version']}>
-              <span>v{metadata.data.latest.version_number}</span>
+              <span>Версия {metadata.data.latest.version_number}</span>
               <span className={cx(styles['status-badge'], styles[metadata.data.latest.status])}>
                 {statusLabels[metadata.data.latest.status]}
               </span>

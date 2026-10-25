@@ -25,8 +25,10 @@ type Response struct {
 
 // Error contains only safe codes; never a URL, token, body or source content.
 type Error struct {
-	Code      string
-	Temporary bool
+	Code         string
+	Temporary    bool
+	UpstreamCode string // Allowlisted machine code only; never raw remote text.
+	LLMCalls     int
 }
 
 func (e *Error) Error() string { return e.Code }

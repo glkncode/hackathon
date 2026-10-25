@@ -140,7 +140,7 @@ func TestIntegrationDocumentRepositoriesAndMigration(t *testing.T) {
 	if err := migrator.Up(ctx, db, zap.NewNop()); err != nil {
 		t.Fatal(err)
 	}
-	if v, err := migrator.Version(ctx, db); err != nil || v != 11 {
+	if v, err := migrator.Version(ctx, db); err != nil || v != 13 {
 		t.Fatal("documents migration not reapplied")
 	}
 }

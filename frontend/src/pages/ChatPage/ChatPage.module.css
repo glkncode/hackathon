@@ -1,5 +1,4 @@
 @value error-notice from "../../shared/ui/ui.module.css";
-
 @layer app-components {
   .chat-page {
     flex: 1;
@@ -11,43 +10,35 @@
     overflow-y: auto;
     flex: 1;
     min-height: 0;
+    overscroll-behavior: contain;
   }
   .chat-content {
-    max-width: 850px;
-    padding: 28px 32px;
+    max-width: 1080px;
+    padding: 24px 40px 36px;
     margin: 0 auto;
   }
   .chat-bottom {
     flex-shrink: 0;
-    max-width: 850px;
+    max-width: 1080px;
     width: 100%;
     margin: 0 auto;
-    padding: 10px 32px 19px;
-  }
-  .chat-footer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 6px;
-    color: #a7b0c0;
-    font-size: 9px;
-    margin-top: 19px;
+    padding: 12px 40px max(24px, env(safe-area-inset-bottom));
   }
   .temporary-notice {
     display: flex;
     align-items: flex-start;
-    gap: 8px;
-    padding: 11px 13px;
-    border: 1px solid #e2eaf6;
-    background: #f7faff;
-    color: #6b80a1;
-    border-radius: 8px;
-    font-size: 11px;
+    gap: 10px;
+    padding: 14px 16px;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface-soft);
+    color: var(--color-text-secondary);
+    border-radius: var(--radius-control);
+    font-size: 14px;
     line-height: 1.6;
-    margin-bottom: 14px;
+    margin-bottom: 18px;
   }
   .temporary-notice svg {
-    margin-top: 1px;
+    margin-top: 3px;
   }
   .conversation-top {
     flex-shrink: 0;
@@ -55,33 +46,33 @@
     justify-content: space-between;
     align-items: center;
     gap: 12px;
-    padding: 17px 34px 0;
+    padding: 18px 40px 0;
   }
   .conversation-top h1 {
-    font-size: 13px;
+    font-size: 17px;
     font-weight: 500;
-    color: #71809a;
+    color: var(--color-text-secondary);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
   .archive-button {
-    color: #929eb1;
+    color: var(--color-text-muted);
     flex-shrink: 0;
-    font-size: 10px;
+    font-size: 14px;
   }
   .messages {
     display: flex;
     flex-direction: column;
-    gap: 27px;
+    gap: 32px;
   }
   .pending-turn {
-    margin-top: 26px;
+    margin-top: 32px;
   }
   .chat-content > .error-notice {
-    margin-top: 14px;
+    margin-top: 18px;
   }
-  @media (max-width: 850px) {
+  @media (max-width: 1100px) {
     .chat-content,
     .chat-bottom {
       padding-inline: 24px;
@@ -89,22 +80,12 @@
   }
   @media (max-width: 700px) {
     .chat-content {
-      padding: 20px;
+      padding: 16px 16px 28px;
     }
     .chat-bottom {
-      padding: 9px 20px 15px;
-    }
-    .chat-footer {
-      margin-top: 13px;
-      font-size: 8px;
+      padding: 10px 16px max(16px, env(safe-area-inset-bottom));
     }
     .conversation-top {
-      padding-inline: 20px;
-    }
-  }
-  @media (max-width: 400px) {
-    .chat-content,
-    .chat-bottom {
       padding-inline: 16px;
     }
   }

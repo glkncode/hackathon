@@ -14,8 +14,8 @@ export function TemplateBadge({
       {template.support_status === 'needs_configuration'
         ? 'Требует настройки'
         : template.schema_version === 2
-          ? `Проверенный v2 · ${template.profile?.revision ?? '2'}`
-          : 'Legacy v1 · старый режим'}
+          ? `Проверенный шаблон · редакция ${template.profile?.revision ?? '2'}`
+          : 'Шаблон первой версии'}
     </span>
   );
 }

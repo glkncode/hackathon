@@ -7,7 +7,7 @@
     overflow-wrap: anywhere;
   }
   .template-metadata dt {
-    color: #61718a;
+    color: var(--color-text-secondary);
   }
   .template-metadata dd {
     margin: 0;

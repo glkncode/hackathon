@@ -32,20 +32,66 @@ func NewSearchService(repository SearchStore) *SearchService {
 // Search is shared by Search HTTP and Chat, using a trusted authenticated actor.
 // Query understanding is deterministic and never logs queries or source text.
 func (s *SearchService) Search(ctx context.Context, actor domain.User, query domain.SearchQuery) ([]domain.SearchResult, error) {
+	result, err := s.SearchForChat(ctx, actor, query, nil)
+	return result.Sources, err
+}
+
+// SearchForChat preserves the retrieval verdict without changing the public
+// Search API. Branches are optional; the same authorization and Gate apply.
+func (s *SearchService) SearchForChat(ctx context.Context, actor domain.User, query domain.SearchQuery, branches []string) (result domain.RetrievalResult, err error) {
+	defer func() {
+		if err == nil && result.Validate() != nil {
+			err = domain.ErrSearchUnavailable
+		}
+		if err != nil {
+			result = domain.RetrievalResult{}
+		}
+	}()
 	if actor.ID == uuid.Nil || !actor.IsActive || !actor.Role.Valid() {
-		return nil, domain.ErrAccessDenied
+		return domain.RetrievalResult{}, domain.ErrAccessDenied
 	}
-	query, err := query.Normalize()
+	query, err = query.Normalize()
 	if err != nil {
-		return nil, err
+		return domain.RetrievalResult{}, err
 	}
 	if err := ctx.Err(); err != nil {
-		return nil, err
+		return domain.RetrievalResult{}, err
 	}
 	if s.semantic != nil {
-		return s.searchSemantic(ctx, actor, query)
+		if branches == nil {
+			branches = []string{query.Query}
+		}
+		if len(branches) < 1 || len(branches) > 4 {
+			return domain.RetrievalResult{}, domain.ErrInvalidInput
+		}
+		unique, seen := []string{}, map[string]bool{}
+		for _, branch := range branches {
+			q, err := (domain.SearchQuery{Query: branch}).Normalize()
+			if err != nil {
+				return domain.RetrievalResult{}, err
+			}
+			if !seen[q.Query] {
+				unique = append(unique, q.Query)
+				seen[q.Query] = true
+			}
+		}
+		return s.searchSemanticPlan(ctx, actor, query, unique)
 	}
-	return s.searchFTS(ctx, actor, query)
+	if branches != nil {
+		return domain.RetrievalResult{}, domain.ErrInvalidInput
+	}
+	sources, err := s.searchFTS(ctx, actor, query)
+	return retrievalResult(sources, domain.RetrievalNoCandidates), err
+}
+
+func retrievalResult(sources []domain.SearchResult, empty domain.RetrievalDisposition) domain.RetrievalResult {
+	if sources == nil {
+		sources = []domain.SearchResult{}
+	}
+	if len(sources) > 0 {
+		return domain.RetrievalResult{Sources: sources, Disposition: domain.RetrievalAvailable}
+	}
+	return domain.RetrievalResult{Sources: sources, Disposition: empty}
 }
 
 func (s *SearchService) searchFTS(ctx context.Context, actor domain.User, query domain.SearchQuery) ([]domain.SearchResult, error) {
@@ -96,13 +142,17 @@ func emptyTableValues(content string) bool {
 // Reciprocal rank fusion avoids comparing scores from different FTS queries.
 // Only repository results may contribute content, IDs or citation metadata.
 func fuseSearchResults(lists [][]domain.SearchResult, limit int) []domain.SearchResult {
+	return fuseRankedResults(lists, limit, true)
+}
+
+func fuseRankedResults(lists [][]domain.SearchResult, limit int, filterEmptyTable bool) []domain.SearchResult {
 	const rankConstant = 60.0
 	byID := make(map[uuid.UUID]domain.SearchResult)
 	for _, list := range lists {
 		seen := make(map[uuid.UUID]bool)
 		rank := 0
 		for _, source := range list {
-			if seen[source.ChunkID] || emptyTableValues(source.Content) {
+			if seen[source.ChunkID] || (filterEmptyTable && emptyTableValues(source.Content)) {
 				continue
 			}
 			seen[source.ChunkID] = true

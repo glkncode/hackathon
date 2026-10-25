@@ -12,7 +12,7 @@ export interface Source {
   score: number;
 }
 
-export type AnswerMode = 'search' | 'no_sources' | 'generated' | 'clarification';
+export type AnswerMode = 'search' | 'no_sources' | 'generated' | 'clarification' | 'document';
 
 export interface SearchResponse {
   query: string;
@@ -34,6 +34,7 @@ export interface ChatSource extends Source {
 }
 
 export interface ChatMessageRecord {
+  document_generated_id?: string;
   id: string;
   session_id: string;
   role: 'user' | 'assistant';
@@ -70,6 +71,7 @@ export interface ChatTurn {
 
 // View state only: these messages are never presented as server history.
 export interface LocalMessage {
+  document_generated_id?: string;
   id: string;
   role: 'user' | 'assistant';
   content: string;

@@ -1,6 +1,6 @@
 @layer app-components {
   .template-badge {
-    font-size: 12px;
+    font-size: var(--text-small);
     padding: 5px 9px;
     border-radius: 7px;
     color: #715014;
@@ -8,7 +8,7 @@
     display: inline-block;
   }
   .template-badge.v2 {
-    background: #eaf3ff;
-    color: #2253a1;
+    background: var(--color-surface-soft);
+    color: var(--color-primary);
   }
 }

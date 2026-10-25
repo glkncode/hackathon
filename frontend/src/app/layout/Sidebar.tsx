@@ -1,4 +1,4 @@
-import { BookOpen, FileText, LogOut, MessageSquare, Plus, ShieldCheck, X } from 'lucide-react';
+import { BookOpen, FileText, LogOut, MessageSquare, Plus, Users, X } from 'lucide-react';
 import { Link, NavLink, useSearchParams } from 'react-router-dom';
 import { useAuth, useLogout } from '../../features/auth';
 import { useChatSessions } from '../../features/chat';
@@ -34,7 +34,7 @@ export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void 
             <FileText size={23} />
           </span>
           <span>
-            AI Document<span className={ui['brand-subtitle']}>ASSISTANT</span>
+            Помощник<span className={ui['brand-subtitle']}>по документам</span>
           </span>
         </Link>
         <button
@@ -54,20 +54,20 @@ export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void 
         </Link>
         <nav className={styles['primary-nav']}>
           <NavLink
-            to="/templates"
-            className={({ isActive }) => cx(styles['nav-link'], isActive ? styles['active'] : '')}
-            onClick={onClose}
-          >
-            <FileText size={18} />
-            Шаблоны
-          </NavLink>
-          <NavLink
             to="/chat"
             className={({ isActive }) => cx(styles['nav-link'], isActive ? styles['active'] : '')}
             onClick={onClose}
           >
             <MessageSquare size={18} />
             Помощник
+          </NavLink>
+          <NavLink
+            to="/templates"
+            className={({ isActive }) => cx(styles['nav-link'], isActive ? styles['active'] : '')}
+            onClick={onClose}
+          >
+            <FileText size={18} />
+            Шаблоны
           </NavLink>
           <NavLink
             to="/documents"
@@ -77,8 +77,18 @@ export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void 
             <BookOpen size={18} />
             База знаний
           </NavLink>
+          {user?.role === 'admin' && (
+            <NavLink
+              to="/users"
+              className={({ isActive }) => cx(styles['nav-link'], isActive ? styles['active'] : '')}
+              onClick={onClose}
+            >
+              <Users size={18} />
+              Пользователи
+            </NavLink>
+          )}
         </nav>
-        <div className={styles['history-heading']}>СОХРАНЁННЫЕ ДИАЛОГИ</div>
+        <div className={styles['history-heading']}>История чатов</div>
         <div className={styles['history-list']}>
           {history.isPending && <Loading label="Загружаем историю…" />}
           {history.isError && (
@@ -104,6 +114,7 @@ export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void 
           {sessions.map((session) => (
             <Link
               key={session.id}
+              title={session.title}
               to={`/chat?session=${encodeURIComponent(session.id)}`}
               className={cx(
                 styles['history-link'],
@@ -125,18 +136,10 @@ export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void 
             </button>
           )}
         </div>
-        <div className={styles['sidebar-note']}>
-          <ShieldCheck size={17} />
-          <span>
-            Только доступные вам
-            <br />
-            документы и источники
-          </span>
-        </div>
         <div className={styles['user-area']}>
           <span className={styles['avatar']}>{user?.username.slice(0, 2).toUpperCase()}</span>
           <div className={styles['user-info']}>
-            <strong>{user?.username}</strong>
+            <strong title={user?.username}>{user?.username}</strong>
             <span>{user?.role === 'admin' ? 'Администратор' : 'Участник'}</span>
           </div>
           <button

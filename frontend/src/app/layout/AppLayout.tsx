@@ -10,6 +10,14 @@ export function AppLayout() {
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const closeOnDesktop = () => {
+      if (window.innerWidth > 900) setOpen(false);
+    };
+    window.addEventListener('resize', closeOnDesktop);
+    return () => window.removeEventListener('resize', closeOnDesktop);
+  }, []);
+
+  useEffect(() => {
     if (!open) return;
     const previous = document.activeElement;
     const sidebar = menuRef.current?.querySelector<HTMLElement>('#main-sidebar');

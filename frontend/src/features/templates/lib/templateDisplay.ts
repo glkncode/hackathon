@@ -6,17 +6,8 @@ import type {
   TemplateProfile,
 } from '../types/templates';
 
-const moduleNames: Record<string, string> = {
-  'working-group': 'Создание рабочей группы',
-  'project-committee': 'Создание проектного комитета',
-  'is-commissioning': 'Ввод информационной системы в эксплуатацию',
-  'local-document': 'Утверждение локального документа',
-  'records-responsibles': 'Назначение ответственных за делопроизводство',
-  'property-transfer': 'Передача дел и имущества',
-  'internal-audit': 'Проведение внутреннего аудита',
-};
 export function moduleTitle(template: Pick<DocumentTemplate, 'name' | 'profile'>) {
-  return moduleNames[template.profile?.profile_id ?? ''] ?? template.name;
+  return template.name;
 }
 export function documentKind(template: Pick<DocumentTemplate, 'profile'>) {
   const source = template.profile?.field_source as { name?: string } | undefined;

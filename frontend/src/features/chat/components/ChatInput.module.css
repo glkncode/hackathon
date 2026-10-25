@@ -1,91 +1,89 @@
 @layer app-components {
   .composer {
-    border: 1px solid #dce4f0;
-    border-radius: 15px;
-    padding: 17px 18px 11px;
-    background: white;
-    box-shadow: 0 4px 20px #1b3e7307;
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-card);
+    padding: 20px 20px 14px;
+    background: var(--color-surface);
+    box-shadow: var(--shadow-soft);
   }
   .composer:focus-within {
-    border-color: #92b2ef;
-    box-shadow: 0 0 0 3px #3478e908;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgb(11 136 117 / 8%);
   }
   .composer.invalid {
-    border-color: #d99a90;
+    border-color: var(--color-danger);
   }
   .composer textarea {
     width: 100%;
     resize: none;
     max-height: 180px;
-    min-height: 32px;
+    min-height: 38px;
     border: 0;
     padding: 0;
-    color: #36445d;
-    font-size: 13px;
+    color: var(--color-text);
+    font-size: 17px;
     line-height: 1.65;
     background: transparent;
+    outline: none;
   }
   .composer textarea:focus-visible {
     outline: none;
-  }
-  .composer textarea::placeholder {
-    color: #a0aabd;
   }
   .composer-bottom {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 10px;
-    margin-top: 7px;
+    margin-top: 8px;
   }
   .composer-bottom > span {
-    color: #a1aabc;
-    font-size: 10px;
+    color: var(--color-text-muted);
+    font-size: 13px;
   }
   .composer-controls {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
+    margin-left: auto;
   }
   .character-count {
-    font-size: 9px;
-    color: #a1adbf;
+    font-size: 13px;
+    color: var(--color-text-muted);
   }
   .send-button {
     color: white;
-    background: #2863e7;
+    background: var(--color-primary);
     border: 0;
-    border-radius: 9px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 34px;
-    height: 34px;
+    width: 48px;
+    height: 48px;
   }
   .send-button:disabled {
-    background: #e8eef9;
-    color: #a6badc;
+    background: var(--color-primary-soft);
+    color: var(--color-text-muted);
     opacity: 1;
   }
   .send-button:hover:not(:disabled) {
-    background: #1c50c8;
+    background: var(--color-primary-hover);
   }
   .composer-bottom > .input-invalid {
-    color: #b25242;
+    color: var(--color-danger);
   }
   .composer-hint {
-    display: flex;
-    justify-content: center;
-    gap: 9px;
-    color: #a0aabc;
-    font-size: 9px;
-    margin-top: 11px;
+    color: var(--color-text-muted);
+    font-size: 13px;
   }
-  @media (max-width: 400px) {
-    .composer-bottom > span {
-      font-size: 8px;
+  @media (max-width: 700px) {
+    .composer {
+      padding: 16px;
     }
-    .character-count {
+    .composer textarea {
+      font-size: 16px;
+    }
+    .composer-hint {
       display: none;
     }
   }

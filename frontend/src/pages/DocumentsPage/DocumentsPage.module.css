@@ -2,15 +2,17 @@
 @value error-notice from "../../shared/ui/ui.module.css";
 @layer app-components {
   .documents-page {
+    min-width: 0;
+    min-height: 0;
     padding: 38px 40px;
     overflow-y: auto;
     flex: 1;
-    background: #fbfcfe;
+    background: var(--color-background);
   }
   .documents-panel {
-    border: 1px solid #e4e9f2;
-    background: white;
-    border-radius: 12px;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    border-radius: var(--radius-card);
     overflow: hidden;
   }
   .panel-heading {
@@ -20,22 +22,22 @@
     padding: 20px 22px;
   }
   .panel-heading h2 {
-    font-size: 13px;
+    font-size: 18px;
     display: flex;
     align-items: center;
     gap: 9px;
     font-weight: 600;
-    color: #52627d;
+    color: var(--color-text-secondary);
   }
   .panel-heading h2 > svg {
-    color: #92a5c4;
+    color: var(--color-text-muted);
   }
   .count-badge {
-    color: #8899b2;
-    background: #f0f4fa;
+    color: var(--color-text-muted);
+    background: var(--color-surface-soft);
     padding: 3px 7px;
     border-radius: 5px;
-    font-size: 10px;
+    font-size: 14px;
   }
   .documents-panel > .loading,
   .documents-panel > .error-notice {
@@ -43,25 +45,27 @@
   }
   .table-scroll {
     overflow-x: auto;
+    max-width: 100%;
   }
   .documents-table {
     width: 100%;
+    min-width: 680px;
     border-collapse: collapse;
     text-align: left;
-    white-space: nowrap;
+    white-space: normal;
   }
   .documents-table th {
-    background: #fafbfd;
-    color: #99a4b7;
-    font-size: 10px;
+    background: var(--color-background);
+    color: var(--color-text-muted);
+    font-size: var(--text-caption);
     font-weight: 500;
     padding: 13px 18px;
-    border-block: 1px solid #eef1f6;
+    border-block: 1px solid var(--color-surface-soft);
   }
   .documents-table td {
     padding: 20px 18px;
-    border-bottom: 1px solid #edf1f7;
-    font-size: 12px;
+    border-bottom: 1px solid var(--color-surface-soft);
+    font-size: 16px;
   }
   .documents-table tr:last-child td {
     border-bottom: 0;
@@ -80,39 +84,41 @@
     text-align: center;
   }
   .empty-documents > span {
-    color: #92add9;
-    background: #f1f6fe;
+    color: var(--color-primary);
+    background: var(--color-surface-soft);
     padding: 16px;
-    border-radius: 15px;
+    border-radius: var(--radius-card);
     display: inline-flex;
     margin-bottom: 20px;
   }
   .empty-documents h3 {
-    font-size: 15px;
+    font-size: var(--text-card);
     font-weight: 500;
-    color: #6a7d9b;
+    color: var(--color-text-secondary);
   }
   .empty-documents p {
-    color: #9da9bb;
-    font-size: 12px;
+    color: var(--color-text-muted);
+    font-size: var(--text-small);
     line-height: 1.8;
     margin-top: 10px;
   }
   .documents-footnote {
     margin-top: 20px;
     max-width: 750px;
-    color: #a0acbf;
-    font-size: 10px;
+    color: var(--color-text-muted);
+    font-size: var(--text-caption);
     line-height: 1.8;
   }
   .pagination {
-    border-top: 1px solid #edf1f7;
+    border-top: 1px solid var(--color-surface-soft);
     display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
     justify-content: space-between;
     align-items: center;
     padding: 12px 20px;
-    color: #93a0b5;
-    font-size: 11px;
+    color: var(--color-text-muted);
+    font-size: var(--text-caption);
   }
   .pagination > div {
     display: flex;

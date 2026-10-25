@@ -1,5 +1,6 @@
 """Conservative evidence gate, independent of cosine score and answer generation."""
 import json
+import logging
 from uuid import UUID
 
 from fastapi import APIRouter, Request
@@ -11,6 +12,13 @@ from app.rag.generator import unique_object
 from app.schemas.rag import GenerateRequest, StrictModel
 
 router = APIRouter()
+log = logging.getLogger("uvicorn.error")
+
+
+def _reject_evidence(reason):
+    # Only server-defined labels: never log model output, IDs, quotes or queries.
+    log.warning("evidence validation rejected reason=%s", reason)
+    raise InferenceError('evidence_invalid_response', 502) from None
 
 
 class Evidence(StrictModel):
@@ -39,19 +47,32 @@ async def select_evidence(body, llm):
         {'role': 'user', 'content': json.dumps(body.model_dump(mode='json'), ensure_ascii=False)},
     ])
     try:
-        result = EvidenceResponse.model_validate(json.loads(raw, object_pairs_hook=unique_object))
-        allowed = {s.chunk_id: s.content for s in body.sources}
-        seen = set()
-        for e in result.evidence:
-            canonical_quote = ' '.join(e.quote.split())
-            if (e.chunk_id in seen or e.chunk_id not in allowed
-                    or len(canonical_quote) < 8
-                    or canonical_quote not in ' '.join(allowed[e.chunk_id].split())):
-                raise ValueError()
-            seen.add(e.chunk_id)
-        return result
+        parsed = json.loads(raw, object_pairs_hook=unique_object)
     except (ValueError, TypeError):
-        raise InferenceError('evidence_invalid_response', 502) from None
+        _reject_evidence('invalid_json')
+    try:
+        result = EvidenceResponse.model_validate(parsed)
+    except (ValueError, TypeError):
+        _reject_evidence('invalid_schema')
+    return validate_evidence(body, result)
+
+
+def validate_evidence(body, result):
+    """Validate source identities and literal quotes before admitting evidence."""
+    allowed = {s.chunk_id: s.content for s in body.sources}
+    seen = set()
+    for e in result.evidence:
+        canonical_quote = ' '.join(e.quote.split())
+        if e.chunk_id in seen:
+            _reject_evidence('duplicate_source_id')
+        if e.chunk_id not in allowed:
+            _reject_evidence('unknown_source_id')
+        if len(canonical_quote) < 8:
+            _reject_evidence('quote_too_short')
+        if canonical_quote not in ' '.join(allowed[e.chunk_id].split()):
+            _reject_evidence('quote_mismatch')
+        seen.add(e.chunk_id)
+    return result
 
 
 @router.post('/internal/v1/evidence', response_model=EvidenceResponse)

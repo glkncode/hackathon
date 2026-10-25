@@ -28,7 +28,7 @@ class LLMClient:
     async def close(self):
         await self.http.aclose()
 
-    async def generate(self, messages: list[dict]) -> str:
+    async def generate(self, messages: list[dict], *, response_schema: dict | None = None) -> str:
         if not self.config.base_url or not self.config.model:
             raise InferenceError("llm_unavailable", 503)
         headers = {}
@@ -42,6 +42,10 @@ class LLMClient:
             "stream": False,
             "response_format": {"type": "json_object"},
         }
+        if response_schema is not None:
+            payload["response_format"] = {"type": "json_schema", "json_schema": {
+                "name": "document_interpretation", "strict": False, "schema": response_schema,
+            }}
         try:
             async with asyncio.timeout(self.config.timeout):
                 async with self.slots:

@@ -14,10 +14,10 @@ export function TemplatesPage() {
     <div className={templateStyles['templates-page']}>
       <div className={ui['page-heading']}>
         <div>
-          <span className={ui['eyebrow']}>ПОДГОТОВКА ДОКУМЕНТОВ</span>
+          <span className={ui['eyebrow']}>Подготовка документов</span>
           <h1>Шаблоны</h1>
           <p>
-            От проверенного модуля до проекта DOCX — с сохранением ответов и проверкой реквизитов.
+            Создавайте документы по шаблонам. Помощник сохранит ответы и проверит обязательные поля.
           </p>
         </div>
         {user.data?.role === 'admin' && (
