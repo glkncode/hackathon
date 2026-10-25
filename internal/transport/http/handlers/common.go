@@ -91,6 +91,8 @@ func pathID(r *http.Request, name string) (uuid.UUID, error) {
 func apiError(w http.ResponseWriter, err error, log *zap.Logger) {
 	status, message := http.StatusInternalServerError, "internal error"
 	switch {
+	case errors.Is(err, domain.ErrSearchUnavailable):
+		status, message = 503, "Поиск временно недоступен. Попробуйте ещё раз позже."
 	case errors.Is(err, domain.ErrAccessDenied):
 		status, message = 403, "forbidden"
 	case errors.Is(err, domain.ErrNotFound):

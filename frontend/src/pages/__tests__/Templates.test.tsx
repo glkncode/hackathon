@@ -190,8 +190,8 @@ describe('catalog and access', () => {
   it('loads real catalog API data, v2 label and creates a draft', async () => {
     vi.spyOn(templatesApi, 'create').mockResolvedValue(server);
     await render(<TemplatesPage />, '/templates');
-    expect(host.textContent).toContain('Создание рабочей группы');
-    expect(host.textContent).toContain('Проверенный v2');
+    expect(host.textContent).toContain(template.name);
+    expect(host.textContent).toContain('Проверенный шаблон');
     await click('Создать документ');
     expect(templatesApi.create).toHaveBeenCalledWith('template', expect.anything());
   });
@@ -203,8 +203,8 @@ describe('catalog and access', () => {
         onCreate={() => {}}
       />,
     );
-    expect(host.textContent).toContain('Legacy v1');
-    expect(host.textContent).toContain('Структурная очистка v2 не предусмотрена');
+    expect(host.textContent).toContain('Шаблон первой версии');
+    expect(host.textContent).toContain('Заполнение по шаблону первой версии.');
   });
   it.each([{ support_status: 'needs_configuration' as const }, { enabled: false }])(
     'disables unavailable creation %j',
@@ -350,7 +350,7 @@ describe('server driven wizard and concurrency', () => {
       validation: undefined,
     }));
     await render(<TemplateDraftPage />);
-    expect(host.textContent).toContain('Legacy v1');
+    expect(host.textContent).toContain('Шаблон первой версии');
     expect(host.textContent).toContain(field.question);
     expect(templatesApi.next).toHaveBeenCalled();
   });

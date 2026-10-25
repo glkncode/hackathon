@@ -2,30 +2,38 @@
 
 @layer app-components {
   .templates-page {
-    padding: 32px;
-    max-width: 1280px;
+    padding: 36px 40px;
+    width: 100%;
+    flex-shrink: 0;
+    min-width: 0;
+    max-width: 1440px;
     margin: 0 auto;
     display: grid;
-    gap: 24px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
   }
   .templates-page h2 {
-    font-size: 20px;
+    font-size: 24px;
     font-weight: 650;
     margin-bottom: 12px;
   }
   .templates-page h3 {
-    font-size: 15px;
+    font-size: 18px;
     font-weight: 650;
   }
   .templates-page section > h2 {
     margin-bottom: 18px;
   }
   .template-panel {
-    background: white;
-    border: 1px solid #dfe5ee;
-    border-radius: 14px;
-    padding: 24px;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    padding: 28px;
+    box-shadow: var(--shadow-soft);
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 16px;
     line-height: 1.65;
   }
@@ -44,14 +52,14 @@
   .templates-page input,
   .templates-page select,
   .templates-page textarea {
-    border: 1px solid #b8c5d7;
-    background: white;
+    border: 1px solid var(--color-border-strong);
+    background: var(--color-surface);
     padding: 11px 13px;
-    border-radius: 8px;
+    border-radius: var(--radius-control);
     width: 100%;
-    color: #202c40;
+    color: var(--color-text);
     font: inherit;
-    min-height: 44px;
+    min-height: 50px;
   }
   .templates-page textarea {
     resize: vertical;
@@ -59,7 +67,7 @@
   .templates-page input:focus,
   .templates-page select:focus,
   .templates-page textarea:focus {
-    border-color: #2863e7;
+    border-color: var(--color-primary);
   }
   .template-row-heading {
     display: flex;
@@ -80,10 +88,10 @@
     border-radius: 9px;
   }
   .template-empty {
-    background: white;
+    background: var(--color-surface);
     padding: 28px;
-    border: 1px dashed #bdcadd;
-    border-radius: 12px;
+    border: 1px dashed var(--color-border-strong);
+    border-radius: var(--radius-card);
     line-height: 1.7;
   }
   .template-value {

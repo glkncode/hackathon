@@ -65,16 +65,16 @@ func (r *TemplateRepository) CreateTemplate(ctx context.Context, t domain.Docume
 	if version == 0 {
 		version = 1
 	}
-	return scanTemplate(r.db.QueryRowContext(ctx, `INSERT INTO document_templates AS t (document_id,document_version_id,name,description,fields,schema_version,profile) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING `+templateColumns, t.DocumentID, t.DocumentVersionID, t.Name, t.Description, fields, version, nullableJSON(t.Profile)))
+	return scanTemplate(queryDB(ctx, r.db).QueryRowContext(ctx, `INSERT INTO document_templates AS t (document_id,document_version_id,name,description,fields,schema_version,profile) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING `+templateColumns, t.DocumentID, t.DocumentVersionID, t.Name, t.Description, fields, version, nullableJSON(t.Profile)))
 }
 func (r *TemplateRepository) GetTemplate(ctx context.Context, id uuid.UUID) (domain.DocumentTemplate, error) {
-	return scanTemplate(r.db.QueryRowContext(ctx, `SELECT `+templateColumns+` FROM document_templates t WHERE t.id=$1`, id))
+	return scanTemplate(queryDB(ctx, r.db).QueryRowContext(ctx, `SELECT `+templateColumns+` FROM document_templates t WHERE t.id=$1`, id))
 }
 func (r *TemplateRepository) SetTemplateEnabled(ctx context.Context, id uuid.UUID, enabled bool) (domain.DocumentTemplate, error) {
-	return scanTemplate(r.db.QueryRowContext(ctx, `UPDATE document_templates t SET enabled=$2,updated_at=NOW() WHERE id=$1 RETURNING `+templateColumns, id, enabled))
+	return scanTemplate(queryDB(ctx, r.db).QueryRowContext(ctx, `UPDATE document_templates t SET enabled=$2,updated_at=NOW() WHERE id=$1 RETURNING `+templateColumns, id, enabled))
 }
 func (r *TemplateRepository) ListTemplates(ctx context.Context, owner uuid.UUID, limit, offset int) ([]domain.DocumentTemplate, error) {
-	rows, err := r.db.QueryContext(ctx, `SELECT `+templateColumns+` FROM document_templates t WHERE t.enabled AND `+templateVisibility+` ORDER BY t.created_at DESC,t.id LIMIT $2 OFFSET $3`, owner, limit, offset)
+	rows, err := queryDB(ctx, r.db).QueryContext(ctx, `SELECT `+templateColumns+` FROM document_templates t WHERE t.enabled AND `+templateVisibility+` ORDER BY t.created_at DESC,t.id LIMIT $2 OFFSET $3`, owner, limit, offset)
 	if err != nil {
 		return nil, mapError("list templates", err)
 	}
@@ -91,17 +91,17 @@ func (r *TemplateRepository) ListTemplates(ctx context.Context, owner uuid.UUID,
 }
 func (r *TemplateRepository) CreateDraft(ctx context.Context, owner uuid.UUID, t domain.DocumentTemplate) (domain.TemplateDraft, error) {
 	id := uuid.New()
-	_, err := r.db.ExecContext(ctx, `INSERT INTO template_drafts(id,template_id,document_version_id,owner_id,status) SELECT $1,t.id,t.document_version_id,$2,$4 FROM document_templates t WHERE t.id=$3 AND t.enabled`, id, owner, t.ID, draftStatus(domain.ValidateTemplateValues(t.Fields, nil)))
+	_, err := queryDB(ctx, r.db).ExecContext(ctx, `INSERT INTO template_drafts(id,template_id,document_version_id,owner_id,status) SELECT $1,t.id,t.document_version_id,$2,$4 FROM document_templates t WHERE t.id=$3 AND t.enabled`, id, owner, t.ID, draftStatus(domain.ValidateTemplateValues(t.Fields, nil)))
 	if err != nil {
 		return domain.TemplateDraft{}, mapError("create template draft", err)
 	}
 	return r.GetDraft(ctx, owner, id)
 }
 func (r *TemplateRepository) GetDraft(ctx context.Context, owner, id uuid.UUID) (domain.TemplateDraft, error) {
-	return scanTemplateDraft(r.db.QueryRowContext(ctx, `SELECT `+draftColumns+` FROM template_drafts d JOIN document_templates t ON t.id=d.template_id WHERE d.id=$1 AND d.owner_id=$2`, id, owner))
+	return scanTemplateDraft(queryDB(ctx, r.db).QueryRowContext(ctx, `SELECT `+draftColumns+` FROM template_drafts d JOIN document_templates t ON t.id=d.template_id WHERE d.id=$1 AND d.owner_id=$2`, id, owner))
 }
 func (r *TemplateRepository) ListDrafts(ctx context.Context, owner uuid.UUID, limit, offset int) ([]domain.TemplateDraft, error) {
-	rows, err := r.db.QueryContext(ctx, `SELECT `+draftColumns+` FROM template_drafts d JOIN document_templates t ON t.id=d.template_id WHERE d.owner_id=$1 AND t.enabled AND `+templateVisibility+` ORDER BY d.updated_at DESC,d.id LIMIT $2 OFFSET $3`, owner, limit, offset)
+	rows, err := queryDB(ctx, r.db).QueryContext(ctx, `SELECT `+draftColumns+` FROM template_drafts d JOIN document_templates t ON t.id=d.template_id WHERE d.owner_id=$1 AND t.enabled AND `+templateVisibility+` ORDER BY d.updated_at DESC,d.id LIMIT $2 OFFSET $3`, owner, limit, offset)
 	if err != nil {
 		return nil, mapError("list drafts", err)
 	}
@@ -132,7 +132,7 @@ func (r *TemplateRepository) UpdateDraft(ctx context.Context, d domain.TemplateD
 	if d.Validation != nil {
 		validation = *d.Validation
 	}
-	result, err := scanTemplateDraft(r.db.QueryRowContext(ctx, `WITH changed AS (UPDATE template_drafts SET values=$4,status=$5,revision=revision+1,updated_at=NOW() WHERE id=$1 AND owner_id=$2 AND revision=$3 RETURNING *) SELECT `+draftColumns+` FROM changed d JOIN document_templates t ON t.id=d.template_id`, d.ID, d.OwnerID, expected, data, draftStatus(validation)))
+	result, err := scanTemplateDraft(queryDB(ctx, r.db).QueryRowContext(ctx, `WITH changed AS (UPDATE template_drafts SET values=$4,status=$5,revision=revision+1,updated_at=NOW() WHERE id=$1 AND owner_id=$2 AND revision=$3 RETURNING *) SELECT `+draftColumns+` FROM changed d JOIN document_templates t ON t.id=d.template_id`, d.ID, d.OwnerID, expected, data, draftStatus(validation)))
 	if errors.Is(err, domain.ErrNotFound) {
 		if _, getErr := r.GetDraft(ctx, d.OwnerID, d.ID); getErr != nil {
 			return result, getErr
@@ -142,7 +142,7 @@ func (r *TemplateRepository) UpdateDraft(ctx context.Context, d domain.TemplateD
 	return result, err
 }
 func (r *TemplateRepository) GetGenerated(ctx context.Context, owner, id uuid.UUID) (domain.GeneratedDocument, error) {
-	return scanGenerated(r.db.QueryRowContext(ctx, `SELECT `+generatedColumns+` FROM template_generated_files WHERE id=$1 AND owner_id=$2`, id, owner))
+	return scanGenerated(queryDB(ctx, r.db).QueryRowContext(ctx, `SELECT `+generatedColumns+` FROM template_generated_files WHERE id=$1 AND owner_id=$2`, id, owner))
 }
 
 // Generate holds one row lock, not a global lock. PostgreSQL serializes edits and

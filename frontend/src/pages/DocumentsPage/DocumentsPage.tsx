@@ -13,7 +13,7 @@ export function DocumentsPage() {
     <section className={styles['documents-page']}>
       <div className={ui['page-heading']}>
         <div>
-          <span className={ui['eyebrow']}>ДОКУМЕНТЫ ОРГАНИЗАЦИИ</span>
+          <span className={ui['eyebrow']}>Документы организации</span>
           <h1>База знаний</h1>
           <p>Инструкции и регламенты, на которые опирается помощник.</p>
         </div>

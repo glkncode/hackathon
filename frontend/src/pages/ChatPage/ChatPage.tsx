@@ -1,4 +1,4 @@
-import { Info, MessageSquare, Trash2 } from 'lucide-react';
+import { Info, Trash2 } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import { ChatInput, ChatMessage, ChatWelcome, useChatController } from '../../features/chat';
 import chatMessageStyles from '../../features/chat/components/ChatMessage.module.css';
@@ -7,6 +7,7 @@ import { cx } from '../../shared/lib/cx';
 import { ErrorNotice, Loading } from '../../shared/ui/Feedback';
 import ui from '../../shared/ui/ui.module.css';
 import styles from './ChatPage.module.css';
+import { ChatDocumentPanel, DocumentDownload } from './ChatDocumentPanel';
 
 export function ChatPage() {
   const [params] = useSearchParams();
@@ -80,7 +81,9 @@ export function ChatPage() {
               aria-live="polite"
             >
               {messages.map((message) => (
-                <ChatMessage key={message.id} message={message} />
+                <div key={message.id}><ChatMessage message={message} />
+                  {message.document_generated_id && <DocumentDownload id={message.document_generated_id} />}
+                </div>
               ))}
             </div>
           )}
@@ -95,10 +98,13 @@ export function ChatPage() {
                   sources: [],
                 }}
               />
-              <Loading label="Ищем в доступных документах…" />
+              <Loading label="Обрабатываем сообщение…" />
             </div>
           )}
           {send.isError && <ErrorNotice error={send.error} onRetry={submit} />}
+          {sessionId && history.isSuccess && !history.data?.session.archived_at &&
+            <ChatDocumentPanel key={sessionId} sessionId={sessionId} updatedAt={history.dataUpdatedAt} pending={pending}
+              generatedInHistory={messages.flatMap(message => message.document_generated_id ? [message.document_generated_id] : [])} />}
           {send.isError && send.error instanceof ApiError && send.error.status === 409 && (
             <p className={chatMessageStyles['search-disclaimer']}>
               Если диалог архивирован, создайте новый. При изменении источников можно повторить
@@ -118,10 +124,6 @@ export function ChatPage() {
           pending={pending}
           disabled={!ready || archive.isPending}
         />
-        <div className={styles['chat-footer']}>
-          <MessageSquare size={13} />
-          <span>Результаты из доступных вам документов</span>
-        </div>
       </div>
     </section>
   );

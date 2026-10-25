@@ -99,7 +99,7 @@ export function useChatController(sessionId: string | null) {
     // Scroll only the message list: scrollIntoView also moves overflow-hidden
     // ancestors and can push the application header and composer off screen.
     const container = scrollContainer.current;
-    if (container) container.scrollTop = container.scrollHeight;
+    if (container) container.scrollTop = messageCount > 0 || pending ? container.scrollHeight : 0;
   }, [messageCount, pending]);
 
   function submit() {

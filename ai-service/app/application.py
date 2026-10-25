@@ -3,7 +3,8 @@
 from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
 
-from app.api import health, ingestion, rag, templates
+from app.api import health, ingestion, rag, templates, chat_documents
+from app.rag import resolver
 from app.embeddings import routes as embeddings, evidence
 from app.core.exceptions import ingestion_error, safe_validation_error
 from app.core.lifespan import lifespan
@@ -37,7 +38,9 @@ def create_app() -> FastAPI:
     app.include_router(health.router)
     app.include_router(ingestion.router)
     app.include_router(rag.router)
+    app.include_router(resolver.router)
     app.include_router(templates.router)
+    app.include_router(chat_documents.router)
     app.include_router(embeddings.router)
     app.include_router(evidence.router)
     return app

@@ -23,13 +23,13 @@ export function TemplateCard({
       <TemplateBadge template={template} />
       <h3>{moduleTitle(template)}</h3>
       <p className={ui['muted']}>
-        {documentKind(template)} · {template.name}
+        {documentKind(template)}
       </p>
       <p>
         {template.description ||
           (template.schema_version === 2
-            ? 'Подготовка проекта по проверенному модулю со структурной обработкой DOCX.'
-            : 'Заполнение по старой схеме. Структурная очистка v2 не предусмотрена.')}
+            ? 'Заполните поля и создайте проект документа по проверенному шаблону.'
+            : 'Заполнение по шаблону первой версии.')}
       </p>
       {!supported && (
         <p className={templateStyles['template-warning']}>

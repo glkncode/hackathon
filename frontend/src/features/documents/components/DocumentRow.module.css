@@ -8,21 +8,21 @@
     min-width: 0;
   }
   .document-name strong {
-    font-size: 12px;
+    font-size: 16px;
     font-weight: 500;
     line-height: 1.6;
     overflow-wrap: anywhere;
   }
   .document-name span:not(.document-file-icon) {
     display: block;
-    color: #a0aabb;
-    font-size: 10px;
+    color: var(--color-text-muted);
+    font-size: var(--text-caption);
     margin-top: 5px;
     overflow-wrap: anywhere;
   }
   .document-file-icon {
-    background: #f0f5fe;
-    color: #7898ce;
+    background: var(--color-surface-soft);
+    color: var(--color-primary);
     width: 34px;
     height: 40px;
     border-radius: 7px;
@@ -32,45 +32,46 @@
   }
   .version-number {
     display: inline-block;
-    color: #6686ba;
+    color: var(--color-primary);
     padding: 4px 8px;
-    background: #f1f5fc;
+    background: var(--color-surface-soft);
     border-radius: 5px;
-    font-size: 11px;
+    font-size: var(--text-caption);
   }
   .latest-version {
+    flex-wrap: wrap;
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 11px;
-    color: #7f8ea6;
+    font-size: var(--text-caption);
+    color: var(--color-text-muted);
   }
   .status-badge {
     display: inline-block;
     padding: 4px 7px;
-    background: #f2f5f9;
-    color: #8b99af;
+    background: var(--color-surface-soft);
+    color: var(--color-text-muted);
     border-radius: 5px;
-    font-size: 9px;
+    font-size: var(--text-caption);
   }
   .status-badge.ready {
-    color: #4f8c75;
+    color: var(--color-primary-hover);
     background: #edf7f2;
   }
   .status-badge.processing {
-    color: #a38b4c;
+    color: var(--color-warning);
     background: #fbf7eb;
   }
   .status-badge.failed {
-    color: #b27368;
+    color: var(--color-danger);
     background: #fcf1ef;
   }
   .date-cell {
-    color: #8c98ac;
-    font-size: 10px !important;
+    color: var(--color-text-muted);
+    font-size: var(--text-caption) !important;
   }
   .skeleton {
-    color: #b2bdcd;
-    font-size: 10px;
+    color: var(--color-border-strong);
+    font-size: var(--text-caption);
   }
 }

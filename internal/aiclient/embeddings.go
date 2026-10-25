@@ -80,7 +80,7 @@ func (c *Client) privateJSON(ctx context.Context, path string, input, output any
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
-		return &Error{Code: "ai_rejected", Temporary: resp.StatusCode >= 500 || resp.StatusCode == 429}
+		return rejectedResponse(resp)
 	}
 	media, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
 	if err != nil || media != "application/json" {
@@ -94,6 +94,9 @@ func (c *Client) privateJSON(ctx context.Context, path string, input, output any
 		return invalid
 	}
 	if int64(len(data)) > maxResponse {
+		return invalid
+	}
+	if exactJSON(data) != nil {
 		return invalid
 	}
 	decoder := json.NewDecoder(bytes.NewReader(data))

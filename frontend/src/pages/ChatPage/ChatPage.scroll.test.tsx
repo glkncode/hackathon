@@ -98,10 +98,19 @@ function messageViewport() {
 }
 
 describe('long chat scrolling', () => {
+  it('keeps the welcome heading visible when there are no messages', async () => {
+    client.setQueryData(chatHistoryOptions(session.id).queryKey, history(0));
+    vi.mocked(chatApi.history).mockResolvedValue(history(0));
+    await mount();
+
+    expect(messageViewport().textContent).toContain('Помощник по внутренним документам');
+    expect(messageViewport().scrollTop).toBe(0);
+  });
+
   it('scrolls the message viewport on opening history without scrolling ancestors', async () => {
     await mount();
 
-    expect(host.querySelectorAll('article[aria-label="Ответ AI"]')).toHaveLength(20);
+    expect(host.querySelectorAll('article[aria-label="Ответ помощника"]')).toHaveLength(20);
     expect(messageViewport().scrollTop).toBe(contentHeight);
     expect(host.scrollTop).toBe(0);
     expect(document.documentElement.scrollTop).toBe(0);

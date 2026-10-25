@@ -186,7 +186,7 @@ func run(ctx context.Context, args []string) error {
 		search.EnableSemantic(postgres.NewSemanticSearchRepository(db), aiClient, aiClient, log, cfg.SemanticSupplementFTS, cfg.SemanticSearchTimeout)
 	}
 	if cfg.RAGEnabled {
-		chat, err = service.NewChatServiceWithRAG(postgres.NewChatRepository(db), search, aiClient, log, service.RAGConfig{Timeout: cfg.RAGTimeout, MaxSources: cfg.RAGMaxSources, MaxHistoryMessages: cfg.RAGMaxHistoryMessages})
+		chat, err = service.NewChatServiceWithRAG(postgres.NewChatRepository(db), search, aiClient, log, service.RAGConfig{Timeout: cfg.RAGTimeout, MaxSources: cfg.RAGMaxSources, MaxHistoryMessages: cfg.RAGMaxHistoryMessages, ContextResolverEnabled: cfg.ContextResolverEnabled, ContextResolverTimeout: cfg.ContextResolverTimeout})
 		if err != nil {
 			return err
 		}
@@ -196,6 +196,12 @@ func run(ctx context.Context, args []string) error {
 		templateEngine = aiClient
 	}
 	templates := service.NewTemplateService(postgres.NewTemplateRepository(db), documentRepo, access, storage, templateEngine, log)
+	if cfg.ChatDocumentCreationEnabled {
+		if aiClient == nil {
+			return errors.New("chat document creation requires AI service")
+		}
+		chat.EnableDocuments(postgres.NewChatDocumentRepository(db), templates, aiClient)
+	}
 	router, err := httptransport.NewRouter(auth, log, httptransport.RouterConfig{
 		Production: cfg.Logger.Environment == "production", CookieSecure: cfg.CookieSecure, AllowedOrigins: cfg.AllowedOrigins,
 	}, httptransport.Modules{Templates: templates, Users: userService, Documents: documents, Access: access, Ingestion: ingestion, Search: search, Chat: chat, MaxUploadBytes: cfg.DocumentMaxUploadBytes})
@@ -211,6 +217,9 @@ func run(ctx context.Context, args []string) error {
 	}
 	if cfg.SemanticSearchEnabled {
 		server.WriteTimeout = max(server.WriteTimeout, cfg.SemanticSearchTimeout+cfg.RAGTimeout+10*time.Second)
+	}
+	if cfg.ContextResolverEnabled {
+		server.WriteTimeout += cfg.ContextResolverTimeout
 	}
 	workerCtx, workerCancel := context.WithCancel(ctx)
 	var workers sync.WaitGroup

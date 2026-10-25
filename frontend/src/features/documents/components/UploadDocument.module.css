@@ -3,9 +3,9 @@
 @value field from "../../../shared/ui/ui.module.css";
 @layer app-components {
   .upload-panel {
-    border: 1px solid #dfe8f9;
-    background: #f5f8ff;
-    border-radius: 13px;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface-soft);
+    border-radius: var(--radius-card);
     padding: 22px;
     margin-bottom: 28px;
   }
@@ -17,36 +17,36 @@
   .upload-icon {
     width: 43px;
     height: 43px;
-    border-radius: 11px;
+    border-radius: var(--radius-card);
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #e8f0ff;
-    color: #5983d2;
+    background: var(--color-surface-soft);
+    color: var(--color-primary);
   }
   .upload-heading > div {
     flex: 1;
   }
   .upload-heading h2 {
-    font-size: 13px;
+    font-size: 18px;
     font-weight: 600;
-    color: #45618e;
+    color: var(--color-primary);
   }
   .upload-heading p {
-    font-size: 11px;
-    color: #8496b3;
+    font-size: 14px;
+    color: var(--color-text-muted);
     line-height: 1.7;
     margin-top: 6px;
   }
   .upload-heading .button {
-    font-size: 11px;
+    font-size: var(--text-caption);
   }
   .upload-form {
     display: grid;
     grid-template-columns: 1fr 1fr auto;
     align-items: end;
     gap: 15px;
-    border-top: 1px solid #e0e8f7;
+    border-top: 1px solid var(--color-border);
     padding-top: 22px;
     margin-top: 22px;
   }
@@ -55,15 +55,16 @@
     grid-column: 1 / -1;
   }
   .upload-form .field input[type='file'] {
-    font-size: 11px;
+    font-size: 14px;
     padding: 11px;
+    height: auto;
   }
   .upload-form input::file-selector-button {
     border: 0;
     border-radius: 4px;
     padding: 3px 7px;
-    background: #eaf0fb;
-    color: #5a79ab;
+    background: var(--color-surface-soft);
+    color: var(--color-primary);
     margin-right: 8px;
     cursor: pointer;
   }
@@ -73,7 +74,7 @@
     border: 1px solid #d4ecdf;
     padding: 11px 13px;
     border-radius: 8px;
-    font-size: 12px;
+    font-size: var(--text-small);
     line-height: 1.6;
   }
   @media (max-width: 1100px) {
@@ -98,7 +99,7 @@
       min-width: 180px;
     }
     .upload-heading .button {
-      margin-left: 55px;
+      margin-left: 0;
     }
   }
 }

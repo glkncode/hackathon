@@ -2,15 +2,18 @@
 
 @layer app-components {
   .template-card {
-    background: white;
-    border: 1px solid #dfe5ee;
-    border-radius: 14px;
-    padding: 24px;
+    background: var(--color-surface);
+    box-shadow: var(--shadow-soft);
+    min-width: 0;
+    overflow-wrap: anywhere;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    padding: 26px;
   }
   .template-card {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 16px;
     align-items: flex-start;
     line-height: 1.6;
   }
@@ -19,7 +22,7 @@
     width: 100%;
   }
   .template-card > svg {
-    color: #2863e7;
+    color: var(--color-primary);
   }
   @media (max-width: 700px) {
     .template-card {

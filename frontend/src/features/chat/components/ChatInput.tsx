@@ -47,10 +47,10 @@ export function ChatInput({
           id="chat-message"
           value={value}
           onChange={(event) => onChange(event.target.value)}
-          placeholder="Задайте вопрос по вашим документам…"
+          placeholder="Спросите о регламенте или документе…"
           rows={1}
           disabled={pending || disabled}
-          aria-describedby="input-hint"
+          aria-describedby="input-hint input-status"
           aria-invalid={invalid || undefined}
           onKeyDown={(event) => {
             if (event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing) {
@@ -60,20 +60,21 @@ export function ChatInput({
           }}
         />
         <div className={styles['composer-bottom']}>
-          <span className={invalid ? styles['input-invalid'] : ''}>
+          <span id="input-status" role="status" className={invalid ? styles['input-invalid'] : ''}>
             {pending
-              ? 'Ищем подходящие положения…'
+              ? 'Обрабатываем сообщение…'
               : invalid
                 ? 'До 500 символов, без нулевого символа'
-                : 'Вопрос по внутренним документам'}
+                : ''}
           </span>
           <div className={styles['composer-controls']}>
-            <span className={styles['character-count']}>{length}/500</span>
+            {length > 400 && <span className={styles['character-count']}>{length}/500</span>}
             <button
               className={styles['send-button']}
               type="submit"
               disabled={!canSend}
               aria-label={pending ? 'Обработка вопроса' : 'Отправить вопрос'}
+              title="Отправить вопрос (Enter)"
             >
               {pending ? (
                 <LoaderCircle size={20} className={'animate-spin'} />
@@ -84,8 +85,8 @@ export function ChatInput({
           </div>
         </div>
       </form>
-      <p id="input-hint" className={styles['composer-hint']}>
-        Enter — отправить<span>·</span>Shift + Enter — новая строка
+      <p id="input-hint" className={ui['sr-only']}>
+        Enter — отправить. Shift + Enter — новая строка.
       </p>
     </div>
   );

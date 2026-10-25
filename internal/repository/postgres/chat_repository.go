@@ -38,12 +38,12 @@ func (r *ChatRepository) CreateSession(ctx context.Context, owner uuid.UUID, tit
 	if owner == uuid.Nil || !utf8.ValidString(title) || strings.TrimSpace(title) == "" || utf8.RuneCountInString(title) > 200 || strings.ContainsRune(title, 0) {
 		return domain.ChatSession{}, domain.ErrInvalidInput
 	}
-	return scanChatSession(r.db.QueryRowContext(ctx, `INSERT INTO chat_sessions AS s (user_id,title)
+	return scanChatSession(queryDB(ctx, r.db).QueryRowContext(ctx, `INSERT INTO chat_sessions AS s (user_id,title)
 		SELECT id,$2 FROM users WHERE id=$1 AND is_active RETURNING `+chatSessionColumns, owner, title))
 }
 
 func (r *ChatRepository) GetSessionByID(ctx context.Context, owner, id uuid.UUID) (domain.ChatSession, error) {
-	return scanChatSession(r.db.QueryRowContext(ctx, `SELECT `+chatSessionColumns+chatOwner+` AND s.id=$2`, owner, id))
+	return scanChatSession(queryDB(ctx, r.db).QueryRowContext(ctx, `SELECT `+chatSessionColumns+chatOwner+` AND s.id=$2`, owner, id))
 }
 
 // Archived sessions remain readable by their owner, but are absent from the list.
@@ -51,7 +51,7 @@ func (r *ChatRepository) ListSessionsByUser(ctx context.Context, owner uuid.UUID
 	if err := chatPage(limit, offset); err != nil {
 		return nil, err
 	}
-	rows, err := r.db.QueryContext(ctx, `SELECT `+chatSessionColumns+chatOwner+` AND s.archived_at IS NULL ORDER BY s.updated_at DESC,s.id LIMIT $2 OFFSET $3`, owner, limit, offset)
+	rows, err := queryDB(ctx, r.db).QueryContext(ctx, `SELECT `+chatSessionColumns+chatOwner+` AND s.archived_at IS NULL ORDER BY s.updated_at DESC,s.id LIMIT $2 OFFSET $3`, owner, limit, offset)
 	if err != nil {
 		return nil, mapError("list chat sessions", err)
 	}
@@ -70,7 +70,7 @@ func (r *ChatRepository) ListSessionsByUser(ctx context.Context, owner uuid.UUID
 func (r *ChatRepository) ArchiveSession(ctx context.Context, owner, id uuid.UUID) error {
 	var found uuid.UUID
 	// UPDATE takes the same row lock as saving a turn. Repeated archive is safe.
-	err := r.db.QueryRowContext(ctx, `UPDATE chat_sessions s SET archived_at=COALESCE(archived_at,clock_timestamp()),
+	err := queryDB(ctx, r.db).QueryRowContext(ctx, `UPDATE chat_sessions s SET archived_at=COALESCE(archived_at,clock_timestamp()),
 		updated_at=CASE WHEN archived_at IS NULL THEN clock_timestamp() ELSE updated_at END
 		WHERE s.user_id=$1 AND s.id=$2 AND EXISTS (SELECT 1 FROM users WHERE id=$1 AND is_active) RETURNING id`, owner, id).Scan(&found)
 	return mapError("archive chat session", err)
@@ -105,7 +105,7 @@ func readChatMessageRows(ctx context.Context, q chatQuerier, owner, session uuid
 	rows, err := q.QueryContext(ctx, `SELECT m.id,m.session_id,m.role,
 		CASE WHEN guard.hidden THEN '' ELSE m.content END,
 		m.mode,m.client_message_id,m.reply_to_id,m.created_at,guard.hidden,
-		CASE WHEN guard.hidden THEN '[]'::json ELSE COALESCE(deps.ids,'[]'::json) END
+		CASE WHEN guard.hidden THEN '[]'::json ELSE COALESCE(deps.ids,'[]'::json) END,m.starts_new_topic,m.document_draft_id,m.document_generated_id,COALESCE(m.document_action_hash,'')
 		FROM chat_messages m JOIN chat_sessions s ON s.id=m.session_id JOIN users u ON u.id=s.user_id AND u.is_active
 		LEFT JOIN LATERAL (
 			SELECT count(*) AS total,
@@ -115,7 +115,7 @@ func readChatMessageRows(ctx context.Context, q chatQuerier, owner, session uuid
 			JOIN document_versions v ON v.id=c.document_version_id JOIN documents d ON d.id=v.document_id
 			WHERE dep.message_id=m.id
 		) deps ON true
-		CROSS JOIN LATERAL (SELECT COALESCE(m.mode IN ('generated','clarification') AND (deps.total=0 OR deps.total<>deps.visible),false) AS hidden) guard
+		CROSS JOIN LATERAL (SELECT COALESCE((m.document_draft_id IS NOT NULL AND NOT EXISTS (SELECT 1 FROM template_drafts dd JOIN document_templates dt ON dt.id=dd.template_id WHERE dd.id=m.document_draft_id AND dd.owner_id=u.id AND dt.enabled AND (u.role='admin' OR EXISTS (SELECT 1 FROM document_access da WHERE da.document_id=dt.document_id AND da.user_id=u.id)))) OR (m.mode='generated' AND deps.total=0) OR (m.mode IN ('generated','clarification') AND deps.total<>deps.visible),false) AS hidden) guard
 		WHERE s.user_id=$1 AND s.id=$2 `+condition, params...)
 	if err != nil {
 		return nil, mapError("list chat messages", err)
@@ -125,7 +125,7 @@ func readChatMessageRows(ctx context.Context, q chatQuerier, owner, session uuid
 	for rows.Next() {
 		var m domain.ChatMessage
 		var dependencies []byte
-		if err := rows.Scan(&m.ID, &m.SessionID, &m.Role, &m.Content, &m.Mode, &m.ClientMessageID, &m.ReplyToID, &m.CreatedAt, &m.ContentUnavailable, &dependencies); err != nil {
+		if err := rows.Scan(&m.ID, &m.SessionID, &m.Role, &m.Content, &m.Mode, &m.ClientMessageID, &m.ReplyToID, &m.CreatedAt, &m.ContentUnavailable, &dependencies, &m.StartsNewTopic, &m.DocumentDraftID, &m.DocumentGeneratedID, &m.DocumentActionHash); err != nil {
 			rows.Close()
 			return nil, mapError("read chat message", err)
 		}
@@ -135,6 +135,7 @@ func readChatMessageRows(ctx context.Context, q chatQuerier, owner, session uuid
 		}
 		if m.ContentUnavailable {
 			m.Content = domain.ChatContentUnavailable
+			m.DocumentGeneratedID = nil
 		}
 		m.Sources = make([]domain.ChatMessageSource, 0)
 		items = append(items, m)
@@ -190,7 +191,7 @@ func (r *ChatRepository) ListMessages(ctx context.Context, owner, session uuid.U
 	if _, err := r.GetSessionByID(ctx, owner, session); err != nil {
 		return nil, err
 	}
-	return readChatMessages(ctx, r.db, owner, session, `ORDER BY m.position LIMIT $3 OFFSET $4`, limit, offset)
+	return readChatMessages(ctx, queryDB(ctx, r.db), owner, session, `ORDER BY m.position LIMIT $3 OFFSET $4`, limit, offset)
 }
 
 // RecentMessages returns at most 100 messages, in chronological order. The same
@@ -202,7 +203,7 @@ func (r *ChatRepository) RecentMessages(ctx context.Context, owner, session uuid
 	if _, err := r.GetSessionByID(ctx, owner, session); err != nil {
 		return nil, err
 	}
-	items, err := readChatMessages(ctx, r.db, owner, session, `ORDER BY m.position DESC LIMIT $3`, limit)
+	items, err := readChatMessages(ctx, queryDB(ctx, r.db), owner, session, `AND m.document_draft_id IS NULL AND COALESCE(m.mode,'')<>'document' ORDER BY m.position DESC LIMIT $3`, limit)
 	slices.Reverse(items)
 	return items, err
 }
@@ -225,7 +226,7 @@ func (r *ChatRepository) GetTurnByClientID(ctx context.Context, owner, session, 
 	if _, err := r.GetSessionByID(ctx, owner, session); err != nil {
 		return domain.ChatTurn{}, err
 	}
-	return readChatTurn(ctx, r.db, owner, session, key)
+	return readChatTurn(ctx, queryDB(ctx, r.db), owner, session, key)
 }
 
 // SaveMessageWithSources saves a complete turn. The session row serializes sends,
@@ -239,7 +240,11 @@ func (r *ChatRepository) SaveMessageWithSources(ctx context.Context, owner, sess
 	mode, text := *turn.AssistantMessage.Mode, turn.AssistantMessage.Content
 	generated := mode == domain.ChatModeGenerated || mode == domain.ChatModeClarification
 	if generated {
-		if !utf8.ValidString(text) || strings.TrimSpace(text) == "" || strings.ContainsRune(text, 0) || len(text) > domain.MaxChatAssistantBytes || utf8.RuneCountInString(text) > domain.MaxChatAssistantRunes || len(turn.AssistantMessage.DependencyIDs) == 0 || len(turn.AssistantMessage.DependencyIDs) > domain.MaxChatDependencies || (mode == domain.ChatModeGenerated && len(sources) == 0) {
+		if !utf8.ValidString(text) || strings.TrimSpace(text) == "" || strings.ContainsRune(text, 0) || len(text) > domain.MaxChatAssistantBytes || utf8.RuneCountInString(text) > domain.MaxChatAssistantRunes || (mode == domain.ChatModeGenerated && len(turn.AssistantMessage.DependencyIDs) == 0) || len(turn.AssistantMessage.DependencyIDs) > domain.MaxChatDependencies || (mode == domain.ChatModeGenerated && len(sources) == 0) {
+			return domain.ChatTurn{}, domain.ErrInvalidInput
+		}
+	} else if mode == domain.ChatModeDocument {
+		if !utf8.ValidString(text) || strings.TrimSpace(text) == "" || len(text) > domain.MaxChatAssistantBytes || len(sources) != 0 || len(turn.AssistantMessage.DependencyIDs) != 0 {
 			return domain.ChatTurn{}, domain.ErrInvalidInput
 		}
 	} else {
@@ -265,11 +270,14 @@ func (r *ChatRepository) SaveMessageWithSources(ctx context.Context, owner, sess
 			return domain.ChatTurn{}, domain.ErrInvalidInput
 		}
 	}
-	tx, err := r.db.BeginTx(ctx, nil)
-	if err != nil {
-		return domain.ChatTurn{}, mapError("begin chat turn", err)
+	tx, nested := ctx.Value(documentTxKey{}).(*sql.Tx)
+	if !nested {
+		tx, err = r.db.BeginTx(ctx, nil)
+		if err != nil {
+			return domain.ChatTurn{}, mapError("begin chat turn", err)
+		}
+		defer tx.Rollback()
 	}
-	defer tx.Rollback()
 	s, err := scanChatSession(tx.QueryRowContext(ctx, `SELECT `+chatSessionColumns+chatOwner+` AND s.id=$2 FOR UPDATE OF s`, owner, session))
 	if err != nil {
 		return domain.ChatTurn{}, err
@@ -282,8 +290,10 @@ func (r *ChatRepository) SaveMessageWithSources(ctx context.Context, owner, sess
 		if existing.UserMessage.Content != query.Query {
 			return domain.ChatTurn{}, domain.ErrChatConflict
 		}
-		if err := tx.Commit(); err != nil {
-			return domain.ChatTurn{}, mapError("commit chat replay", err)
+		if !nested {
+			if err := tx.Commit(); err != nil {
+				return domain.ChatTurn{}, mapError("commit chat replay", err)
+			}
 		}
 		return r.GetTurnByClientID(ctx, owner, session, key)
 	}
@@ -291,11 +301,11 @@ func (r *ChatRepository) SaveMessageWithSources(ctx context.Context, owner, sess
 		return domain.ChatTurn{}, err
 	}
 	var userID, assistantID uuid.UUID
-	err = tx.QueryRowContext(ctx, `INSERT INTO chat_messages (session_id,role,content,client_message_id) VALUES ($1,'user',$2,$3) RETURNING id`, session, query.Query, key).Scan(&userID)
+	err = tx.QueryRowContext(ctx, `INSERT INTO chat_messages (session_id,role,content,client_message_id,starts_new_topic,document_draft_id,document_action_hash) VALUES ($1,'user',$2,$3,$4,$5,$6) RETURNING id`, session, query.Query, key, turn.UserMessage.StartsNewTopic, turn.UserMessage.DocumentDraftID, turn.UserMessage.DocumentActionHash).Scan(&userID)
 	if err != nil {
 		return domain.ChatTurn{}, mapError("save chat user message", err)
 	}
-	err = tx.QueryRowContext(ctx, `INSERT INTO chat_messages (session_id,role,content,mode,reply_to_id) VALUES ($1,'assistant',$2,$3,$4) RETURNING id`, session, text, mode, userID).Scan(&assistantID)
+	err = tx.QueryRowContext(ctx, `INSERT INTO chat_messages (session_id,role,content,mode,reply_to_id,document_draft_id,document_generated_id) VALUES ($1,'assistant',$2,$3,$4,$5,$6) RETURNING id`, session, text, mode, userID, turn.AssistantMessage.DocumentDraftID, turn.AssistantMessage.DocumentGeneratedID).Scan(&assistantID)
 	if err != nil {
 		return domain.ChatTurn{}, mapError("save chat assistant message", err)
 	}
@@ -336,8 +346,10 @@ func (r *ChatRepository) SaveMessageWithSources(ctx context.Context, owner, sess
 	if _, err := tx.ExecContext(ctx, `UPDATE chat_sessions SET updated_at=clock_timestamp() WHERE user_id=$1 AND id=$2`, owner, session); err != nil {
 		return domain.ChatTurn{}, mapError("touch chat session", err)
 	}
-	if err := tx.Commit(); err != nil {
-		return domain.ChatTurn{}, mapError("commit chat turn", err)
+	if !nested {
+		if err := tx.Commit(); err != nil {
+			return domain.ChatTurn{}, mapError("commit chat turn", err)
+		}
 	}
 	// Rehydrate after commit so response and replay both use the current ACL.
 	return r.GetTurnByClientID(ctx, owner, session, key)

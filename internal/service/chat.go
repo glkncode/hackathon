@@ -28,10 +28,12 @@ type ChatSearch interface {
 }
 
 type ChatService struct {
-	repository ChatStore
-	search     ChatSearch
-	log        *zap.Logger
-	rag        *chatRAG
+	repository     ChatStore
+	search         ChatSearch
+	log            *zap.Logger
+	rag            *chatRAG
+	contextMetrics resolverMetrics
+	documents      *chatDocuments
 }
 
 func NewChatService(repository ChatStore, search ChatSearch, log *zap.Logger) *ChatService {
@@ -107,7 +109,7 @@ func (s *ChatService) ArchiveSession(ctx context.Context, actor domain.User, id 
 }
 
 // RecentMessages is a bounded, ownership- and ACL-filtered context boundary for
-// generation. Retrieval still uses only the current normalized question.
+// generation and the optional private context resolver.
 func (s *ChatService) RecentMessages(ctx context.Context, actor domain.User, id uuid.UUID, limit int) ([]domain.ChatMessage, error) {
 	if err := chatActor(actor); err != nil {
 		return nil, err
@@ -153,28 +155,106 @@ func (s *ChatService) SendMessage(ctx context.Context, actor domain.User, id, ke
 	if !errors.Is(err, domain.ErrNotFound) {
 		return turn, err
 	}
+	if s.documents != nil {
+		docTurn, handled, docErr := s.routeDocumentMessage(ctx, actor, id, key, query.Query)
+		if handled {
+			return docTurn, docErr
+		}
+	}
+	var history []domain.ChatMessage
+	var contextDeps []uuid.UUID
+	effectiveQuery := query.Query
+	var planned []string
+	contextResolved := false
+	startsNewTopic := false
+	var pendingClarification *domain.ChatMessage
+	if s.rag != nil && s.rag.config.ContextResolverEnabled {
+		if s.rag.config.MaxHistoryMessages > 0 {
+			history, err = s.repository.RecentMessages(ctx, actor.ID, id, s.rag.config.MaxHistoryMessages)
+			if err != nil {
+				return turn, err
+			}
+			history = activeTopicHistory(history)
+		}
+		result, queries, deps, resolveErr := s.resolveContext(ctx, id, query.Query, history)
+		if ctx.Err() != nil {
+			return turn, ctx.Err()
+		}
+		if resolveErr == nil {
+			if result.Status == "needs_clarification" {
+				mode := domain.ChatModeClarification
+				pendingClarification = &domain.ChatMessage{Role: domain.ChatRoleAssistant, Content: *result.ClarificationQuestion, Mode: &mode, DependencyIDs: deps}
+				contextDeps = deps
+			} else {
+				effectiveQuery = queries[0]
+				planned = queries
+				contextDeps = deps
+				contextResolved = true
+				startsNewTopic = result.Status == "independent"
+				if startsNewTopic {
+					history = nil
+				}
+			}
+		}
+	}
 	start := time.Now()
-	sources, err := s.search.Search(ctx, actor, query)
+	var sources []domain.SearchResult
+	var verdict domain.RetrievalDisposition
+	if s.rag != nil && s.rag.config.ContextResolverEnabled {
+		var branches []string
+		if contextResolved {
+			branches = append([]string{query.Query}, planned...)
+		}
+		var retrieval domain.RetrievalResult
+		retrieval, err = s.search.(ContextSearch).SearchForChat(ctx, actor, domain.SearchQuery{Query: effectiveQuery, Limit: query.Limit}, branches)
+		if err == nil && retrieval.Validate() != nil {
+			err = domain.ErrSearchUnavailable
+		}
+		sources, verdict = retrieval.Sources, retrieval.Disposition
+	} else {
+		sources, err = s.search.Search(ctx, actor, query)
+	}
 	s.log.Info("chat search completed", zap.String("session_id", id.String()), zap.Duration("duration", time.Since(start)), zap.Int("source_count", len(sources)), zap.Bool("success", err == nil))
 	if err != nil {
 		return turn, err
 	}
 	mode, message := domain.SearchReply(len(sources) > 0)
 	turn = domain.ChatTurn{
-		UserMessage:      domain.ChatMessage{Role: domain.ChatRoleUser, Content: query.Query},
+		UserMessage:      domain.ChatMessage{Role: domain.ChatRoleUser, Content: query.Query, StartsNewTopic: startsNewTopic},
 		AssistantMessage: domain.ChatMessage{Role: domain.ChatRoleAssistant, Content: message, Mode: &mode},
+	}
+	// Clarification is provisional: authorized evidence plus the session history
+	// can establish the intended subject more accurately than a query-only plan.
+	// Still run the unchanged original branch and Evidence Gate before asking.
+	if pendingClarification != nil && len(sources) == 0 && verdict == domain.RetrievalRejected {
+		turn.AssistantMessage = *pendingClarification
+		s.log.Info("chat clarification retained", zap.String("session_id", id.String()), zap.String("reason", "unresolved_after_search"))
 	}
 	if s.rag != nil && len(sources) > 0 {
 		// Read current, ACL-filtered history after retrieval, immediately before
 		// building model input. No SQL transaction survives this method call.
-		var history []domain.ChatMessage
-		if s.rag.config.MaxHistoryMessages > 0 {
+		if !contextResolved && s.rag.config.MaxHistoryMessages > 0 {
 			history, err = s.repository.RecentMessages(ctx, actor.ID, id, s.rag.config.MaxHistoryMessages)
 			if err != nil {
 				return turn, err
 			}
+			if pendingClarification != nil {
+				history = activeTopicHistory(history)
+			}
 		}
 		turn.AssistantMessage, sources = s.generateReply(ctx, id, query.Query, history, sources, turn.AssistantMessage)
+		if turn.AssistantMessage.Mode != nil && (*turn.AssistantMessage.Mode == domain.ChatModeGenerated || *turn.AssistantMessage.Mode == domain.ChatModeClarification) {
+			seen := map[uuid.UUID]bool{}
+			for _, dep := range turn.AssistantMessage.DependencyIDs {
+				seen[dep] = true
+			}
+			for _, dep := range contextDeps {
+				if !seen[dep] {
+					turn.AssistantMessage.DependencyIDs = append(turn.AssistantMessage.DependencyIDs, dep)
+					seen[dep] = true
+				}
+			}
+		}
 		if err := ctx.Err(); err != nil {
 			return domain.ChatTurn{}, err
 		}

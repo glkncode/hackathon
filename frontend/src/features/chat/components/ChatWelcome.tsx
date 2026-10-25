@@ -1,5 +1,4 @@
-import { ArrowUpRight, BookOpen, FileCheck2, FileText, Search } from 'lucide-react';
-import ui from '../../../shared/ui/ui.module.css';
+import { BookOpen, FileCheck2, FileText } from 'lucide-react';
 import styles from './ChatWelcome.module.css';
 
 const examples = [
@@ -31,19 +30,25 @@ export function ChatWelcome({
 }) {
   return (
     <div className={styles['chat-welcome']}>
-      <div className={styles['welcome-mark']}>
-        <FileText size={31} />
-        <span>
-          <Search size={15} />
+      <div className={styles.hero}>
+        <svg className={styles.circuit} viewBox="0 0 280 300" fill="none" aria-hidden="true">
+          <g stroke="currentColor" strokeWidth="1.5">
+            <path d="M280 28H160l-38 38v48H74M280 68h-80l-38 38v80H98M280 240H186l-36-36v-48H38M280 272H156l-42-42H58M232 0v30M260 0v88l-40 40v64" />
+            <circle cx="74" cy="114" r="5" />
+            <circle cx="98" cy="186" r="5" />
+            <circle cx="38" cy="156" r="5" />
+            <circle cx="58" cy="230" r="5" />
+            <circle cx="220" cy="197" r="5" />
+          </g>
+        </svg>
+        <span className={styles['welcome-mark']} aria-hidden="true">
+          <FileText size={28} />
         </span>
+        <h1>Помощник по внутренним документам</h1>
+        <p>
+          Находите нужные положения регламентов, разбирайтесь в требованиях и создавайте документы.
+        </p>
       </div>
-      <span className={ui['eyebrow']}>ВАШ ПОМОЩНИК ПО ДОКУМЕНТАМ</span>
-      <h1>
-        Здравствуйте! Я помогу разобраться
-        <br /> во внутренних инструкциях
-        <br /> и регламентах
-      </h1>
-      <p>Задайте вопрос, и я найду подходящие положения документов.</p>
       <div className={styles['example-grid']}>
         {examples.map(({ icon: Icon, title, question }) => (
           <button
@@ -52,18 +57,13 @@ export function ChatWelcome({
             disabled={!ready || pending}
             onClick={() => onSelect(question)}
           >
-            <span className={styles['example-icon']}>
-              <Icon size={19} />
+            <span className={styles['example-icon']} aria-hidden="true">
+              <Icon size={22} />
             </span>
             <strong>{title}</strong>
             <span className={styles['example-question']}>{question}</span>
-            <ArrowUpRight className={styles['example-arrow']} size={16} />
           </button>
         ))}
-      </div>
-      <div className={styles['welcome-caption']}>
-        <Search size={14} />
-        Примеры вопросов. Результаты появятся после поиска.
       </div>
     </div>
   );

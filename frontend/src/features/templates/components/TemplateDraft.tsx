@@ -91,7 +91,7 @@ export function TemplateDraftEditor({
       </Link>
       <div className={ui['page-heading']}>
         <div>
-          <span className={ui['eyebrow']}>ЛИЧНЫЙ ПРОЕКТ</span>
+          <span className={ui['eyebrow']}>Личный проект</span>
           <h1>{template.data ? moduleTitle(template.data) : 'Подготовка документа'}</h1>
           <p>
             Сохранено: {new Date(draft.updated_at).toLocaleString('ru-RU')} · версия{' '}
@@ -227,7 +227,7 @@ export function TemplateDraftEditor({
           <section className={templateStyles['template-panel']}>
             <h2>Данные документа</h2>
             <p className={ui['muted']}>
-              Необязательные подтверждения также сохраняются через API. Они не заменяют проверку
+              Необязательные подтверждения сохраняются в черновике. Они не заменяют проверку
               человеком.
             </p>
             <div className={styles['template-review-fields']}>

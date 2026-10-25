@@ -43,9 +43,9 @@ function renderMessage(mode: AnswerMode, content: string, sources: Source[] = []
 }
 
 describe('answer modes', () => {
-  it('supports exactly the four server modes throughout response and view types', () => {
+  it('supports the server modes throughout response and view types', () => {
     expectTypeOf<AnswerMode>().toEqualTypeOf<
-      'search' | 'no_sources' | 'generated' | 'clarification'
+      'search' | 'no_sources' | 'generated' | 'clarification' | 'document'
     >();
     expectTypeOf<ChatTurn['mode']>().toEqualTypeOf<AnswerMode>();
     expectTypeOf<ChatMessageRecord['mode']>().toEqualTypeOf<AnswerMode | null>();
@@ -55,8 +55,8 @@ describe('answer modes', () => {
   it('labels a generated answer as AI and displays the server text without the search disclaimer', () => {
     const content = 'Служебную записку необходимо согласовать с руководителем.';
     const html = renderMessage('generated', content);
-    expect(html).toContain('Ответ AI');
-    expect(html).toContain('aria-label="Ответ AI"');
+    expect(html).toContain('Ответ помощника');
+    expect(html).toContain('aria-label="Ответ помощника"');
     expect(html).toContain(content);
     expect(html).not.toContain('Поиск по документам');
     expect(html).not.toContain('Поиск не формирует генеративный ответ');
@@ -65,7 +65,7 @@ describe('answer modes', () => {
 
   it('renders the source cards returned with a generated answer', () => {
     const html = renderMessage('generated', 'Ответ с цитатой.', [source]);
-    expect(html).toContain('ИСТОЧНИКИ');
+    expect(html).toContain('Источники');
     expect(html).toContain('class="' + sourceStyles['source-card'] + '"');
     expect(html).toContain(source.document_title);
     expect(html).toContain('Версия 2');
@@ -90,7 +90,7 @@ describe('answer modes', () => {
     expect(html).toContain('Поиск по документам');
     expect(html).toContain('Поиск не формирует генеративный ответ');
     expect(html).toContain('class="' + sourceStyles['source-card'] + '"');
-    expect(html).not.toContain('Ответ AI');
+    expect(html).not.toContain('Ответ помощника');
   });
 
   it('does not infer ACL changes for a search with no returned sources', () => {
@@ -123,6 +123,29 @@ describe('answer modes', () => {
 });
 
 describe('safe citation rendering', () => {
+  it('renders Markdown lists, emphasis and tables for long answers', () => {
+    const html = renderMessage(
+      'generated',
+      '## Порядок\n\n**Подготовка**\n\n1. Проверить\n2. Согласовать\n\n| Документ | Срок |\n| --- | --- |\n| Записка | 2 дня |',
+    );
+    expect(html).toContain('<h2>Порядок</h2>');
+    expect(html).toContain('<strong>Подготовка</strong>');
+    expect(html).toContain('<ol>');
+    expect(html).toContain('<table>');
+    expect(html).toContain('aria-label="Таблица в ответе"');
+  });
+
+  it('does not execute answer HTML, dangerous links or remote images', () => {
+    const html = renderMessage(
+      'generated',
+      '<script>alert(1)</script>\n\n[Ссылка](javascript:alert)\n\n![Схема](https://example.org/tracker.png)',
+    );
+    expect(html).not.toContain('<script>');
+    expect(html).not.toContain('href="javascript:');
+    expect(html).not.toContain('<img');
+    expect(html).toContain('Схема');
+  });
+
   it('escapes document text instead of rendering HTML', () => {
     const html = renderSource(source);
     expect(html).toContain('&lt;script&gt;');

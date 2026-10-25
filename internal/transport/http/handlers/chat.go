@@ -23,6 +23,14 @@ func NewChat(chat *service.ChatService, log *zap.Logger) *ChatHandler {
 
 func (h *ChatHandler) fail(w http.ResponseWriter, err error) {
 	switch {
+	case errors.Is(err, service.ErrFileTooLarge), errors.Is(err, domain.ErrTemplateLimit):
+		middleware.JSONError(w, 413, "document input too large")
+	case errors.Is(err, domain.ErrRevisionConflict):
+		middleware.JSONError(w, 409, "Черновик изменён в другом окне. Обновите данные и повторите действие.")
+	case service.TemplateEngineFailure(err), errors.Is(err, domain.ErrTemplateBusy):
+		middleware.JSONError(w, 503, "Подготовка документа временно недоступна. Черновик сохранён; повторите действие позже.")
+	case errors.Is(err, domain.ErrSearchUnavailable):
+		middleware.JSONError(w, 503, "Поиск временно недоступен. Попробуйте отправить вопрос ещё раз позже.")
 	case errors.Is(err, domain.ErrChatArchived):
 		middleware.JSONError(w, 409, "chat session is archived")
 	case errors.Is(err, domain.ErrChatConflict):
@@ -35,6 +43,38 @@ func (h *ChatHandler) fail(w http.ResponseWriter, err error) {
 		h.log.Error("chat request failed")
 		middleware.JSONError(w, 500, "internal error")
 	}
+}
+
+func (h *ChatHandler) Document(w http.ResponseWriter, r *http.Request) {
+	id, err := pathID(r, "id")
+	if err != nil {
+		h.fail(w, err)
+		return
+	}
+	view, err := h.service.DocumentView(r.Context(), actor(r), id)
+	if err != nil {
+		h.fail(w, err)
+		return
+	}
+	writeJSON(w, 200, view)
+}
+func (h *ChatHandler) DocumentAction(w http.ResponseWriter, r *http.Request) {
+	id, err := pathID(r, "id")
+	if err != nil {
+		h.fail(w, err)
+		return
+	}
+	var input service.ChatDocumentAction
+	if err = readTemplateJSON(w, r, &input); err != nil {
+		h.fail(w, err)
+		return
+	}
+	turn, err := h.service.SendDocumentAction(r.Context(), actor(r), id, input)
+	if err != nil {
+		h.fail(w, err)
+		return
+	}
+	writeJSON(w, 200, turn)
 }
 
 func (h *ChatHandler) Create(w http.ResponseWriter, r *http.Request) {

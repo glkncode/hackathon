@@ -77,8 +77,8 @@ export function FieldEditor({
     <form className={templateStyles['template-panel']} onSubmit={submit}>
       <span className={ui['eyebrow']}>
         {editing
-          ? 'ИЗМЕНЕНИЕ ОТВЕТА'
-          : `ШАГ ${Math.min(draft.required_field_count, draft.completed_field_count + 1)} ИЗ ${draft.required_field_count}`}
+          ? 'Изменение ответа'
+          : `Шаг ${Math.min(draft.required_field_count, draft.completed_field_count + 1)} из ${draft.required_field_count}`}
       </span>
       <h2 ref={headingRef} tabIndex={-1}>
         {field.question.replace(/\?+$/, '?')}

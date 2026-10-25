@@ -252,7 +252,7 @@ func (c *Client) Generate(ctx context.Context, input GenerateRequest) (GenerateR
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		return GenerateResponse{}, &Error{Code: "ai_rejected", Temporary: resp.StatusCode == 408 || resp.StatusCode == 429 || resp.StatusCode >= 500}
+		return GenerateResponse{}, rejectedResponse(resp)
 	}
 	media, _, err := mime.ParseMediaType(resp.Header.Get("Content-Type"))
 	if err != nil || media != "application/json" {

@@ -112,6 +112,7 @@ describe('feature architecture', () => {
       '/',
       '/chat',
       '/documents',
+      '/users',
       '/templates',
       '/templates/drafts/:id',
       '/templates/results/:id',

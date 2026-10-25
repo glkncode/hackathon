@@ -1,0 +1,49 @@
+# Explicitly isolated verification stack. Never attaches primary data/model volumes.
+services:
+  postgres:
+    image: pgvector/pgvector:pg17-bookworm
+    environment:
+      POSTGRES_USER: chat_test
+      POSTGRES_PASSWORD: isolated-chat-test-only
+      POSTGRES_DB: chat_documents_test
+    ports: ["127.0.0.1:15439:5432"]
+    volumes: ["chat_postgres:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U chat_test -d chat_documents_test"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+  ai-service:
+    build: ../ai-service
+    env_file: ../.local-integration/chat-documents/ai.env
+    ports: ["127.0.0.1:18001:8000"]
+    volumes:
+      - ../ai-service/tests:/verify/tests:ro
+  api:
+    build: ..
+    environment:
+      APP_ENV: development
+      DATABASE_URL: postgres://chat_test:isolated-chat-test-only@postgres:5432/chat_documents_test?sslmode=disable
+      BOOTSTRAP_ADMIN: "true"
+      ADMIN_USERNAME: chat_admin
+      ADMIN_PASSWORD: isolated-chat-admin-test-only
+      AI_SERVICE_URL: http://ai-service:8000
+      AI_SERVICE_TOKEN: isolated-chat-service-test-only
+      INGESTION_ENABLED: "true"
+      RAG_ENABLED: "true"
+      CHAT_DOCUMENT_CREATION_ENABLED: "true"
+      CONTEXT_RESOLVER_ENABLED: "false"
+      ALLOWED_ORIGINS: http://localhost:18080,http://127.0.0.1:18080
+      DOCUMENT_STORAGE_DIR: /app/data/documents
+      HTTP_PORT: "8080"
+    ports: ["127.0.0.1:18081:8080"]
+    volumes: ["chat_documents:/app/data/documents"]
+    depends_on:
+      postgres: {condition: service_healthy}
+  frontend:
+    build: ../frontend
+    ports: ["127.0.0.1:18080:80"]
+    depends_on: [api]
+volumes:
+  chat_postgres:
+  chat_documents:

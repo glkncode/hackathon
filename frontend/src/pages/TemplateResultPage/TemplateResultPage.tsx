@@ -42,7 +42,7 @@ export function TemplateResultPage() {
       </Link>
       <div className={ui['page-heading']}>
         <div>
-          <span className={ui['eyebrow']}>DOCX ГОТОВ К СКАЧИВАНИЮ</span>
+          <span className={ui['eyebrow']}>Документ готов к скачиванию</span>
           <h1>Проект документа сформирован</h1>
           <p>Для официального использования необходимы проверка, согласование и подписание.</p>
         </div>
@@ -60,7 +60,7 @@ export function TemplateResultPage() {
           <dd>
             {snapshot
               ? `v${snapshot.profile.profile_version} · ${snapshot.profile.revision}`
-              : 'Legacy v1'}
+              : 'Первая версия'}
           </dd>
           <dt>Идентификатор результата</dt>
           <dd>{result.id}</dd>

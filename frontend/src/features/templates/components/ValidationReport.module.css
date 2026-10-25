@@ -1,7 +1,7 @@
 @layer app-components {
   .template-source {
-    color: #566780;
-    font-size: 12px;
+    color: var(--color-text-secondary);
+    font-size: var(--text-small);
     overflow-wrap: anywhere;
     line-height: 1.6;
   }
@@ -10,13 +10,13 @@
     gap: 16px;
   }
   .template-check {
-    border: 1px solid #dce4ef;
+    border: 1px solid var(--color-border);
     border-left-width: 4px;
     border-radius: 9px;
     padding: 16px;
     display: grid;
     gap: 7px;
-    background: white;
+    background: var(--color-surface);
   }
   .template-check.blocking {
     border-left-color: #bf2e33;
@@ -28,12 +28,12 @@
     background: #fffbef;
   }
   .template-check.info {
-    border-left-color: #5084cc;
+    border-left-color: var(--color-primary);
   }
   .template-check.passed,
   .template-check.not_applicable {
-    background: #f8fafc;
-    border-left-color: #94a3b8;
+    background: var(--color-background);
+    border-left-color: var(--color-text-muted);
   }
   .template-check-group {
     display: grid;

@@ -12,7 +12,12 @@ export default defineConfig({
   },
   // Reuse Tailwind's existing Lightning CSS dependency to merge repeated
   // CSS Modules imports and cascade layers in the production stylesheet.
-  build: { cssMinify: 'lightningcss' },
+  build: {
+    cssMinify: 'lightningcss',
+    rollupOptions: {
+      output: { manualChunks: { markdown: ['react-markdown', 'remark-gfm'] } },
+    },
+  },
   server: {
     host: 'localhost',
     port: 5173,

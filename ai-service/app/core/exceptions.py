@@ -14,7 +14,7 @@ async def ingestion_error(request: Request, exc: IngestionError):
 
 async def safe_validation_error(request: Request, exc: RequestValidationError):
     # Ошибки валидации RAG и шаблонов не должны раскрывать содержимое документов.
-    if request.url.path == "/internal/v1/rag/generate":
+    if request.url.path in {"/internal/v1/rag/generate", "/internal/v1/rag/resolve"}:
         return JSONResponse({"error": {"code": "invalid_rag_request"}}, status_code=422)
     if request.url.path.startswith("/internal/v1/templates/"):
         return JSONResponse({"error": {"code": "invalid_template_request"}}, status_code=422)

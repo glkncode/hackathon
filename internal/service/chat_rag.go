@@ -18,9 +18,11 @@ type ChatGenerator interface {
 }
 
 type RAGConfig struct {
-	Timeout            time.Duration
-	MaxSources         int
-	MaxHistoryMessages int
+	Timeout                time.Duration
+	MaxSources             int
+	MaxHistoryMessages     int
+	ContextResolverEnabled bool
+	ContextResolverTimeout time.Duration
 }
 
 func (c RAGConfig) Validate() error {
@@ -37,6 +39,17 @@ type chatRAG struct {
 
 // The existing constructor keeps search-only callers independent of Python.
 func NewChatServiceWithRAG(repository ChatStore, search ChatSearch, generator ChatGenerator, log *zap.Logger, cfg RAGConfig) (*ChatService, error) {
+	if cfg.ContextResolverEnabled {
+		if cfg.ContextResolverTimeout < time.Second || cfg.ContextResolverTimeout > 30*time.Second {
+			return nil, errors.New("resolver timeout must be 1s..30s")
+		}
+		if _, ok := generator.(ContextResolver); !ok {
+			return nil, errors.New("context resolver required")
+		}
+		if _, ok := search.(ContextSearch); !ok {
+			return nil, errors.New("context search required")
+		}
+	}
 	if err := cfg.Validate(); err != nil {
 		return nil, err
 	}
@@ -80,7 +93,7 @@ func buildGenerateRequest(query string, history []domain.ChatMessage, sources []
 		}
 		var extra []uuid.UUID
 		if m.Mode != nil && (*m.Mode == domain.ChatModeGenerated || *m.Mode == domain.ChatModeClarification) {
-			if len(m.DependencyIDs) == 0 {
+			if *m.Mode == domain.ChatModeGenerated && len(m.DependencyIDs) == 0 {
 				continue
 			}
 			for _, id := range m.DependencyIDs {
@@ -111,6 +124,9 @@ func (s *ChatService) generateReply(ctx context.Context, session uuid.UUID, quer
 		s.log.Warn("chat RAG fallback", zap.String("session_id", session.String()), zap.String("reason", "context_limit"))
 		return fallback, sources
 	}
+	// Counts expose source loss at the bounded Go->Generator boundary without
+	// logging document text or implying that every retrieved source is required.
+	s.log.Info("chat generation input", zap.Int("retrieved_source_count", len(sources)), zap.Int("supplied_source_count", len(req.Sources)), zap.Int("omitted_source_count", len(sources)-len(req.Sources)), zap.Int("history_count", len(req.History)))
 	ctx, cancel := context.WithTimeout(ctx, s.rag.config.Timeout)
 	defer cancel()
 	started := time.Now()
@@ -131,6 +147,9 @@ func (s *ChatService) generateReply(ctx context.Context, session uuid.UUID, quer
 			switch remote.Code {
 			case "ai_timeout", "ai_unavailable", "ai_rejected":
 				reason = remote.Code
+			}
+			if remote.UpstreamCode != "" {
+				reason = aiclient.FailureCode(err)
 			}
 		}
 		s.log.Warn("chat RAG fallback", zap.String("session_id", session.String()), zap.String("reason", reason), zap.Duration("duration", time.Since(started)))
@@ -156,6 +175,6 @@ func (s *ChatService) generateReply(ctx context.Context, session uuid.UUID, quer
 		mode, content = domain.SearchReply(false)
 		dependencies = nil
 	}
-	s.log.Info("chat generation completed", zap.String("session_id", session.String()), zap.String("mode", string(mode)), zap.Int("source_count", len(citations)), zap.Duration("duration", time.Since(started)))
+	s.log.Info("chat generation completed", zap.String("session_id", session.String()), zap.String("mode", string(mode)), zap.String("status", string(result.Status)), zap.Int("source_count", len(citations)), zap.Duration("duration", time.Since(started)))
 	return domain.ChatMessage{Role: domain.ChatRoleAssistant, Content: content, Mode: &mode, DependencyIDs: dependencies}, citations
 }
